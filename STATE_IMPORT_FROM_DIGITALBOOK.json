@@ -1,0 +1,64 @@
+{
+  "total_pdfs_found_in_digitalbook": 15,
+  "added_count": 10,
+  "skipped_duplicate_count": 5,
+  "added": [
+    {
+      "src": "site/pdf/2026_03_06_110241(1).pdf",
+      "dst": "files/unknown/unknown__uncategorized__2026-03-06-110241-1__unknown__001.pdf",
+      "hash": "23df5da8ee225e896a18e51c641585f293df4aa0"
+    },
+    {
+      "src": "site/pdf/maagar_z.pdf",
+      "dst": "files/middle-school/grade-7/uncategorized/7__uncategorized__maagar-z__unknown__001.pdf",
+      "hash": "cc12aa863f9b467815922ca35b37b3728f60c458"
+    },
+    {
+      "src": "site/pdf/rebuilt_page1.pdf",
+      "dst": "files/unknown/unknown__uncategorized__rebuilt-page1__unknown__001.pdf",
+      "hash": "fe120dd9b2756396bed152e5024bdfe9af584e5b"
+    },
+    {
+      "src": "site/pdf/rebuilt_pages_1_2.pdf",
+      "dst": "files/unknown/unknown__uncategorized__rebuilt-pages-1-2__unknown__001.pdf",
+      "hash": "1e34ee24dcf32400dbcc0c0aab871a462caee057"
+    },
+    {
+      "src": "site/pdf/דף פעיל פורים (1).pdf",
+      "dst": "files/unknown/unknown__uncategorized__דף-פעיל-פורים-1__unknown__001.pdf",
+      "hash": "c3bedc25bf4e72b615213661a6c1ab8d0ba5a203"
+    },
+    {
+      "src": "site/pdf/חידון פתגמים וביטויים משפחתי (1) (1).pdf",
+      "dst": "files/unknown/unknown__uncategorized__חידון-פתגמים-וביטויים-משפחתי-1-1__unknown__001.pdf",
+      "hash": "bf3f47687cb12270529d3ad8764533db66c5212c"
+    },
+    {
+      "src": "site/pdf/יחס-פרופ-קנה מידה-לתלמידים 1-רמה ב- 8-3-0107-2013-2014.pdf",
+      "dst": "files/middle-school/grade-8/algebra/8__algebra__ratio-proportion-scale-לתלמידים-1-רמה-ב-8-3-0107-2013-2014__unknown__001.pdf",
+      "hash": "e6f5f7c8a0b28c774c2f6b077b4180d8e31907da"
+    },
+    {
+      "src": "site/pdf/כיתה ח - יחס פרופורציה וקנה מידה - דפי סיכום לתלמידים 1 - רמה א - טופס 8-3-0106-2013-2014.pdf",
+      "dst": "files/middle-school/grade-8/summaries/8__summaries__grade-8-ratio-proportion-וscale-summary-pages-לתלמידים-1-רמה-א-טופס-8-3-0106-2013-2014__unknown__001.pdf",
+      "hash": "870b3e3bfcb01fa60ef3837ebe08ce5f93294042"
+    },
+    {
+      "src": "site/pdf/לוח פעיל לפורים 1 (1).pdf",
+      "dst": "files/unknown/unknown__uncategorized__לוח-פעיל-לפורים-1-1__unknown__001.pdf",
+      "hash": "1e3067c17cc1a2179142c62da313e3c52025fd4e"
+    },
+    {
+      "src": "site/pdf/מטלת_סיכום_RAY.pdf",
+      "dst": "files/unknown/unknown__summaries__מטלת-summary-ray__unknown__001.pdf",
+      "hash": "ed9202c5aa0befab9258343b426c12c8e9058339"
+    }
+  ],
+  "skipped_duplicates": [
+    "site/pdf/דף פעיל פורים.pdf",
+    "site/pdf/חידון פתגמים וביטויים משפחתי (1) (2).pdf",
+    "site/pdf/חידון פתגמים וביטויים משפחתי (1).pdf",
+    "site/pdf/לוח פעיל לפורים 1.pdf",
+    "site/pdf/מאגר ז.pdf"
+  ]
+}
