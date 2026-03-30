@@ -87,6 +87,35 @@
         "קנה מידה"
       ],
       "notes": "Kept after cleanup because it is clearly mathematical and belongs in maagar."
+    },
+    {
+      "id": "grade-9__geometry__deltoid__worksheet__unknown__001",
+      "title": "ריכוז שאלות דלתון לכיתה ט'",
+      "path": "files/middle-school/grade-9/geometry/grade-9__geometry__deltoid__worksheet__unknown__001.pdf",
+      "file_name": "grade-9__geometry__deltoid__worksheet__unknown__001.pdf",
+      "extension": "pdf",
+      "content_hash": "29e7f19cf1de3476fbba849991cddeb774b79bc2",
+      "school_stage": "middle-school",
+      "grade": "9",
+      "unit_level": "unknown",
+      "track": "unknown",
+      "primary_category": "geometry",
+      "topics": [
+        "דלתון",
+        "גיאומטריה"
+      ],
+      "document_type": "worksheet",
+      "exam_kind": "unknown",
+      "bagrut_questionnaire": "unknown",
+      "year": "unknown",
+      "author": "unknown",
+      "tags": [
+        "כיתה ט",
+        "גיאומטריה",
+        "דלתון",
+        "עבודה"
+      ],
+      "notes": "Imported from uploaded file in conversation. Classified by content as grade-9 geometry worksheet on deltoid."
     }
   ]
 }
