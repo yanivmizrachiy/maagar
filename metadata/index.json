@@ -1,0 +1,24 @@
+{
+  "files": [
+    {
+      "id": "grade-7__uncategorized__maagar-z__unknown__unknown__001",
+      "title": "מאגר ז",
+      "path": "files/middle-school/grade-7/uncategorized/grade-7__uncategorized__maagar-z__unknown__unknown__001.pdf",
+      "file_name": "grade-7__uncategorized__maagar-z__unknown__unknown__001.pdf",
+      "extension": "pdf",
+      "school_stage": "middle-school",
+      "grade": "7",
+      "unit_level": "unknown",
+      "track": "unknown",
+      "primary_category": "uncategorized",
+      "topics": ["unknown"],
+      "document_type": "unknown",
+      "exam_kind": "unknown",
+      "bagrut_questionnaire": "unknown",
+      "year": "unknown",
+      "author": "unknown",
+      "tags": ["כיתה ז", "unknown"],
+      "notes": "Imported from previous repository state and preserved during repository restructuring."
+    }
+  ]
+}

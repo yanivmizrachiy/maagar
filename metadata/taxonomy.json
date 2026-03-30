@@ -1,0 +1,10 @@
+{
+  "school_stage": ["middle-school", "high-school", "unknown"],
+  "grades": ["7", "8", "9", "high-school", "unknown"],
+  "unit_levels": ["3-unit", "4-unit", "5-unit", "unknown"],
+  "tracks": ["regular", "bagrut", "unknown"],
+  "primary_categories": ["algebra", "geometry", "exams", "summaries", "uncategorized", "unknown"],
+  "document_types": ["worksheet", "summary-work", "exam", "unknown"],
+  "exam_kinds": ["start-of-year", "midyear", "end-of-year", "bagrut", "unknown"],
+  "bagrut_questionnaires": ["381", "382", "471", "472", "571", "572", "other", "unknown"]
+}
