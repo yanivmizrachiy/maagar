@@ -1,10 +1,158 @@
 {
-  "school_stage": ["middle-school", "high-school", "unknown"],
-  "grades": ["7", "8", "9", "high-school", "unknown"],
-  "unit_levels": ["3-unit", "4-unit", "5-unit", "unknown"],
-  "tracks": ["regular", "bagrut", "unknown"],
-  "primary_categories": ["algebra", "geometry", "exams", "summaries", "uncategorized", "unknown"],
-  "document_types": ["worksheet", "summary-work", "exam", "unknown"],
-  "exam_kinds": ["start-of-year", "midyear", "end-of-year", "bagrut", "unknown"],
-  "bagrut_questionnaires": ["381", "382", "471", "472", "571", "572", "other", "unknown"]
+  "schema_version": "2026-06-02.website-ready-v1",
+  "repository": "yanivmizrachiy/maagar",
+  "language": "he",
+  "direction": "rtl",
+  "truth_policy": {
+    "no_fake_files": true,
+    "no_demo_records": true,
+    "unknown_value": "unknown",
+    "duplicate_rule": "content_hash_only"
+  },
+  "school_stage": [
+    "middle-school",
+    "high-school",
+    "unknown"
+  ],
+  "grades": [
+    "7",
+    "8",
+    "9",
+    "high-school",
+    "unknown"
+  ],
+  "middle_school_grades": [
+    "7",
+    "8",
+    "9"
+  ],
+  "unit_levels": [
+    "3-unit",
+    "4-unit",
+    "5-unit",
+    "unknown"
+  ],
+  "tracks": [
+    "regular",
+    "bagrut",
+    "unknown"
+  ],
+  "primary_categories": [
+    "algebra",
+    "geometry",
+    "summaries",
+    "exams",
+    "uncategorized",
+    "unknown"
+  ],
+  "primary_category_labels_he": {
+    "algebra": "אלגברה",
+    "geometry": "גיאומטריה",
+    "summaries": "משימות מסכמות",
+    "exams": "מבחנים",
+    "uncategorized": "לא מסווג",
+    "unknown": "לא ידוע"
+  },
+  "document_types": [
+    "worksheet",
+    "summary-work",
+    "exam",
+    "link",
+    "digital-task",
+    "printable-task",
+    "embedded-resource",
+    "mixed",
+    "unknown"
+  ],
+  "document_type_labels_he": {
+    "worksheet": "עבודה / דף עבודה",
+    "summary-work": "עבודת סיכום / משימה מסכמת",
+    "exam": "מבחן",
+    "link": "קישור",
+    "digital-task": "משימה מתוקשבת",
+    "printable-task": "משימה להדפסה",
+    "embedded-resource": "משאב להטמעה",
+    "mixed": "משאב מעורב",
+    "unknown": "לא ידוע"
+  },
+  "source_types": [
+    "repo-file",
+    "external-link",
+    "embed",
+    "mixed",
+    "unknown"
+  ],
+  "boolean_or_unknown_fields": [
+    "can_embed",
+    "print_ready",
+    "download_ready"
+  ],
+  "exam_kinds": [
+    "start-of-year",
+    "midyear",
+    "end-of-year",
+    "bagrut",
+    "quiz",
+    "practice-test",
+    "unknown"
+  ],
+  "bagrut_questionnaires": [
+    "381",
+    "382",
+    "471",
+    "472",
+    "571",
+    "572",
+    "other",
+    "unknown"
+  ],
+  "site_navigation_required": {
+    "home_buttons": [
+      "grade-7",
+      "grade-8",
+      "grade-9",
+      "high-school"
+    ],
+    "middle_school_categories": [
+      "algebra",
+      "geometry",
+      "summaries",
+      "exams"
+    ],
+    "high_school_buttons": [
+      "3-unit",
+      "4-unit",
+      "5-unit"
+    ]
+  },
+  "metadata_required_fields_for_new_items": [
+    "id",
+    "title",
+    "school_stage",
+    "grades",
+    "primary_category",
+    "topics",
+    "document_type",
+    "source_type",
+    "can_embed",
+    "print_ready",
+    "download_ready",
+    "author",
+    "year"
+  ],
+  "metadata_optional_fields": [
+    "path",
+    "file_name",
+    "extension",
+    "content_hash",
+    "grade",
+    "unit_level",
+    "track",
+    "exam_kind",
+    "bagrut_questionnaire",
+    "source_url",
+    "embed_url",
+    "tags",
+    "notes"
+  ]
 }
