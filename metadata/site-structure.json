@@ -1,0 +1,195 @@
+{
+  "schema_version": "2026-06-02.site-structure-v1",
+  "repository": "yanivmizrachiy/maagar",
+  "language": "he",
+  "direction": "rtl",
+  "purpose": "Website navigation and visual structure for a large Hebrew mathematics file repository.",
+  "truth_policy": {
+    "navigation_can_exist_without_files": true,
+    "empty_categories_must_show_honest_empty_state": true,
+    "no_fake_file_cards": true,
+    "file_cards_must_come_from_metadata_index": true
+  },
+  "home": {
+    "title": "מאגר מתמטיקה",
+    "subtitle": "קבצים, משימות, מבחנים וחומרים לפי שכבה ורמה",
+    "buttons": [
+      {
+        "id": "grade-7",
+        "label": "שכבת ז׳",
+        "target_screen": "middle-school-grade-7",
+        "school_stage": "middle-school",
+        "grade": "7",
+        "style": {
+          "theme": "premium-emerald",
+          "background": "linear-gradient(135deg, #064E3B, #10B981)",
+          "accent": "#A7F3D0"
+        }
+      },
+      {
+        "id": "grade-8",
+        "label": "שכבת ח׳",
+        "target_screen": "middle-school-grade-8",
+        "school_stage": "middle-school",
+        "grade": "8",
+        "style": {
+          "theme": "premium-blue",
+          "background": "linear-gradient(135deg, #1E3A8A, #38BDF8)",
+          "accent": "#DBEAFE"
+        }
+      },
+      {
+        "id": "grade-9",
+        "label": "שכבת ט׳",
+        "target_screen": "middle-school-grade-9",
+        "school_stage": "middle-school",
+        "grade": "9",
+        "style": {
+          "theme": "premium-purple",
+          "background": "linear-gradient(135deg, #581C87, #A855F7)",
+          "accent": "#F3E8FF"
+        }
+      },
+      {
+        "id": "high-school",
+        "label": "חטיבה עליונה",
+        "target_screen": "high-school-home",
+        "school_stage": "high-school",
+        "grade": "high-school",
+        "style": {
+          "theme": "premium-dark-gold",
+          "background": "linear-gradient(135deg, #111827, #D97706)",
+          "accent": "#FEF3C7"
+        }
+      }
+    ]
+  },
+  "middle_school_screens": [
+    {
+      "id": "middle-school-grade-7",
+      "label": "שכבת ז׳",
+      "filter": { "school_stage": "middle-school", "grades_contains": "7" },
+      "categories": ["algebra", "geometry", "summaries", "exams"]
+    },
+    {
+      "id": "middle-school-grade-8",
+      "label": "שכבת ח׳",
+      "filter": { "school_stage": "middle-school", "grades_contains": "8" },
+      "categories": ["algebra", "geometry", "summaries", "exams"]
+    },
+    {
+      "id": "middle-school-grade-9",
+      "label": "שכבת ט׳",
+      "filter": { "school_stage": "middle-school", "grades_contains": "9" },
+      "categories": ["algebra", "geometry", "summaries", "exams"]
+    }
+  ],
+  "category_cards": {
+    "algebra": {
+      "label": "אלגברה",
+      "filter": { "primary_category": "algebra" },
+      "style": {
+        "theme": "algebra-premium",
+        "background": "linear-gradient(135deg, #172554, #2563EB)",
+        "accent": "#BFDBFE"
+      }
+    },
+    "geometry": {
+      "label": "גיאומטריה",
+      "filter": { "primary_category": "geometry" },
+      "style": {
+        "theme": "geometry-premium",
+        "background": "linear-gradient(135deg, #14532D, #22C55E)",
+        "accent": "#BBF7D0"
+      }
+    },
+    "summaries": {
+      "label": "משימות מסכמות",
+      "filter": { "primary_category": "summaries" },
+      "style": {
+        "theme": "summaries-premium",
+        "background": "linear-gradient(135deg, #7C2D12, #F97316)",
+        "accent": "#FED7AA"
+      }
+    },
+    "exams": {
+      "label": "מבחנים",
+      "filter": { "primary_category": "exams" },
+      "style": {
+        "theme": "exams-premium",
+        "background": "linear-gradient(135deg, #881337, #E11D48)",
+        "accent": "#FFE4E6"
+      }
+    }
+  },
+  "high_school_home": {
+    "id": "high-school-home",
+    "label": "חטיבה עליונה",
+    "buttons": [
+      {
+        "id": "bagrut-3-unit",
+        "label": "בגרות במתמטיקה ברמת שלוש יחידות",
+        "unit_level": "3-unit",
+        "filter": { "school_stage": "high-school", "track": "bagrut", "unit_level": "3-unit" },
+        "style": {
+          "theme": "three-unit-premium",
+          "background": "linear-gradient(135deg, #0F766E, #14B8A6, #ECFDF5)",
+          "accent": "#0F766E"
+        }
+      },
+      {
+        "id": "bagrut-4-unit",
+        "label": "בגרות במתמטיקה ברמת ארבע יחידות",
+        "unit_level": "4-unit",
+        "filter": { "school_stage": "high-school", "track": "bagrut", "unit_level": "4-unit" },
+        "style": {
+          "theme": "four-unit-premium",
+          "background": "linear-gradient(135deg, #1D4ED8, #4F46E5, #EEF2FF)",
+          "accent": "#1D4ED8"
+        }
+      },
+      {
+        "id": "bagrut-5-unit",
+        "label": "בגרות במתמטיקה ברמת חמש יחידות",
+        "unit_level": "5-unit",
+        "filter": { "school_stage": "high-school", "track": "bagrut", "unit_level": "5-unit" },
+        "style": {
+          "theme": "five-unit-premium",
+          "background": "linear-gradient(135deg, #9F1239, #F97316, #FFF7ED)",
+          "accent": "#F97316"
+        }
+      }
+    ]
+  },
+  "file_card_fields": [
+    "title",
+    "author",
+    "year",
+    "grades",
+    "unit_level",
+    "primary_category",
+    "topics",
+    "document_type",
+    "can_embed",
+    "print_ready",
+    "download_ready"
+  ],
+  "file_card_actions": [
+    {
+      "id": "view-or-open",
+      "label": "צפייה",
+      "rule": "Use embed_url if can_embed=true, otherwise use source_url or repository file path."
+    },
+    {
+      "id": "download",
+      "label": "להורדה",
+      "rule": "Show only when download_ready=true or when repository file path is available."
+    },
+    {
+      "id": "print",
+      "label": "להדפסה",
+      "rule": "Show only when print_ready=true or document_type is printable-task/worksheet/exam/summary-work and a printable file exists."
+    }
+  ],
+  "empty_state_he": "אין עדיין קבצים משויכים לקטגוריה הזו."
+}
