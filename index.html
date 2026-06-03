@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>מאגר מתמטיקה</title>
+  <meta name="description" content="מאגר קבצים ומשימות מתמטיקה לפי שכבה, תחום ורמה">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --font: 'Heebo', 'Arial Hebrew', Arial, sans-serif;
+      --bg: #0d0d0d;
+      --surface: #181818;
+      --surface2: #222;
+      --border: rgba(255,255,255,0.08);
+      --border-hover: rgba(255,255,255,0.18);
+      --text: #f0f0f0;
+      --text-muted: #777;
+      --text-dim: #555;
+      --radius: 18px;
+      --radius-sm: 10px;
+      --radius-xs: 6px;
+      --shadow: 0 8px 40px rgba(0,0,0,0.5);
+      --shadow-lg: 0 20px 60px rgba(0,0,0,0.6);
+      --header-h: 60px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      direction: rtl;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── HEADER ─────────────────────────────── */
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      height: var(--header-h);
+      background: rgba(13,13,13,0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0 1.25rem;
+    }
+
+    .header-logo {
+      font-size: 1rem;
+      font-weight: 800;
+      color: white;
+      white-space: nowrap;
+      letter-spacing: -0.01em;
+    }
+
+    .header-logo span {
+      font-weight: 300;
+      opacity: 0.6;
+      font-size: 0.85rem;
+      margin-right: 0.4rem;
+    }
+
+    .breadcrumbs {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.82rem;
+      overflow: hidden;
+    }
+
+    .bc-item {
+      color: var(--text-muted);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: color 0.15s;
+      max-width: 120px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .bc-item:hover { color: var(--text); }
+    .bc-item.active { color: var(--text); font-weight: 600; cursor: default; }
+    .bc-sep { color: var(--text-dim); flex-shrink: 0; }
+
+    .back-btn {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.35rem 0.8rem;
+      border-radius: var(--radius-xs);
+      cursor: pointer;
+      font-family: var(--font);
+      font-size: 0.8rem;
+      font-weight: 600;
+      transition: border-color 0.15s, background 0.15s;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .back-btn:hover { border-color: var(--border-hover); background: var(--surface); }
+
+    /* ── MAIN CONTENT ────────────────────────── */
+    .main {
+      max-width: 1060px;
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem 4rem;
+    }
+
+    /* ── SCREEN HEADER ───────────────────────── */
+    .screen-header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+    .screen-title {
+      font-size: 1.75rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+    .screen-sub {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-top: 0.4rem;
+    }
+
+    /* ── COLORED SCREEN BANNER ───────────────── */
+    .screen-banner {
+      border-radius: var(--radius);
+      padding: 1.4rem 1.75rem;
+      margin-bottom: 2rem;
+      color: white;
+    }
+    .screen-banner h1 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin: 0;
+    }
+    .screen-banner p {
+      margin: 0.25rem 0 0;
+      opacity: 0.75;
+      font-size: 0.88rem;
+    }
+
+    /* ── NAVIGATION BUTTON GRIDS ─────────────── */
+    .grid-2x2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.25rem;
+    }
+    .grid-1col {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      max-width: 580px;
+      margin: 0 auto;
+    }
+
+    @media (max-width: 560px) {
+      .grid-2x2 { grid-template-columns: 1fr; }
+    }
+
+    /* ── BIG NAV BUTTON ──────────────────────── */
+    .nav-btn {
+      border: none;
+      border-radius: var(--radius);
+      padding: 2.25rem 1.75rem;
+      cursor: pointer;
+      color: white;
+      font-family: var(--font);
+      font-size: 1.3rem;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      transition: transform 0.16s cubic-bezier(.2,.8,.2,1), box-shadow 0.16s;
+      box-shadow: var(--shadow);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .nav-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0);
+      transition: background 0.16s;
+    }
+    .nav-btn:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+    .nav-btn:hover::before { background: rgba(255,255,255,0.05); }
+    .nav-btn:active { transform: scale(0.99) translateY(-1px); }
+
+    .nav-btn-icon {
+      font-size: 2.2rem;
+      margin-bottom: 0.6rem;
+      line-height: 1;
+      display: block;
+    }
+    .nav-btn-label { display: block; }
+    .nav-btn-count {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 400;
+      opacity: 0.72;
+      margin-top: 0.4rem;
+    }
+
+    /* ── FILE CARDS GRID ─────────────────────── */
+    .files-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 1.1rem;
+    }
+
+    /* ── FILE CARD ───────────────────────────── */
+    .file-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+    }
+    .file-card:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+    }
+
+    .fc-title {
+      font-size: 0.97rem;
+      font-weight: 700;
+      line-height: 1.45;
+      color: var(--text);
+    }
+
+    .fc-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .badge {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.18rem 0.55rem;
+      border-radius: 999px;
+      line-height: 1.5;
+    }
+    .badge-grade  { background: rgba(139,92,246,0.2);  color: #c4b5fd; }
+    .badge-cat    { background: rgba(16,185,129,0.18); color: #6ee7b7; }
+    .badge-type   { background: rgba(245,158,11,0.18); color: #fcd34d; }
+
+    .fc-topics {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+    }
+    .topic-tag {
+      font-size: 0.7rem;
+      padding: 0.14rem 0.45rem;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius-xs);
+      color: var(--text-muted);
+    }
+
+    .fc-actions {
+      display: flex;
+      gap: 0.45rem;
+      flex-wrap: wrap;
+      margin-top: auto;
+    }
+
+    /* ── ACTION BUTTONS ──────────────────────── */
+    .act-btn {
+      flex: 1;
+      min-width: 72px;
+      padding: 0.48rem 0.65rem;
+      border-radius: var(--radius-xs);
+      border: none;
+      cursor: pointer;
+      font-family: var(--font);
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-align: center;
+      text-decoration: none;
+      color: white;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.25rem;
+      transition: opacity 0.13s, transform 0.13s;
+      line-height: 1;
+    }
+    .act-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+    .act-btn:active { transform: scale(0.98); }
+
+    .act-view     { background: linear-gradient(135deg, #2563EB, #4F46E5); }
+    .act-download { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); color: white; }
+    .act-print    { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); color: rgba(255,255,255,0.7); }
+    .act-print:hover { color: white; opacity: 1; }
+
+    /* ── EMPTY STATE ─────────────────────────── */
+    .empty-state {
+      text-align: center;
+      padding: 5rem 2rem;
+      color: var(--text-muted);
+    }
+    .empty-icon { font-size: 2.75rem; margin-bottom: 1rem; opacity: 0.5; }
+    .empty-msg { font-size: 0.95rem; line-height: 1.6; }
+
+    /* ── PDF MODAL ───────────────────────────── */
+    .modal-back {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.88);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 920px;
+      height: 88vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+    }
+    .modal-head {
+      padding: 0.9rem 1.1rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-shrink: 0;
+    }
+    .modal-title { flex: 1; font-weight: 700; font-size: 0.9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .modal-acts  { display: flex; gap: 0.45rem; flex-shrink: 0; }
+    .modal-body  { flex: 1; position: relative; overflow: hidden; background: #111; }
+
+    .pdf-frame { width: 100%; height: 100%; border: none; display: block; }
+
+    /* Shown only if iframe content cannot load */
+    .pdf-fallback {
+      display: none;
+      position: absolute;
+      inset: 0;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      background: var(--surface2);
+      padding: 2rem;
+      text-align: center;
+    }
+    .pdf-fallback.visible { display: flex; }
+    .pdf-fallback p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; }
+
+    /* ── LOADING ─────────────────────────────── */
+    .loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 50vh;
+      gap: 1rem;
+      color: var(--text-muted);
+    }
+    .spinner {
+      width: 36px; height: 36px;
+      border: 3px solid rgba(255,255,255,0.08);
+      border-top-color: rgba(255,255,255,0.5);
+      border-radius: 50%;
+      animation: spin 0.75s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── ERROR ───────────────────────────────── */
+    .error-scr {
+      text-align: center;
+      padding: 4rem 1.5rem;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+    .error-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+    .error-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.75rem; }
+    .error-body { color: var(--text-muted); font-size: 0.88rem; line-height: 1.7; }
+    .error-code { font-size: 0.78rem; font-family: monospace; background: var(--surface2); padding: 0.75rem 1rem; border-radius: var(--radius-xs); margin-top: 1rem; color: #f87171; text-align: right; direction: ltr; }
+
+    /* ── RESPONSIVE ──────────────────────────── */
+    @media (max-width: 480px) {
+      .main { padding: 1.5rem 1rem 3rem; }
+      .nav-btn { padding: 1.75rem 1.25rem; font-size: 1.15rem; }
+      .nav-btn-icon { font-size: 1.8rem; }
+      .modal { height: 94vh; }
+      .modal-head { padding: 0.7rem 0.85rem; }
+      .bc-item { max-width: 80px; }
+    }
+  </style>
+</head>
+<body>
+
+<noscript>
+  <div style="padding:2rem;text-align:center;font-family:Arial,sans-serif;direction:rtl;color:#fff;background:#111;min-height:100vh">
+    <p>אתר זה דורש JavaScript. אנא הפעל JavaScript בדפדפן שלך.</p>
+  </div>
+</noscript>
+
+<!-- ── HEADER ──────────────────────────────────── -->
+<header class="header">
+  <div class="header-logo">מאגר מתמטיקה <span>| math repo</span></div>
+  <nav class="breadcrumbs" id="breadcrumbs" aria-label="ניווט נוכחי"></nav>
+  <button class="back-btn" id="back-btn" style="display:none" onclick="goBack()" aria-label="חזרה לעמוד הקודם">← חזרה</button>
+</header>
+
+<!-- ── MAIN ────────────────────────────────────── -->
+<main class="main" id="app" role="main">
+  <div class="loading"><div class="spinner"></div><span>טוען נתונים...</span></div>
+</main>
+
+<!-- ── PDF MODAL ────────────────────────────────── -->
+<div class="modal-back" id="pdf-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="modal-title-text">
+  <div class="modal">
+    <div class="modal-head">
+      <span class="modal-title" id="modal-title-text"></span>
+      <div class="modal-acts">
+        <a id="modal-dl"  href="#" download class="act-btn act-download">⬇ הורדה</a>
+        <a id="modal-tab" href="#" target="_blank" rel="noopener noreferrer" class="act-btn act-view">↗ כרטיסייה</a>
+        <button class="back-btn" onclick="closeModal()" aria-label="סגור חלון">✕</button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <iframe id="pdf-frame" class="pdf-frame" title="צפייה בקובץ"></iframe>
+      <div class="pdf-fallback" id="pdf-fallback">
+        <div style="font-size:2rem">📄</div>
+        <p>לא ניתן להציג את הקובץ ישירות בדפדפן זה.<br>השתמש בכפתורים למעלה לפתיחה בכרטיסייה חדשה או להורדה.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════
+const S = {
+  index: null,
+  structure: null,
+  screen: { type: 'home' },
+  history: []
+};
+
+// ═══════════════════════════════════════════════════════════
+// LABELS (Hebrew, from taxonomy)
+// ═══════════════════════════════════════════════════════════
+const CATEGORY_HE = {
+  algebra:      'אלגברה',
+  geometry:     'גיאומטריה',
+  summaries:    'משימות מסכמות',
+  exams:        'מבחנים',
+  uncategorized:'לא מסווג',
+  unknown:      'לא מסווג'
+};
+
+const DOCTYPE_HE = {
+  'worksheet':          'עבודה',
+  'summary-work':       'משימה מסכמת',
+  'exam':               'מבחן',
+  'link':               'קישור',
+  'digital-task':       'משימה מתוקשבת',
+  'printable-task':     'להדפסה',
+  'embedded-resource':  'משאב',
+  'mixed':              'מעורב',
+  'unknown':            ''
+};
+
+const GRADE_HE  = { '7': 'שכבת ז׳', '8': 'שכבת ח׳', '9': 'שכבת ט׳' };
+const UNIT_HE   = { '3-unit':'שלוש יחידות', '4-unit':'ארבע יחידות', '5-unit':'חמש יחידות' };
+
+const NAV_ICONS = {
+  'grade-7':     '📐',
+  'grade-8':     '📊',
+  'grade-9':     '📏',
+  'high-school': '🎓',
+  algebra:       '➕',
+  geometry:      '△',
+  summaries:     '📋',
+  exams:         '📝',
+  '3-unit':      '🔵',
+  '4-unit':      '🔷',
+  '5-unit':      '⭐'
+};
+
+// ═══════════════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════════════
+async function loadData() {
+  try {
+    const [idxRes, ssRes] = await Promise.all([
+      fetch('./metadata/index.json'),
+      fetch('./metadata/site-structure.json')
+    ]);
+    if (!idxRes.ok) throw new Error(`index.json: HTTP ${idxRes.status}`);
+    if (!ssRes.ok)  throw new Error(`site-structure.json: HTTP ${ssRes.status}`);
+    S.index     = await idxRes.json();
+    S.structure = await ssRes.json();
+    renderScreen();
+  } catch (e) {
+    renderError(e);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════════════
+function navigate(screen) {
+  S.history.push({ ...S.screen });
+  S.screen = screen;
+  renderScreen();
+  window.scrollTo({ top: 0, behavior: 'instant' });
+}
+
+function goBack() {
+  if (S.history.length === 0) return;
+  S.screen = S.history.pop();
+  renderScreen();
+  window.scrollTo({ top: 0, behavior: 'instant' });
+}
+
+// Convenience wrappers used in onclick attributes
+function navHome()         { navigate({ type: 'home' }); }
+function navGrade(g)       { navigate({ type: 'grade', grade: g }); }
+function navCat(g, c)      { navigate({ type: 'category', grade: g, category: c }); }
+function navHSHome()       { navigate({ type: 'hs-home' }); }
+function navUnit(u)        { navigate({ type: 'unit', unitLevel: u }); }
+
+// ═══════════════════════════════════════════════════════════
+// FILTERING
+// ═══════════════════════════════════════════════════════════
+function filesForGradeCat(grade, category) {
+  return S.index.files.filter(f =>
+    (f.grade === grade || (Array.isArray(f.grades) && f.grades.includes(grade))) &&
+    f.primary_category === category
+  );
+}
+
+function filesForUnit(unitLevel) {
+  return S.index.files.filter(f =>
+    f.school_stage === 'high-school' && f.unit_level === unitLevel
+  );
+}
+
+function countForGrade(grade) {
+  return S.index.files.filter(f =>
+    f.grade === grade || (Array.isArray(f.grades) && f.grades.includes(grade))
+  ).length;
+}
+
+// ═══════════════════════════════════════════════════════════
+// RENDER DISPATCHER
+// ═══════════════════════════════════════════════════════════
+function renderScreen() {
+  const app     = document.getElementById('app');
+  const backBtn = document.getElementById('back-btn');
+  const bcs     = document.getElementById('breadcrumbs');
+  backBtn.style.display = S.history.length > 0 ? '' : 'none';
+
+  const sc = S.screen;
+  if (sc.type === 'home')     renderHome(app, bcs);
+  else if (sc.type === 'grade')    renderGrade(app, bcs, sc.grade);
+  else if (sc.type === 'category') renderCategory(app, bcs, sc.grade, sc.category);
+  else if (sc.type === 'hs-home')  renderHSHome(app, bcs);
+  else if (sc.type === 'unit')     renderUnit(app, bcs, sc.unitLevel);
+}
+
+// ═══════════════════════════════════════════════════════════
+// SCREEN: HOME
+// ═══════════════════════════════════════════════════════════
+function renderHome(app, bcs) {
+  document.title = 'מאגר מתמטיקה';
+  bcs.innerHTML = `<span class="bc-item active">בית</span>`;
+
+  const ss = S.structure;
+  const btns = ss.home.buttons.map(btn => {
+    const isHS    = btn.id === 'high-school';
+    const count   = isHS
+      ? S.index.files.filter(f => f.school_stage === 'high-school').length
+      : countForGrade(btn.grade);
+    const onclick = isHS ? 'navHSHome()' : `navGrade('${btn.grade}')`;
+    const icon    = NAV_ICONS[btn.id] || '📚';
+    const sub     = count > 0 ? `${count} קבצים` : 'אין עדיין קבצים';
+    return `<button class="nav-btn" style="background:${btn.style.background}"
+        onclick="${onclick}" aria-label="${h(btn.label)}">
+      <span class="nav-btn-icon">${icon}</span>
+      <span class="nav-btn-label">${h(btn.label)}</span>
+      <span class="nav-btn-count">${sub}</span>
+    </button>`;
+  }).join('');
+
+  app.innerHTML = `
+    <div class="screen-header">
+      <h1 class="screen-title">${h(ss.home.title)}</h1>
+      <p class="screen-sub">${h(ss.home.subtitle)}</p>
+    </div>
+    <div class="grid-2x2">${btns}</div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// SCREEN: GRADE (ז׳ / ח׳ / ט׳)
+// ═══════════════════════════════════════════════════════════
+function renderGrade(app, bcs, grade) {
+  const gradeLabel = GRADE_HE[grade] || `כיתה ${grade}`;
+  document.title   = `${gradeLabel} — מאגר מתמטיקה`;
+  bcs.innerHTML    = `
+    <span class="bc-item" onclick="navHome()" tabindex="0" role="button">בית</span>
+    <span class="bc-sep">›</span>
+    <span class="bc-item active">${h(gradeLabel)}</span>`;
+
+  const ss   = S.structure;
+  const cats = ['algebra', 'geometry', 'summaries', 'exams'];
+  const btns = cats.map(cat => {
+    const info  = ss.category_cards[cat];
+    const count = filesForGradeCat(grade, cat).length;
+    const sub   = count > 0 ? `${count} קבצים` : 'אין עדיין קבצים';
+    const icon  = NAV_ICONS[cat] || '📄';
+    return `<button class="nav-btn" style="background:${info.style.background}"
+        onclick="navCat('${grade}','${cat}')" aria-label="${h(info.label)}">
+      <span class="nav-btn-icon">${icon}</span>
+      <span class="nav-btn-label">${h(info.label)}</span>
+      <span class="nav-btn-count">${sub}</span>
+    </button>`;
+  }).join('');
+
+  app.innerHTML = `
+    <div class="screen-header">
+      <h1 class="screen-title">${h(gradeLabel)}</h1>
+      <p class="screen-sub">בחר תחום לצפייה בחומרים</p>
+    </div>
+    <div class="grid-2x2">${btns}</div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// SCREEN: CATEGORY
+// ═══════════════════════════════════════════════════════════
+function renderCategory(app, bcs, grade, category) {
+  const gradeLabel = GRADE_HE[grade] || `כיתה ${grade}`;
+  const catLabel   = CATEGORY_HE[category] || category;
+  document.title   = `${catLabel} — ${gradeLabel} — מאגר מתמטיקה`;
+  bcs.innerHTML    = `
+    <span class="bc-item" onclick="navHome()" tabindex="0" role="button">בית</span>
+    <span class="bc-sep">›</span>
+    <span class="bc-item" onclick="navGrade('${grade}')" tabindex="0" role="button">${h(gradeLabel)}</span>
+    <span class="bc-sep">›</span>
+    <span class="bc-item active">${h(catLabel)}</span>`;
+
+  const files = filesForGradeCat(grade, category);
+  const ss    = S.structure;
+  const bg    = ss.category_cards[category]?.style.background || '#1a1a2e';
+
+  const content = files.length === 0
+    ? emptyState(ss.empty_state_he)
+    : `<div class="files-grid">${files.map(fileCard).join('')}</div>`;
+
+  app.innerHTML = `
+    <div class="screen-banner" style="background:${bg}">
+      <h1>${h(catLabel)}</h1>
+      <p>${h(gradeLabel)} · ${files.length === 0 ? 'אין עדיין קבצים' : files.length + ' קבצים'}</p>
+    </div>
+    ${content}`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// SCREEN: HIGH SCHOOL HOME
+// ═══════════════════════════════════════════════════════════
+function renderHSHome(app, bcs) {
+  document.title = 'חטיבה עליונה — מאגר מתמטיקה';
+  bcs.innerHTML  = `
+    <span class="bc-item" onclick="navHome()" tabindex="0" role="button">בית</span>
+    <span class="bc-sep">›</span>
+    <span class="bc-item active">חטיבה עליונה</span>`;
+
+  const ss   = S.structure;
+  const btns = ss.high_school_home.buttons.map(btn => {
+    const count = filesForUnit(btn.unit_level).length;
+    const sub   = count > 0 ? `${count} קבצים` : 'אין עדיין קבצים';
+    const icon  = NAV_ICONS[btn.unit_level] || '📚';
+    return `<button class="nav-btn" style="background:${btn.style.background}"
+        onclick="navUnit('${btn.unit_level}')" aria-label="${h(btn.label)}">
+      <span class="nav-btn-icon">${icon}</span>
+      <span class="nav-btn-label">${h(btn.label)}</span>
+      <span class="nav-btn-count">${sub}</span>
+    </button>`;
+  }).join('');
+
+  app.innerHTML = `
+    <div class="screen-header">
+      <h1 class="screen-title">חטיבה עליונה</h1>
+      <p class="screen-sub">בגרות במתמטיקה לפי רמת יחידות</p>
+    </div>
+    <div class="grid-1col">${btns}</div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// SCREEN: UNIT LEVEL
+// ═══════════════════════════════════════════════════════════
+function renderUnit(app, bcs, unitLevel) {
+  const unitLabel = UNIT_HE[unitLevel] || unitLevel;
+  const title     = `בגרות במתמטיקה — ${unitLabel}`;
+  document.title  = `${title} — מאגר מתמטיקה`;
+  bcs.innerHTML   = `
+    <span class="bc-item" onclick="navHome()"   tabindex="0" role="button">בית</span>
+    <span class="bc-sep">›</span>
+    <span class="bc-item" onclick="navHSHome()" tabindex="0" role="button">חטיבה עליונה</span>
+    <span class="bc-sep">›</span>
+    <span class="bc-item active">${h(unitLabel)}</span>`;
+
+  const files = filesForUnit(unitLevel);
+  const ss    = S.structure;
+  const btn   = ss.high_school_home.buttons.find(b => b.unit_level === unitLevel);
+  const bg    = btn?.style.background || '#1a1a2e';
+
+  const content = files.length === 0
+    ? emptyState(ss.empty_state_he)
+    : `<div class="files-grid">${files.map(fileCard).join('')}</div>`;
+
+  app.innerHTML = `
+    <div class="screen-banner" style="background:${bg}">
+      <h1>${h(title)}</h1>
+      <p>${files.length === 0 ? 'אין עדיין קבצים' : files.length + ' קבצים'}</p>
+    </div>
+    ${content}`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// COMPONENT: FILE CARD
+// ═══════════════════════════════════════════════════════════
+function fileCard(file) {
+  const title      = h(file.title || 'ללא שם');
+  const gradeLabel = file.grade && file.grade !== 'unknown' ? `כיתה ${file.grade}` : null;
+  const catLabel   = CATEGORY_HE[file.primary_category];
+  const docLabel   = DOCTYPE_HE[file.document_type] || '';
+
+  const badges = [
+    gradeLabel ? `<span class="badge badge-grade">${h(gradeLabel)}</span>` : '',
+    catLabel && catLabel !== 'לא מסווג' ? `<span class="badge badge-cat">${h(catLabel)}</span>` : '',
+    docLabel ? `<span class="badge badge-type">${h(docLabel)}</span>` : ''
+  ].filter(Boolean).join('');
+
+  const topics = (file.topics || [])
+    .filter(t => t && t !== 'unknown')
+    .map(t => `<span class="topic-tag">${h(t)}</span>`)
+    .join('');
+
+  const actions = buildActions(file);
+
+  return `<div class="file-card">
+    <div class="fc-title">${title}</div>
+    ${badges  ? `<div class="fc-badges">${badges}</div>`   : ''}
+    ${topics  ? `<div class="fc-topics">${topics}</div>`   : ''}
+    ${actions ? `<div class="fc-actions">${actions}</div>` : ''}
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// COMPONENT: FILE ACTIONS
+// ═══════════════════════════════════════════════════════════
+function buildActions(file) {
+  const actions   = [];
+  const isRepo    = file.source_type === 'repo-file' && file.path;
+  const fileUrl   = isRepo ? `./${file.path}` : (file.source_url || null);
+
+  if (!fileUrl) return '';
+
+  // View — always available for any real file
+  if (isRepo) {
+    // Use modal for PDFs (same-origin embed)
+    const safeId = file.id.replace(/'/g, "\\'");
+    actions.push(`<button class="act-btn act-view"
+      onclick="openViewer('${safeId}')" aria-label="צפייה">
+      👁 צפייה
+    </button>`);
+  } else {
+    actions.push(`<a class="act-btn act-view" href="${ha(fileUrl)}"
+      target="_blank" rel="noopener noreferrer" aria-label="פתח קישור">↗ פתח</a>`);
+  }
+
+  // Download — only when download_ready=true
+  if (file.download_ready === true && isRepo) {
+    actions.push(`<a class="act-btn act-download"
+      href="${ha(fileUrl)}" download="${ha(file.file_name || 'file')}"
+      aria-label="הורדה">⬇ הורדה</a>`);
+  }
+
+  // Print — only when print_ready=true; opens in new tab (user prints from browser)
+  if (file.print_ready === true && isRepo) {
+    actions.push(`<a class="act-btn act-print"
+      href="${ha(fileUrl)}" target="_blank" rel="noopener noreferrer"
+      title="פתח ולחץ Ctrl+P להדפסה" aria-label="הדפסה">🖨 הדפסה</a>`);
+  }
+
+  return actions.join('');
+}
+
+// ═══════════════════════════════════════════════════════════
+// COMPONENT: EMPTY STATE
+// ═══════════════════════════════════════════════════════════
+function emptyState(msg) {
+  return `<div class="empty-state">
+    <div class="empty-icon">📂</div>
+    <div class="empty-msg">${h(msg || 'אין עדיין קבצים משויכים לקטגוריה הזו.')}</div>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// PDF MODAL
+// ═══════════════════════════════════════════════════════════
+function openViewer(fileId) {
+  const file = S.index.files.find(f => f.id === fileId);
+  if (!file || !file.path) return;
+
+  const url      = `./${file.path}`;
+  const modal    = document.getElementById('pdf-modal');
+  const frame    = document.getElementById('pdf-frame');
+  const titleEl  = document.getElementById('modal-title-text');
+  const dlEl     = document.getElementById('modal-dl');
+  const tabEl    = document.getElementById('modal-tab');
+  const fallback = document.getElementById('pdf-fallback');
+
+  titleEl.textContent = file.title || 'קובץ';
+  dlEl.href           = url;
+  dlEl.setAttribute('download', file.file_name || 'file');
+  tabEl.href          = url;
+
+  fallback.classList.remove('visible');
+  frame.src = url;
+
+  // If the browser blocks the iframe (e.g., X-Frame-Options), show fallback
+  // We use a load timeout as a heuristic — a proper error event is not fired for X-Frame-Options
+  frame.onload = () => { fallback.classList.remove('visible'); };
+
+  modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  const modal = document.getElementById('pdf-modal');
+  const frame = document.getElementById('pdf-frame');
+  modal.style.display = 'none';
+  frame.src = '';
+  document.body.style.overflow = '';
+}
+
+document.getElementById('pdf-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+// Breadcrumb keyboard navigation
+document.getElementById('breadcrumbs').addEventListener('keydown', e => {
+  if (e.key === 'Enter' || e.key === ' ') e.target.click();
+});
+
+// ═══════════════════════════════════════════════════════════
+// ERROR SCREEN
+// ═══════════════════════════════════════════════════════════
+function renderError(err) {
+  const app    = document.getElementById('app');
+  const detail = err && err.message ? err.message : String(err);
+  app.innerHTML = `<div class="error-scr">
+    <div class="error-icon">⚠️</div>
+    <div class="error-title">לא ניתן לטעון את המאגר</div>
+    <div class="error-body">
+      ודא שהדף מוגש משרת ולא ישירות מקובץ (file://).<br>
+      לבדיקה מקומית: הרץ <code>python3 -m http.server 8080</code> בתיקיית הריפו ופתח <code>http://localhost:8080</code>.
+      <div class="error-code">${h(detail)}</div>
+    </div>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// ESCAPING UTILITIES
+// ═══════════════════════════════════════════════════════════
+
+// Safe HTML text content escaping
+function h(str) {
+  return String(str == null ? '' : str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+// Safe HTML attribute escaping (for href / download)
+function ha(str) {
+  return encodeURI(String(str == null ? '' : str))
+    .replace(/"/g, '%22')
+    .replace(/'/g, '%27');
+}
+
+// ═══════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════
+loadData();
+</script>
+</body>
+</html>
