@@ -167,7 +167,7 @@ Repository: `yanivmizrachiy/maagar`
 
 ---
 
-## 11. מבנה תיקיות מומלץ
+## 11. מבנה תיקיות מחייב
 
 ```text
 files/
@@ -191,16 +191,48 @@ files/
       exams/
       uncategorized/
   high-school/
-    3-unit/
-    4-unit/
-    5-unit/
-    unknown/
+    bagrut/
+      3-unit/
+        381/
+        382/
+        other/
+      4-unit/
+        471/
+        472/
+        other/
+      5-unit/
+        571/
+        572/
+        other/
+    regular/
+      3-unit/
+        algebra/
+        geometry/
+        summaries/
+        exams/
+        uncategorized/
+      4-unit/
+        algebra/
+        geometry/
+        summaries/
+        exams/
+        uncategorized/
+      5-unit/
+        algebra/
+        geometry/
+        summaries/
+        exams/
+        uncategorized/
+  unknown/
 metadata/
 review/
   pending_clarification/
+scripts/
+STATE/
 ```
 
 התיקיות הן כלי עזר. הסינון האמיתי לאתר ולשליפה נעשה לפי המטא־דאטה.
+קובץ נשמר פיזית פעם אחת בלבד. שיוך לכמה כיתות/קטגוריות נעשה דרך `metadata/index.json`.
 
 ---
 
@@ -236,3 +268,105 @@ review/
 
 אם יש סתירה בין קובץ ישן לבין `RULES.md`, הקובץ הזה גובר.
 אם יש ספק — לא מנחשים.
+
+---
+
+## 15. דרישות הצגת קבצים באתר העתידי
+
+כל קובץ אמיתי חייב לתמוך ב:
+
+### הטמעה (Embed)
+- אם `can_embed=true`: האתר יציג את הקובץ בתוך מסגרת iframe/viewer ישירות בדף.
+- אם `can_embed=false`: האתר יציג כפתור "לצפייה" שפותח קישור בכרטיסייה חדשה.
+- אם `can_embed=unknown`: האתר ינסה הטמעה ויציג fallback אם נכשל.
+- אין להבטיח הטמעה שהדפדפן לא מאפשר.
+
+### הורדה (Download)
+- אם `download_ready=true`: האתר יציג כפתור "להורדה" בעברית.
+- אם `download_ready=false`: אין להציג כפתור הורדה.
+- קבצים מהריפו (`source_type=repo-file`) תמיד ניתנים להורדה — `download_ready=true`.
+
+### הדפסה (Print)
+- אם `print_ready=true`: האתר יציג כפתור "להדפסה" בעברית.
+- אם `print_ready=false` או לא ידוע: אין להציג כפתור הדפסה.
+- `document_type` של `worksheet`, `summary-work`, `exam`, `printable-task` — ברירת מחדל `print_ready=true` אם הקובץ הוא PDF מהריפו.
+- אסור להציג "הדפסה שקטה" ללא אישור המשתמש.
+
+---
+
+## 16. סוגי משאבים נתמכים
+
+| סוג | תיאור | הטמעה | הורדה | הדפסה |
+|-----|--------|--------|--------|--------|
+| `pdf` | קובץ PDF | ייתכן (iframe/viewer) | כן | כן |
+| `image` | תמונה (jpg, png, svg) | כן (img tag) | כן | ייתכן |
+| `presentation` | מצגת (pptx, Google Slides) | ייתכן (Slides viewer) | כן | לא מובטח |
+| `link` | קישור חיצוני | ייתכן | לא רלוונטי | לא |
+| `digital-task` | משימה מתוקשבת | ייתכן (iframe) | לא בהכרח | לא |
+| `printable-task` | משימה להדפסה | ייתכן | כן | כן |
+| `mixed` | משאב מעורב | תלוי | תלוי | תלוי |
+
+אם סוג חדש נדרש — יש לעדכן `RULES.md` ו־`metadata/taxonomy.json` בו זמנית.
+
+---
+
+## 17. דרישות UX לאתר העתידי
+
+### כלליות
+- עברית RTL בכל הממשק.
+- תמיכה מלאה במחשב ובנייד (responsive design).
+- עיצוב פרימיום בהתאם לצבעים ב־`metadata/site-structure.json`.
+- ניגודיות ברורה בין כפתורי הניווט הראשיים.
+
+### ניווט
+- בכל עמוד פנימי: כפתור "חזרה" ו"בית" ברורים.
+- ניווט לחיצות (breadcrumbs) לפי מסלול: בית > שכבה > קטגוריה.
+- קטגוריות ריקות יוצגו עם הודעה אמיתית בעברית: "אין עדיין קבצים משויכים לקטגוריה הזו."
+- אסור להסתיר קטגוריות ריקות אם הן מוגדרות כחלק מהמבנה.
+
+### כרטיסיות קבצים
+- כל כרטיסייה תציג: כותרת, נושאים, כיתה, סוג.
+- כפתורים: צפייה / הורדה / הדפסה — רק לפי `can_embed`, `download_ready`, `print_ready`.
+- אין כפתורים לפעולות שאינן אפשריות.
+
+### ביצועים
+- הגדלת מאגר לאלפי קבצים לא תאיט את הטעינה הראשונית.
+- ניפוי ופילטרים חייבים לפעול בצד הלקוח על JSON סטטי, ללא קריאות שרת.
+
+---
+
+## 18. הכנה לאתר סטטי גדול (Static Site Generation)
+
+האתר העתידי יוכל להיות:
+- **GitHub Pages** — סטטי לגמרי, קריאת JSON בזמן ריצה.
+- **SSG** (Static Site Generator כמו Next.js, Astro, Hugo) — בניית דפים מ־JSON בזמן build.
+
+דרישות תשתית:
+- `metadata/index.json` חייב להיות תקני (valid JSON), מאומת.
+- `metadata/site-structure.json` קובע את מבנה הניווט — לא ניתן לשנות בלי עדכון RULES.md.
+- כל הנתיבים ב־`path` חייבים להיות נתיבים יחסיים ולהיות תקינים.
+- אין תלות בשרת backend לצורך הצגת קבצים — הכל מ־GitHub raw URLs או CDN.
+- סקריפטים ב־`scripts/` יוכלו לאמת תקינות לפני push.
+
+---
+
+## 19. שדות חובה לרשומות קיימות ועתידיות
+
+כל רשומה באינדקס חייבת לכלול (לפחות `unknown` אם לא ידוע):
+
+| שדה | חובה | ערך ברירת מחדל |
+|-----|------|----------------|
+| `id` | כן | — |
+| `title` | כן | — |
+| `school_stage` | כן | `"unknown"` |
+| `grade` | כן | `"unknown"` |
+| `grades` | כן | `["unknown"]` |
+| `primary_category` | כן | `"unknown"` |
+| `topics` | כן | `["unknown"]` |
+| `document_type` | כן | `"unknown"` |
+| `source_type` | כן | `"unknown"` |
+| `can_embed` | כן | `"unknown"` |
+| `print_ready` | כן | `"unknown"` |
+| `download_ready` | כן | `"unknown"` |
+| `author` | כן | `"unknown"` |
+| `year` | כן | `"unknown"` |
