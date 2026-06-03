@@ -719,6 +719,30 @@
 
     .pdf-frame { width: 100%; height: 100%; border: none; display: block; }
 
+    /* Loading overlay — shown while iframe is loading */
+    .pdf-loading {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      background: #0A0E18;
+      z-index: 2;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .pdf-loading.hidden { opacity: 0; }
+    .pdf-loading-spinner {
+      width: 32px; height: 32px;
+      border: 2px solid rgba(99,102,241,0.15);
+      border-top-color: rgba(99,102,241,0.7);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    .pdf-loading-text { font-size: 0.78rem; color: var(--text-dim); }
+
     .pdf-fallback {
       display: none;
       position: absolute;
@@ -730,10 +754,18 @@
       background: var(--surface2);
       padding: 2rem;
       text-align: center;
+      z-index: 3;
     }
     .pdf-fallback.visible { display: flex; }
     .pdf-fallback-icon { font-size: 2.5rem; opacity: 0.5; }
     .pdf-fallback p { color: var(--text-muted); font-size: 0.88rem; line-height: 1.7; max-width: 360px; }
+
+    .pdf-fallback-actions {
+      display: flex;
+      gap: 0.65rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
 
     .modal-close {
       width: 32px;
@@ -950,9 +982,16 @@
     </div>
     <div class="modal-body">
       <iframe id="pdf-frame" class="pdf-frame" title="צפייה בקובץ"></iframe>
+      <div class="pdf-loading" id="pdf-loading">
+        <div class="pdf-loading-spinner"></div>
+        <span class="pdf-loading-text">טוען קובץ...</span>
+      </div>
       <div class="pdf-fallback" id="pdf-fallback">
         <div class="pdf-fallback-icon">📄</div>
-        <p>לא ניתן להציג את הקובץ ישירות בדפדפן זה.<br>השתמש בכפתורים למעלה לפתיחה בכרטיסייה חדשה או להורדה.</p>
+        <p>לא ניתן להציג את הקובץ ישירות בדפדפן זה.</p>
+        <div class="pdf-fallback-actions" id="pdf-fallback-actions">
+          <!-- buttons injected by JS -->
+        </div>
       </div>
     </div>
   </div>
@@ -1492,24 +1531,58 @@ function openViewer(fileId) {
   const dlEl     = document.getElementById('modal-dl');
   const tabEl    = document.getElementById('modal-tab');
   const fallback = document.getElementById('pdf-fallback');
+  const loading  = document.getElementById('pdf-loading');
+  const fbActs   = document.getElementById('pdf-fallback-actions');
 
   titleEl.textContent = file.title || 'קובץ';
   dlEl.href           = url;
   dlEl.setAttribute('download', file.file_name || 'file');
   tabEl.href          = url;
 
+  // Populate fallback action buttons
+  fbActs.innerHTML = [
+    `<a class="act-btn act-view" href="${ha(url)}" target="_blank" rel="noopener noreferrer">↗ פתח בכרטיסייה</a>`,
+    `<a class="act-btn act-download" href="${ha(url)}" download="${ha(file.file_name||'file')}">⬇ הורדה</a>`
+  ].join('');
+
+  // Show loading, hide fallback, clear previous src
   fallback.classList.remove('visible');
-  frame.src = url;
-  frame.onload = () => { fallback.classList.remove('visible'); };
+  loading.classList.remove('hidden');
+  frame.src = '';
+
+  // Small delay before setting src so loading overlay is painted
+  requestAnimationFrame(() => {
+    frame.src = url;
+  });
+
+  let loadTimer;
+  frame.onload = () => {
+    // Hide loading overlay once iframe has loaded
+    loading.classList.add('hidden');
+    clearTimeout(loadTimer);
+    // Remove hidden class after fade-out so it doesn't block clicks
+    setTimeout(() => { loading.style.display = 'none'; }, 350);
+  };
+
+  // If iframe never fires onload (X-Frame-Options block), show fallback after 10s
+  loadTimer = setTimeout(() => {
+    if (!loading.classList.contains('hidden')) {
+      loading.classList.add('hidden');
+      fallback.classList.add('visible');
+    }
+  }, 10000);
 
   modal.style.display = 'flex';
   document.body.style.overflow = 'hidden';
 }
 
 function closeModal() {
-  const modal = document.getElementById('pdf-modal');
-  const frame = document.getElementById('pdf-frame');
+  const modal   = document.getElementById('pdf-modal');
+  const frame   = document.getElementById('pdf-frame');
+  const loading = document.getElementById('pdf-loading');
   modal.style.display = 'none';
+  loading.style.display = '';
+  loading.classList.remove('hidden');
   frame.src = '';
   document.body.style.overflow = '';
 }
