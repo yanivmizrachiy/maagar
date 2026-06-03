@@ -3,7 +3,7 @@
 
 **ריפו:** `yanivmizrachiy/maagar`
 **תאריך עדכון:** 2026-06-03
-**ענף ראשי:** `main` (SHA: `7380711` — PR #9 + cleanup מוזגו)
+**ענף ראשי:** `main` (SHA: `4ff5ce4` — PR #11 מוזג)
 
 ---
 
@@ -15,16 +15,17 @@
 | נראות | ציבורי (public) |
 | שפה | עברית RTL |
 | GitHub Pages | **פעיל** ✅ |
-| Last Pages Deploy | PR #9 → SHA `7380711` |
+| Last Pages Deploy | PR #11 → SHA `4ff5ce4` |
 | אתר חי | `https://yanivmizrachiy.github.io/maagar/` |
 | קבצים אמיתיים | 4 PDF |
 | רשומות באינדקס | 4 |
 | Backend | אין — הכל סטטי |
-| עיצוב | Premium redesign active (PR #4) |
+| עיצוב | Premium redesign v2 (PR #11) ✅ |
 | חיפוש | חיפוש חי client-side + פילטרים (PR #7) ✅ |
 | כלי ייבוא | add-file.py + batch-add.py + _ingest.py (PR #9) ✅ |
 | פרוטוקול handoff | docs/GPT_TO_CLAUDE_FILE_HANDOFF.md (PR #10) ✅ |
-| תיעוד | RULES.md 24 סעיפים + AGENTS.md + docs/ מסונכרנים |
+| תיעוד | RULES.md 25 סעיפים + AGENTS.md + 6 docs/ מסונכרנים |
+| validate-all.sh | 32 בדיקות (היה 26) |
 
 ---
 
@@ -41,7 +42,9 @@
 | #7 | feat: client-side search + docs/ADDING_REAL_FILES.md | ✅ merged |
 | #8 | chore: sync RULES.md requirements, fix HS folder structure | ✅ merged |
 | #9 | feat(ingestion): batch-add.py, _ingest.py, hash integrity, improved add-file.py | ✅ merged |
-| #10 | docs: GPT→Claude handoff protocol, first-import checklist, AGENTS sync | 🔄 in progress |
+| #10 | docs: GPT→Claude handoff protocol, first-import checklist, AGENTS sync | ✅ merged |
+| #11 | feat: docs, maintainability, visual design upgrade | ✅ merged |
+| #12 | feat: continuity system, CONTINUITY_GUIDE.md, startup protocol | 🔄 in progress |
 
 ---
 
@@ -67,8 +70,13 @@ files/
 docs/
   ADDING_REAL_FILES.md        ← מדריך + First Import Checklist (7 שלבים)
   GPT_TO_CLAUDE_FILE_HANDOFF.md ← פרוטוקול handoff מ-ChatGPT לקלוד
+  SCALE_READINESS.md          ← מדיניות גדילה + GitHub Pages limits
+  ANALYTICS_OPTIONS.md        ← אפשרויות tracking (ממתין לאישור יניב)
+  REQUIREMENTS_GAP_AUDIT.md   ← ביקורת פערים
+  EDITING_GUIDE.md            ← מדריך עריכה בעברית
+  CONTINUITY_GUIDE.md         ← מדריך המשכיות + startup protocol
 scripts/
-  validate-all.sh             ← 26 בדיקות: JSON, content_hash, שדות, taxonomy, contamination, key files, nav
+  validate-all.sh             ← 33 בדיקות: JSON, content_hash, שדות, taxonomy, contamination, key files, nav
   validate-index.sh           ← אימות אינדקס בלבד
   test-logic.py               ← בדיקת כיסוי ניווט: כל הקבצים נגישים
   serve-local.sh              ← שרת פיתוח מקומי
@@ -114,11 +122,11 @@ STATE/
 
 ---
 
-## F. תוצאות אימות מלאות
+## F. תוצאות אימות מלאות (POST PR #11)
 
 ```
 bash scripts/validate-all.sh
-→ 24/24 PASSED, 0 FAILED
+→ 32/32 PASSED, 0 FAILED  (היה 26 — נוספו 6 בדיקות docs)
 
 python3 scripts/test-logic.py
 → ALL LOGIC CHECKS PASSED
@@ -130,7 +138,7 @@ node scripts/qa-browser.js
 
 ---
 
-## G. תכונות האתר הפעיל (POST PR #7)
+## G. תכונות האתר הפעיל (POST PR #11)
 
 | תכונה | מצב |
 |-------|-----|
@@ -163,6 +171,14 @@ node scripts/qa-browser.js
 | validate-all.sh — content_hash integrity check | ✅ |
 | docs/ADDING_REAL_FILES.md — מדריך + first-import checklist | ✅ |
 | docs/GPT_TO_CLAUDE_FILE_HANDOFF.md — פרוטוקול handoff | ✅ |
+| docs/SCALE_READINESS.md — מדיניות גדילה + GitHub Pages limits | ✅ |
+| docs/ANALYTICS_OPTIONS.md — אפשרויות tracking (ממתין לאישור) | ✅ |
+| docs/REQUIREMENTS_GAP_AUDIT.md — ביקורת פערים | ✅ |
+| docs/EDITING_GUIDE.md — מדריך עריכה בעברית | ✅ |
+| docs/CONTINUITY_GUIDE.md — מדריך המשכיות + startup protocol | ✅ |
+| RULES.md §25 — כלל תחזוקה ועיצוב נקי | ✅ |
+| validate-all.sh — 26 → 32 → 33 בדיקות | ✅ |
+| עיצוב ויזואלי v2 — unit cards grid, type strip 4px, hover glow | ✅ |
 
 ---
 
