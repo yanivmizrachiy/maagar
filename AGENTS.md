@@ -173,6 +173,14 @@
 
 לא להמציא, לא להוסיף דמו, לא לסמן כקיים מה שלא קיים, לא לשכפל קבצים, ולא לבצע שינוי שסותר את `RULES.md`.
 
+### כלל תחזוקה (RULES.md §25):
+- עדיף שינוי תחזוקתי על פני טלאי מהיר
+- צבעים חדשים → `GRADE_IDENTITY` / `CAT_IDENTITY` / `UNIT_IDENTITY` / `DOCTYPE_STRIP`
+- UI vars → `:root` CSS בלבד
+- אל תשכפל לוגיקה
+- כל שינוי → `validate-all.sh` לפני push
+- מדריך עריכה: `docs/EDITING_GUIDE.md`
+
 ---
 
 ## 10. תהליך הוספת קובץ אמיתי (New File Workflow)
