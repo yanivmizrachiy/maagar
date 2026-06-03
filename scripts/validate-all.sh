@@ -360,6 +360,7 @@ KEY_FILES=(
   "docs/ANALYTICS_OPTIONS.md"
   "docs/REQUIREMENTS_GAP_AUDIT.md"
   "docs/EDITING_GUIDE.md"
+  "docs/CONTINUITY_GUIDE.md"
 )
 
 for f in "${KEY_FILES[@]}"; do

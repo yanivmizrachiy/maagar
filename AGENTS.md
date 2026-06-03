@@ -2,17 +2,37 @@
 
 קובץ זה מיועד ל־GPT / Codex / AI / סוכן אוטומטי שעובד עם הריפו `yanivmizrachiy/maagar`.
 
-## 1. לפני כל פעולה
+## 1. לפני כל פעולה — Startup Protocol חובה
 
-חובה לקרוא קודם:
+**כל session חדש חייב להתחיל בסדר הבא:**
 
-1. `RULES.md`
-2. `metadata/index.json`
-3. `metadata/taxonomy.json`
-4. `metadata/authors.json`
-5. `metadata/site-structure.json` אם קיים
+### שלב א׳ — קריאת קבצי מפתח (חובה):
+1. `RULES.md` — מקור האמת המחייב
+2. `AGENTS.md` — מסמך זה
+3. `STATE/full-repo-truth-report.md` — מצב עדכני
+4. `docs/CONTINUITY_GUIDE.md` — מדריך המשכיות
+5. `metadata/index.json` — קבצים קיימים
+6. `metadata/site-structure.json` — מבנה ניווט
+7. `metadata/taxonomy.json` — סיווגים חוקיים
 
-`RULES.md` הוא מקור האמת המחייב.
+### שלב ב׳ — פקודות חובה:
+```bash
+git remote -v
+git branch --show-current
+git status
+bash scripts/validate-all.sh
+python3 scripts/test-logic.py
+```
+
+### שלב ג׳ — בדיקת UI (כשרלוונטי):
+```bash
+node scripts/qa-browser.js
+```
+
+### חוק זהב:
+עובדים **רק** על `yanivmizrachiy/maagar`.
+**אין לגעת ב-Gmail / Calendar / כל שירות אחר.**
+
 אם יש סתירה בין קובץ ישן לבין `RULES.md`, פועלים לפי `RULES.md`.
 
 ---
