@@ -3,7 +3,7 @@
 
 **ריפו:** `yanivmizrachiy/maagar`
 **תאריך עדכון:** 2026-06-03
-**ענף ראשי:** `main` (SHA: `cde26b4`)
+**ענף ראשי:** `main` (SHA: `66b4ee7` → PR #7 בתהליך)
 
 ---
 
@@ -15,12 +15,13 @@
 | נראות | ציבורי (public) |
 | שפה | עברית RTL |
 | GitHub Pages | **פעיל** ✅ |
-| Last Pages Deploy | PR #4 → SHA `cde26b4`, `conclusion: success` |
+| Last Pages Deploy | PR #6 → SHA `66b4ee7`, `conclusion: success` |
 | אתר חי | `https://yanivmizrachiy.github.io/maagar/` |
 | קבצים אמיתיים | 4 PDF |
 | רשומות באינדקס | 4 |
 | Backend | אין — הכל סטטי |
 | עיצוב | Premium redesign active (PR #4) |
+| חיפוש | חיפוש חי client-side + פילטרים (PR #7) |
 
 ---
 
@@ -32,6 +33,9 @@
 | #2 | fix+feat: QA pass — uncategorized visibility, logic tests, accessibility | ✅ merged |
 | #3 | feat: UI improvements + LF line endings (.gitattributes) | ✅ merged |
 | #4 | feat(design): premium UI redesign | ✅ merged |
+| #5 | feat: mobile polish + STATE update | ✅ merged |
+| #6 | feat: Playwright QA + add-file.py + can_embed verified | ✅ merged |
+| #7 | feat: client-side search + docs/ADDING_REAL_FILES.md | 🔄 in progress |
 
 ---
 
@@ -54,11 +58,15 @@ files/
   middle-school/grade-8/summaries/      ← 1 PDF (דפי סיכום) — 439KB
   middle-school/grade-9/geometry/       ← 1 PDF (ריכוז שאלות דלתון) — 2.9KB
   high-school/                          ← ריק (.gitkeep)
+docs/
+  ADDING_REAL_FILES.md        ← מדריך מלא להוספת קבצים אמיתיים
 scripts/
-  validate-all.sh             ← 21 בדיקות: JSON, שדות, taxonomy, site-structure, contamination, logic
+  validate-all.sh             ← 24 בדיקות: JSON, שדות, taxonomy, site-structure, contamination, logic
   validate-index.sh           ← אימות אינדקס בלבד
   test-logic.py               ← בדיקת כיסוי ניווט: כל הקבצים נגישים
   serve-local.sh              ← שרת פיתוח מקומי
+  add-file.py                 ← CLI לקליטת קבצים חדשים (hash, dup check, copy, index update)
+  qa-browser.js               ← Playwright QA suite (53 בדיקות, desktop + mobile)
 STATE/
   full-repo-truth-report.md   ← המסמך הזה
 ```
@@ -69,12 +77,12 @@ STATE/
 
 | כיתה | קטגוריה | כותרת | גודל | download | print | can_embed |
 |------|---------|-------|------|----------|-------|-----------|
-| 7 | uncategorized → "חומרים שונים" | מאגר ז | 15.6MB | ✅ | ✅ | **unknown** |
-| 8 | algebra | יחס-פרופ-קנה מידה | 375KB | ✅ | ✅ | **unknown** |
-| 8 | summaries | כיתה ח - יחס פרופורציה | 439KB | ✅ | ✅ | **unknown** |
-| 9 | geometry | ריכוז שאלות דלתון | 2.9KB | ✅ | ✅ | **unknown** |
+| 7 | uncategorized → "חומרים שונים" | מאגר ז | 15.6MB | ✅ | ✅ | ✅ **true** (Playwright verified) |
+| 8 | algebra | יחס-פרופ-קנה מידה | 375KB | ✅ | ✅ | ✅ **true** (Playwright verified) |
+| 8 | summaries | כיתה ח - יחס פרופורציה | 439KB | ✅ | ✅ | ✅ **true** (Playwright verified) |
+| 9 | geometry | ריכוז שאלות דלתון | 2.9KB | ✅ | ✅ | ✅ **true** (Playwright verified) |
 
-**הערה על `can_embed`:** PDFs הם same-origin ב-GitHub Pages — iframe אמור לעבוד. לא נבדק בדפדפן אמיתי עדיין. יש fallback מלא בממשק.
+**`can_embed` status:** כל 4 ה-PDF נבדקו בהצלחה עם Playwright (iframe נטען ללא fallback — PR #6).
 
 **הערה על grade-9 PDF:** 2.9KB — קובץ PDF תקין (header מאומת), אך קטן מאוד. ייתכן שהוא דף בודד פשוט.
 
