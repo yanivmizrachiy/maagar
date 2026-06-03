@@ -3,7 +3,7 @@
 
 **ריפו:** `yanivmizrachiy/maagar`
 **תאריך עדכון:** 2026-06-03
-**ענף ראשי:** `main` (SHA: `66b4ee7` → PR #7 בתהליך)
+**ענף ראשי:** `main` (SHA: `2806e65` — PR #7 מוזג)
 
 ---
 
@@ -21,7 +21,8 @@
 | רשומות באינדקס | 4 |
 | Backend | אין — הכל סטטי |
 | עיצוב | Premium redesign active (PR #4) |
-| חיפוש | חיפוש חי client-side + פילטרים (PR #7) |
+| חיפוש | חיפוש חי client-side + פילטרים (PR #7) ✅ |
+| תיעוד | RULES.md סעיפים 20-24 חדשים (PR #8) |
 
 ---
 
@@ -35,7 +36,8 @@
 | #4 | feat(design): premium UI redesign | ✅ merged |
 | #5 | feat: mobile polish + STATE update | ✅ merged |
 | #6 | feat: Playwright QA + add-file.py + can_embed verified | ✅ merged |
-| #7 | feat: client-side search + docs/ADDING_REAL_FILES.md | 🔄 in progress |
+| #7 | feat: client-side search + docs/ADDING_REAL_FILES.md | ✅ merged |
+| #8 | chore: sync RULES.md requirements, fix HS folder structure | 🔄 in progress |
 
 ---
 
@@ -108,16 +110,19 @@ STATE/
 
 ```
 bash scripts/validate-all.sh
-→ 21/21 PASSED, 0 FAILED
+→ 24/24 PASSED, 0 FAILED
 
 python3 scripts/test-logic.py
 → ALL LOGIC CHECKS PASSED
 → Files total: 4, Files reached: 4, Errors: 0
+
+node scripts/qa-browser.js
+→ 53/53 PASSED (desktop + mobile)
 ```
 
 ---
 
-## G. תכונות האתר הפעיל (POST PR #4)
+## G. תכונות האתר הפעיל (POST PR #7)
 
 | תכונה | מצב |
 |-------|-----|
@@ -141,6 +146,11 @@ python3 scripts/test-logic.py
 | גרמר עברי נכון (קובץ אחד / X קבצים) | ✅ |
 | LF line endings אכופים דרך .gitattributes | ✅ |
 | ללא תוכן דמו | ✅ |
+| חיפוש חי עם פילטר-chips (grade + doctype) | ✅ |
+| PDF embed + loading state + fallback | ✅ |
+| מודאל PDF מאומת (Playwright) | ✅ |
+| add-file.py — CLI לקליטת קבצים | ✅ |
+| docs/ADDING_REAL_FILES.md — מדריך מלא | ✅ |
 
 ---
 
@@ -148,11 +158,11 @@ python3 scripts/test-logic.py
 
 | פריט | מצב | עדיפות |
 |------|-----|--------|
-| בדיקת PDF iframe בדפדפן אמיתי | ❌ | **גבוהה** — יניב צריך לבדוק |
-| `can_embed` עדכון לפי בדיקה אמיתית | ❌ | גבוהה — תלוי בבדיקת browser |
-| `year` + `author` אמיתיים ל-4 קבצים | ❌ | בינונית |
-| תוכן קטגוריות ריקות | ❌ | עתידי — דורש קבצים אמיתיים |
+| קבצים אמיתיים — הרחבה (כל שכבה/קטגוריה) | ❌ | **גבוהה ביותר** — זה הפרויקט האמיתי |
+| קבצים לחטיבה עליונה (3/4/5 יחידות) | ❌ | **גבוהה** |
+| `year` + `author` אמיתיים ל-4 קבצים קיימים | ❌ | בינונית |
 | metadata/authors.json עם מחברים אמיתיים | ❌ | נמוכה |
+| סינון מורחב / מיון / ייצוא | ❌ | עתידי |
 
 ---
 
