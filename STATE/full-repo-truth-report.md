@@ -3,7 +3,7 @@
 
 **ריפו:** `yanivmizrachiy/maagar`
 **תאריך עדכון:** 2026-06-03
-**ענף ראשי:** `main` (SHA: `2806e65` — PR #7 מוזג)
+**ענף ראשי:** `main` (SHA: `7380711` — PR #9 + cleanup מוזגו)
 
 ---
 
@@ -15,14 +15,16 @@
 | נראות | ציבורי (public) |
 | שפה | עברית RTL |
 | GitHub Pages | **פעיל** ✅ |
-| Last Pages Deploy | PR #6 → SHA `66b4ee7`, `conclusion: success` |
+| Last Pages Deploy | PR #9 → SHA `7380711` |
 | אתר חי | `https://yanivmizrachiy.github.io/maagar/` |
 | קבצים אמיתיים | 4 PDF |
 | רשומות באינדקס | 4 |
 | Backend | אין — הכל סטטי |
 | עיצוב | Premium redesign active (PR #4) |
 | חיפוש | חיפוש חי client-side + פילטרים (PR #7) ✅ |
-| תיעוד | RULES.md סעיפים 20-24 חדשים (PR #8) |
+| כלי ייבוא | add-file.py + batch-add.py + _ingest.py (PR #9) ✅ |
+| פרוטוקול handoff | docs/GPT_TO_CLAUDE_FILE_HANDOFF.md (PR #10) ✅ |
+| תיעוד | RULES.md 24 סעיפים + AGENTS.md + docs/ מסונכרנים |
 
 ---
 
@@ -37,7 +39,9 @@
 | #5 | feat: mobile polish + STATE update | ✅ merged |
 | #6 | feat: Playwright QA + add-file.py + can_embed verified | ✅ merged |
 | #7 | feat: client-side search + docs/ADDING_REAL_FILES.md | ✅ merged |
-| #8 | chore: sync RULES.md requirements, fix HS folder structure | 🔄 in progress |
+| #8 | chore: sync RULES.md requirements, fix HS folder structure | ✅ merged |
+| #9 | feat(ingestion): batch-add.py, _ingest.py, hash integrity, improved add-file.py | ✅ merged |
+| #10 | docs: GPT→Claude handoff protocol, first-import checklist, AGENTS sync | 🔄 in progress |
 
 ---
 
@@ -61,13 +65,17 @@ files/
   middle-school/grade-9/geometry/       ← 1 PDF (ריכוז שאלות דלתון) — 2.9KB
   high-school/                          ← ריק (.gitkeep)
 docs/
-  ADDING_REAL_FILES.md        ← מדריך מלא להוספת קבצים אמיתיים
+  ADDING_REAL_FILES.md        ← מדריך + First Import Checklist (7 שלבים)
+  GPT_TO_CLAUDE_FILE_HANDOFF.md ← פרוטוקול handoff מ-ChatGPT לקלוד
 scripts/
-  validate-all.sh             ← 24 בדיקות: JSON, שדות, taxonomy, site-structure, contamination, logic
+  validate-all.sh             ← 26 בדיקות: JSON, content_hash, שדות, taxonomy, contamination, key files, nav
   validate-index.sh           ← אימות אינדקס בלבד
   test-logic.py               ← בדיקת כיסוי ניווט: כל הקבצים נגישים
   serve-local.sh              ← שרת פיתוח מקומי
-  add-file.py                 ← CLI לקליטת קבצים חדשים (hash, dup check, copy, index update)
+  add-file.py                 ← CLI לקובץ בודד (hash, dup-check, --yes, --can-embed, --dry-run)
+  batch-add.py                ← CLI לבאץ׳: --folder או --manifest CSV
+  _ingest.py                  ← מודול שיתופי (sha1, slugify, build_record, run_checks)
+  manifest-example.csv        ← תבנית CSV לייבוא batch
   qa-browser.js               ← Playwright QA suite (53 בדיקות, desktop + mobile)
 STATE/
   full-repo-truth-report.md   ← המסמך הזה
@@ -149,8 +157,12 @@ node scripts/qa-browser.js
 | חיפוש חי עם פילטר-chips (grade + doctype) | ✅ |
 | PDF embed + loading state + fallback | ✅ |
 | מודאל PDF מאומת (Playwright) | ✅ |
-| add-file.py — CLI לקליטת קבצים | ✅ |
-| docs/ADDING_REAL_FILES.md — מדריך מלא | ✅ |
+| add-file.py — CLI לקובץ בודד | ✅ |
+| batch-add.py — CLI לבאץ׳ (folder + CSV manifest) | ✅ |
+| _ingest.py — מודול שיתופי | ✅ |
+| validate-all.sh — content_hash integrity check | ✅ |
+| docs/ADDING_REAL_FILES.md — מדריך + first-import checklist | ✅ |
+| docs/GPT_TO_CLAUDE_FILE_HANDOFF.md — פרוטוקול handoff | ✅ |
 
 ---
 
@@ -158,11 +170,14 @@ node scripts/qa-browser.js
 
 | פריט | מצב | עדיפות |
 |------|-----|--------|
-| קבצים אמיתיים — הרחבה (כל שכבה/קטגוריה) | ❌ | **גבוהה ביותר** — זה הפרויקט האמיתי |
-| קבצים לחטיבה עליונה (3/4/5 יחידות) | ❌ | **גבוהה** |
-| `year` + `author` אמיתיים ל-4 קבצים קיימים | ❌ | בינונית |
-| metadata/authors.json עם מחברים אמיתיים | ❌ | נמוכה |
+| **קבצים אמיתיים** — הרחבה (כל שכבה/קטגוריה) | ⏳ ממתין ליניב | **גבוהה ביותר** |
+| קבצים לחטיבה עליונה (3/4/5 יחידות) | ⏳ ממתין ליניב | **גבוהה** |
+| `year` + `author` אמיתיים ל-4 קבצים קיימים | ⏳ ממתין ליניב | בינונית |
+| metadata/authors.json עם מחברים אמיתיים | ⏳ ממתין ליניב | נמוכה |
 | סינון מורחב / מיון / ייצוא | ❌ | עתידי |
+
+**הכלים מוכנים. הפעולה הבאה היא של יניב:** לספק קבצים אמיתיים לייבוא.
+ראה: `docs/ADDING_REAL_FILES.md` → First Import Checklist.
 
 ---
 

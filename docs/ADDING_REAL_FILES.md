@@ -2,6 +2,50 @@
 
 מדריך מלא להוספת קבצי לימוד חדשים לריפוזיטורי `yanivmizrachiy/maagar`.
 
+> **חשוב:** לא מוסיפים קבצים עד שיניב מספק קבצים אמיתיים.
+> אין קבצי דמו. אין מטאדאטה מומצאת. תמיד מריצים dry-run לפני ייבוא אמיתי.
+>
+> לפרוטוקול הגשת קבצים מ-ChatGPT לקלוד, ראה: [`docs/GPT_TO_CLAUDE_FILE_HANDOFF.md`](GPT_TO_CLAUDE_FILE_HANDOFF.md)
+
+---
+
+## רשימת תיוג — ייבוא ראשון (First Import Checklist)
+
+כשיניב מוכן להתחיל להוסיף קבצים אמיתיים:
+
+- [ ] **שלב 1 — אסוף קבצים אמיתיים** בתיקייה על המחשב
+- [ ] **שלב 2 — החלט לכל קובץ:** כיתה / קטגוריה / סוג מסמך
+  - כיתה: `7` / `8` / `9` / `3-unit` / `4-unit` / `5-unit`
+  - קטגוריה: `algebra` / `geometry` / `summaries` / `exams` / `uncategorized`
+  - סוג: `worksheet` / `exam` / `summary-work` / `link` / וכו׳
+  - (אפשר לבקש מ-ChatGPT לעזור בסיווג — ראה `docs/GPT_TO_CLAUDE_FILE_HANDOFF.md`)
+- [ ] **שלב 3 — הרץ dry-run** (אחד לכמה קבצים):
+  ```bash
+  python3 scripts/add-file.py --file /path/to/file.pdf \
+    --grade 8 --category algebra --doctype worksheet --dry-run
+  ```
+  או לתיקייה שלמה:
+  ```bash
+  python3 scripts/batch-add.py --folder /path/to/folder/ \
+    --grade 8 --category algebra --doctype worksheet --dry-run
+  ```
+- [ ] **שלב 4 — בדוק את התצוגה המקדימה** — ודא שהנתיב, ה-ID והמטאדאטה נכונים
+- [ ] **שלב 5 — הרץ ייבוא אמיתי** (הסר `--dry-run`):
+  ```bash
+  python3 scripts/add-file.py --file /path/to/file.pdf \
+    --grade 8 --category algebra --doctype worksheet --yes
+  ```
+- [ ] **שלב 6 — בדוק שהבדיקות עברו** (הסקריפט מריץ אוטומטית, אבל אפשר ידנית):
+  ```bash
+  bash scripts/validate-all.sh && python3 scripts/test-logic.py
+  ```
+- [ ] **שלב 7 — commit + push:**
+  ```bash
+  git add files/ metadata/index.json
+  git commit -m "feat(files): add <כותרת>"
+  git push
+  ```
+
 ---
 
 ## עקרונות יסוד
