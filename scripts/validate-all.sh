@@ -354,6 +354,12 @@ KEY_FILES=(
   "scripts/batch-add.py"
   "scripts/_ingest.py"
   "scripts/qa-browser.js"
+  "docs/ADDING_REAL_FILES.md"
+  "docs/GPT_TO_CLAUDE_FILE_HANDOFF.md"
+  "docs/SCALE_READINESS.md"
+  "docs/ANALYTICS_OPTIONS.md"
+  "docs/REQUIREMENTS_GAP_AUDIT.md"
+  "docs/EDITING_GUIDE.md"
 )
 
 for f in "${KEY_FILES[@]}"; do
