@@ -2,166 +2,162 @@
 # Full Repository Truth Report
 
 **ריפו:** `yanivmizrachiy/maagar`
-**תאריך הדוח:** 2026-06-03
-**ענף נוכחי:** `claude/wonderful-meitner-XCkuz`
+**תאריך עדכון:** 2026-06-03
+**ענף ראשי:** `main` (SHA: `d87c80a` + commits in this session)
 
 ---
 
-## A. סיכום הריפו הפעיל
+## A. סיכום מצב נוכחי
 
 | פריט | ערך |
 |------|-----|
 | ריפו | `yanivmizrachiy/maagar` |
+| נראות | ציבורי (public) |
 | שפה | עברית RTL |
-| מטרה | מאגר קבצי מתמטיקה + בסיס לאתר עתידי גדול |
-| ענף ראשי | `main` |
-| ענף פיתוח נוכחי | `claude/wonderful-meitner-XCkuz` |
-| GitHub Pages | לא פעיל עדיין |
-| Backend | אין — הכל סטטי |
+| GitHub Pages | **פעיל** ✅ |
+| Last Pages Deploy | SHA `d87c80a`, `conclusion: success` |
+| אתר חי | `https://yanivmizrachiy.github.io/maagar/` |
 | קבצים אמיתיים | 4 PDF |
 | רשומות באינדקס | 4 |
+| Backend | אין — הכל סטטי |
 
 ---
 
-## B. מבנה הקבצים הפעיל
+## B. קבצי מפתח
 
 ```
+index.html                    ← אתר סטטי עברי RTL (חי על GitHub Pages)
+RULES.md                      ← מקור האמת המחייב
+AGENTS.md                     ← הוראות עבודה + workflow הוספת קבצים
+README.md                     ← תיאור הריפו
 metadata/
-  index.json        ← אינדקס 4 פריטים
-  taxonomy.json     ← מילון סיווגים
-  site-structure.json ← מבנה ניווט ועיצוב
-  authors.json      ← מילון מחברים (כרגע: unknown בלבד)
-
+  index.json                  ← אינדקס 4 פריטים אמיתיים
+  taxonomy.json               ← מילון סיווגים
+  site-structure.json         ← מבנה ניווט ועיצוב
+  authors.json                ← מילון מחברים
 files/
-  middle-school/
-    grade-7/uncategorized/   ← 1 PDF (מאגר ז׳)
-    grade-8/algebra/         ← 1 PDF (יחס/פרופורציה/קנה מידה)
-    grade-8/summaries/       ← 1 PDF (דפי סיכום יחס/פרופורציה)
-    grade-9/geometry/        ← 1 PDF (ריכוז שאלות דלתון)
-  high-school/               ← ריק (.gitkeep)
-
+  middle-school/grade-7/uncategorized/  ← 1 PDF (מאגר ז׳)
+  middle-school/grade-8/algebra/        ← 1 PDF (יחס/פרופורציה/קנה מידה)
+  middle-school/grade-8/summaries/      ← 1 PDF (דפי סיכום)
+  middle-school/grade-9/geometry/       ← 1 PDF (ריכוז שאלות דלתון)
+  high-school/                          ← ריק (.gitkeep)
 scripts/
-  validate-index.sh          ← סקריפט אימות מטא-דאטה וקבצים
-
+  validate-all.sh             ← 21 בדיקות: JSON, שדות, taxonomy, site-structure, contamination, logic
+  validate-index.sh           ← אימות אינדקס בלבד
+  test-logic.py               ← בדיקת כיסוי ניווט: כל הקבצים נגישים
+  serve-local.sh              ← שרת פיתוח מקומי
 STATE/
-  full-repo-truth-report.md  ← המסמך הזה
-
-RULES.md                     ← מקור האמת המחייב
-AGENTS.md                    ← הוראות ל-AI
-README.md                    ← תיאור הריפו
+  full-repo-truth-report.md   ← המסמך הזה
 ```
 
 ---
 
 ## C. 4 הקבצים האמיתיים — מצב מפורט
 
-| מזהה | כיתה | קטגוריה | document_type | download | print | can_embed |
-|------|------|---------|---------------|----------|-------|-----------|
-| `7__uncategorized__maagar-z__unknown__001` | 7 | uncategorized | worksheet | ✅ true | ✅ true | unknown |
-| `8__algebra__ratio-proportion-scale...` | 8 | algebra | worksheet | ✅ true | ✅ true | unknown |
-| `8__summaries__grade-8-ratio-proportion...` | 8 | summaries | summary-work | ✅ true | ✅ true | unknown |
-| `grade-9__geometry__deltoid__worksheet...` | 9 | geometry | worksheet | ✅ true | ✅ true | unknown |
+| כיתה | קטגוריה | כותרת | download | print | can_embed |
+|------|---------|-------|----------|-------|-----------|
+| 7 | uncategorized → "חומרים שונים" | מאגר ז | ✅ | ✅ | unknown |
+| 8 | algebra | יחס-פרופ-קנה מידה... | ✅ | ✅ | unknown |
+| 8 | summaries | כיתה ח - יחס פרופורציה... | ✅ | ✅ | unknown |
+| 9 | geometry | ריכוז שאלות דלתון | ✅ | ✅ | unknown |
 
-**הערה על `can_embed`:** כל הקבצים הם PDF מהריפו. הטמעה ב-iframe אפשרית טכנית (דרך GitHub raw URL או Google Docs viewer), אך לא נבדקה עדיין. סומן `unknown` עד לבדיקה אמיתית.
-
----
-
-## D. מבנה אתר עתידי — כפי שמוגדר
-
-### עמוד ראשי
-| כפתור | צבע | מצב |
-|-------|-----|-----|
-| שכבת ז׳ | Emerald `#064E3B → #10B981` | קיים בניווט, 1 קובץ |
-| שכבת ח׳ | Blue `#1E3A8A → #38BDF8` | קיים בניווט, 2 קבצים |
-| שכבת ט׳ | Purple `#581C87 → #A855F7` | קיים בניווט, 1 קובץ |
-| חטיבה עליונה | Dark Gold `#111827 → #D97706` | קיים בניווט, 0 קבצים |
-
-### כל שכבת חט"ב
-| קטגוריה | צבע | ז׳ | ח׳ | ט׳ |
-|---------|-----|---|---|---|
-| אלגברה | Blue `#172554 → #2563EB` | ריק | 1 | ריק |
-| גיאומטריה | Green `#14532D → #22C55E` | ריק | ריק | 1 |
-| משימות מסכמות | Orange `#7C2D12 → #F97316` | ריק | 1 | ריק |
-| מבחנים | Red `#881337 → #E11D48` | ריק | ריק | ריק |
-
-### חטיבה עליונה
-| כפתור | צבע | קבצים |
-|-------|-----|-------|
-| 3 יחידות | Teal `#0F766E → #14B8A6` | 0 |
-| 4 יחידות | Indigo `#1D4ED8 → #4F46E5` | 0 |
-| 5 יחידות | Crimson/Gold `#9F1239 → #F97316` | 0 |
+**הערה על `can_embed`:** PDFs מסומנים `"unknown"` — embedding ב-iframe אפשרי טכנית (same-origin GitHub Pages), אך לא נבדק עדיין בדפדפן אמיתי. יש fallback מלא בממשק.
 
 ---
 
-## E. עקביות — RULES.md מול מצב בפועל
+## D. כיסוי ניווט (אומת ב-test-logic.py)
 
-| בדיקה | תוצאה |
-|-------|--------|
-| כל קבצי האינדקס קיימים פיזית | ✅ כן (אומת ב-validate-index.sh) |
-| אין כפילויות content_hash | ✅ אין |
-| אין כפילויות id | ✅ אין |
-| כל רשומות מכילות `source_type` | ✅ כן (תוקן בסשן זה) |
-| כל רשומות מכילות `grades` (array) | ✅ כן (תוקן בסשן זה) |
-| כל רשומות מכילות `can_embed` | ✅ כן (תוקן בסשן זה) |
-| כל רשומות מכילות `print_ready` | ✅ כן (תוקן בסשן זה) |
-| כל רשומות מכילות `download_ready` | ✅ כן (תוקן בסשן זה) |
-| מבנה תיקיות מחייב ב-RULES.md מעודכן | ✅ כן (תוקן בסשן זה) |
-| `metadata/taxonomy.json` עקבי עם RULES.md | ✅ כן |
-| `metadata/site-structure.json` עקבי עם RULES.md | ✅ כן |
-| אין קבצי דמו או מטא-דאטה מומצא | ✅ אין |
+| נתיב | קבצים |
+|------|-------|
+| בית → שכבת ז׳ → חומרים שונים | 1 ✅ |
+| בית → שכבת ח׳ → אלגברה | 1 ✅ |
+| בית → שכבת ח׳ → משימות מסכמות | 1 ✅ |
+| בית → שכבת ט׳ → גיאומטריה | 1 ✅ |
+| בית → חטיבה עליונה → כל רמה | 0 (ריק, empty state מוצג) |
+
+**קבצים יתומים:** אין ✅
 
 ---
 
-## F. מה חסר / לא נוצר עדיין
+## E. תוצאות אימות מלאות
+
+```
+bash scripts/validate-all.sh
+→ 21/21 PASSED, 0 FAILED
+
+python3 scripts/test-logic.py
+→ ALL LOGIC CHECKS PASSED
+→ Files total: 4, Files reached: 4, Errors: 0
+```
+
+---
+
+## F. תכונות האתר הפעיל
+
+| תכונה | מצב |
+|-------|-----|
+| עברית RTL | ✅ |
+| גופן Heebo | ✅ |
+| 4 כפתורי בית (ז/ח/ט/חטיבה עליונה) | ✅ |
+| 4 כפתורי קטגוריה לכל שכבה | ✅ |
+| כפתור "חומרים שונים" כשיש קבצים לא מסווגים | ✅ |
+| 3 כפתורי יחידות בחטיבה עליונה | ✅ |
+| כרטיסיות קבצים אמיתיות | ✅ |
+| empty state בעברית | ✅ |
+| כפתורי הורדה | ✅ (כשdownload_ready=true) |
+| כפתורי הדפסה | ✅ (כשprint_ready=true) |
+| מודאל צפייה PDF (iframe + fallback) | ✅ |
+| breadcrumbs + כפתור חזרה | ✅ |
+| Responsive (נייד + מחשב) | ✅ |
+| focus-visible accessibility | ✅ |
+| גרמר עברי נכון (קובץ אחד / X קבצים) | ✅ |
+| ללא תוכן דמו | ✅ |
+
+---
+
+## G. מה חסר / עדיין לא בוצע
 
 | פריט | מצב | עדיפות |
 |------|-----|--------|
-| אתר סטטי (HTML/CSS/JS) | ❌ לא קיים | גבוהה |
-| GitHub Pages מוגדר | ❌ לא | גבוהה |
-| `can_embed` נבדק בפועל לכל PDF | ❌ לא | בינונית |
-| `metadata/authors.json` מעודכן | רק "unknown" | נמוכה |
-| תוכן חטיבה עליונה | ❌ ריק | עתידי |
-| `review/pending_clarification/` | ❌ לא קיים | נמוכה |
+| בדיקת PDF iframe בדפדפן אמיתי | ❌ | גבוהה |
+| `can_embed` עדכון לפי בדיקה אמיתית | ❌ | גבוהה |
+| תוכן קטגוריות ריקות (גיאומטריה ז׳, מבחנים כולם, חטיבה עליונה) | ❌ | עתידי — דורש קבצים אמיתיים |
+| metadata/authors.json עם מחברים אמיתיים | ❌ | נמוכה |
+| Playwright / browser automation tests | ❌ | בינונית |
 
 ---
 
-## G. סיכון
+## H. כיצד להוסיף קובץ חדש
 
-| סיכון | רמה | הערה |
-|-------|-----|------|
-| הוספת קבצים בלי עדכון אינדקס | בינוני | validate-index.sh מזהה |
-| שכפול קבצים | נמוך | content_hash מגן |
-| קבצי דמו/מומצאים | נמוך | RULES.md מחייב אמת |
-| הצגת כפתורים שאינם עובדים | בינוני | `can_embed=unknown` מסומן נכון |
-| אתר שנראה ריק | גבוה | קטגוריות ריקות רבות — צריך הודעה ברורה |
+ראה `AGENTS.md` סעיף 10 — תהליך מלא.
+
+תמצית:
+1. קבל קובץ מיניב + מטא-דאטה
+2. חשב SHA-1, בדוק כפילות
+3. שמור ב-`files/<path>/`
+4. הוסף רשומה ל-`metadata/index.json`
+5. הרץ `bash scripts/validate-all.sh && python3 scripts/test-logic.py`
+6. Commit + push + PR + merge
 
 ---
 
-## H. פקודת אימות לריצה מקומית
+## I. פקודות שימושיות
 
 ```bash
-bash scripts/validate-index.sh
-```
+# אימות מלא לפני כל push
+bash scripts/validate-all.sh && python3 scripts/test-logic.py
 
-פלט תקין:
-```
-VALIDATION PASSED
-Records checked : 4
-Errors          : 0
-Warnings        : 0
+# שרת פיתוח מקומי
+bash scripts/serve-local.sh
+# → http://localhost:8080
+
+# בדיקה בדפדפן
+# פתח http://localhost:8080
+# נווט לשכבת ח׳ → אלגברה → לחץ "צפייה" על כרטיסייה
+# אם PDF מוצג ב-iframe: עדכן can_embed=true בindex.json
+# אם לא: can_embed=false
 ```
 
 ---
 
-## I. פעולה הבאה מומלצת
-
-**הצעדים הבאים לפי סדר עדיפות:**
-
-1. **בניית עמוד בית סטטי** (`index.html`) — HTML/CSS/JS עם 4 כפתורים, RTL, פרימיום.
-2. **הגדרת GitHub Pages** על ענף `main`, קובץ `index.html` בשורש.
-3. **בדיקת `can_embed`** — ניסיון הטמעת ה-PDFs וסימון `true`/`false` בהתאם.
-4. **הוספת קבצים אמיתיים** — במיוחד לחטיבה עליונה ולקטגוריות הריקות.
-
----
-
-*דוח זה נוצר אוטומטית. כל הנתונים מבוססים על קריאה ישירה מהריפו ועל הרצת סקריפט אימות.*
+*דוח זה עודכן אוטומטית. כל הנתונים מבוססים על קריאה ישירה מהריפו ועל הרצת סקריפטי אימות.*
