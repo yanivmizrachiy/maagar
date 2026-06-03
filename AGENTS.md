@@ -177,38 +177,48 @@
 
 ## 10. תהליך הוספת קובץ אמיתי (New File Workflow)
 
-**שלב 1 — קלט מיניב:**
-- שם הקובץ / קישור / תיאור
-- כיתה/ות (ז׳/ח׳/ט׳/חטיבה עליונה)
-- תחום (אלגברה/גיאומטריה/משימות מסכמות/מבחנים)
-- סוג מסמך
-- שנה, מחבר — אם ידועים
+**הדרך המהירה** — השתמש בסקריפט האוטומטי:
 
-**שלב 2 — אימות:**
+```bash
+python3 scripts/add-file.py \
+  --file /path/to/file.pdf \
+  --grade 8 \
+  --category algebra \
+  --doctype worksheet \
+  --year 2024 \
+  --topics "נושא1,נושא2"
+```
+
+הסקריפט עושה את כל השלבים אוטומטית: hash, בדיקת כפילות, העתקה, עדכון index.json, ואימות.
+
+למדריך מלא: `docs/ADDING_REAL_FILES.md`
+
+**שלבים ידניים (אם הסקריפט לא מספיק):**
+
+**שלב 1 — אימות:**
 - לחשב `content_hash` (SHA-1 של תוכן הקובץ)
 - לבדוק אם ה-hash כבר קיים ב-`metadata/index.json`
 - אם קיים — לא להוסיף, לעדכן שיוכים בלבד
 
-**שלב 3 — מיקום פיזי:**
+**שלב 2 — מיקום פיזי:**
 - לשמור את הקובץ ב-`files/<school_stage>/<grade>/<category>/`
-- לשמור פעם אחת בלבד
-- לא לשכפל לכמה תיקיות
+- לשמור פעם אחת בלבד — לא לשכפל לכמה תיקיות
 
-**שלב 4 — עדכון אינדקס:**
+**שלב 3 — עדכון אינדקס:**
 - להוסיף רשומה ל-`metadata/index.json`
 - לכלול את כל שדות החובה לפי RULES.md סעיף 19
 - `source_type: "repo-file"`, `download_ready: true`
 - `print_ready: true` אם worksheet/exam/summary-work
 - `can_embed: "unknown"` עד לבדיקה אמיתית
 
-**שלב 5 — אימות:**
+**שלב 4 — אימות:**
 ```bash
 bash scripts/validate-all.sh
 python3 scripts/test-logic.py
 ```
 שניהם חייבים לעבור לפני commit.
 
-**שלב 6 — commit:**
+**שלב 5 — commit:**
 ```bash
 git add files/<path> metadata/index.json
 git commit -m "feat(files): add <description>"

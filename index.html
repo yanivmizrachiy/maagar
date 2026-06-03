@@ -920,6 +920,104 @@
       flex-shrink: 0;
     }
 
+    /* ── SEARCH BUTTON (header) ─────────────── */
+    .search-btn {
+      background: var(--surface2);
+      border: 1px solid var(--border-mid);
+      color: var(--text-muted);
+      width: 34px;
+      height: 34px;
+      border-radius: var(--radius-xs);
+      cursor: pointer;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+      flex-shrink: 0;
+    }
+    .search-btn:hover { border-color: var(--border-hover); color: var(--text); background: var(--surface3); }
+
+    /* ── SEARCH SCREEN ───────────────────────── */
+    .search-wrap {
+      max-width: 720px;
+      margin: 0 auto;
+      padding-top: 1.5rem;
+    }
+
+    .search-input-wrap {
+      position: relative;
+      margin-bottom: 1.25rem;
+    }
+    .search-icon {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-dim);
+      font-size: 1rem;
+      pointer-events: none;
+    }
+    .search-input {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border-mid);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 1rem;
+      font-weight: 500;
+      padding: 0.85rem 2.9rem 0.85rem 1rem;
+      direction: rtl;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .search-input::placeholder { color: var(--text-dim); }
+    .search-input:focus {
+      outline: none;
+      border-color: rgba(99,102,241,0.5);
+      box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
+    }
+
+    .search-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .filter-chip {
+      background: var(--surface2);
+      border: 1px solid var(--border-mid);
+      color: var(--text-muted);
+      font-family: var(--font);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.3rem 0.75rem;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .filter-chip:hover { border-color: var(--border-hover); color: var(--text); }
+    .filter-chip.active {
+      background: rgba(99,102,241,0.18);
+      border-color: rgba(99,102,241,0.45);
+      color: #A5B4FC;
+    }
+
+    .search-results-meta {
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      margin-bottom: 1rem;
+    }
+
+    .search-empty {
+      text-align: center;
+      padding: 4rem 1rem;
+      color: var(--text-muted);
+    }
+    .search-empty-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+    .search-empty-title { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text); }
+    .search-empty-msg { font-size: 0.85rem; line-height: 1.65; }
+
     /* ── RESPONSIVE ──────────────────────────── */
     @media (max-width: 520px) {
       .main { padding: 1.75rem 1rem 4rem; }
@@ -953,6 +1051,7 @@
     <div class="header-logo-text">מאגר מתמטיקה <span>| math repo</span></div>
   </div>
   <nav class="breadcrumbs" id="breadcrumbs" aria-label="ניווט נוכחי"></nav>
+  <button class="search-btn" id="search-btn" onclick="navSearch()" aria-label="חיפוש קבצים">🔍</button>
   <button class="back-btn" id="back-btn" style="display:none" onclick="goBack()" aria-label="חזרה לעמוד הקודם">
     ← חזרה
   </button>
@@ -1129,6 +1228,7 @@ function navGrade(g)       { navigate({ type: 'grade', grade: g }); }
 function navCat(g, c)      { navigate({ type: 'category', grade: g, category: c }); }
 function navHSHome()       { navigate({ type: 'hs-home' }); }
 function navUnit(u)        { navigate({ type: 'unit', unitLevel: u }); }
+function navSearch()       { navigate({ type: 'search', query: '', gradeFilter: '', doctypeFilter: '' }); }
 
 // ═══════════════════════════════════════════════════════════
 // FILTERING
@@ -1176,6 +1276,7 @@ function renderScreen() {
   else if (sc.type === 'category') renderCategory(app, bcs, sc.grade, sc.category);
   else if (sc.type === 'hs-home')  renderHSHome(app, bcs);
   else if (sc.type === 'unit')     renderUnit(app, bcs, sc.unitLevel);
+  else if (sc.type === 'search')   renderSearch(app, bcs, sc);
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -1424,6 +1525,107 @@ function renderUnit(app, bcs, unitLevel) {
     </div>
     ${content}
   </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// SCREEN: SEARCH
+// ═══════════════════════════════════════════════════════════
+function renderSearch(app, bcs, sc) {
+  document.title = 'חיפוש — מאגר מתמטיקה';
+  bcs.innerHTML  = `
+    <button class="bc-item" onclick="navHome()">בית</button>
+    <span class="bc-sep">›</span>
+    <span class="bc-item active">חיפוש</span>`;
+
+  const query        = sc.query        || '';
+  const gradeFilter  = sc.gradeFilter  || '';
+  const doctypeFilter= sc.doctypeFilter|| '';
+
+  // Filter files
+  const q = query.trim().toLowerCase();
+  let results = S.index.files.filter(f => {
+    if (gradeFilter  && f.grade !== gradeFilter && !(Array.isArray(f.grades) && f.grades.includes(gradeFilter))) return false;
+    if (doctypeFilter && f.document_type !== doctypeFilter) return false;
+    if (!q) return true;
+    const titleMatch  = (f.title || '').toLowerCase().includes(q);
+    const topicMatch  = (f.topics || []).some(t => t.toLowerCase().includes(q));
+    const tagMatch    = (f.tags   || []).some(t => t.toLowerCase().includes(q));
+    const catMatch    = (CATEGORY_HE[f.primary_category] || '').includes(q);
+    const gradeMatch  = (GRADE_HE[f.grade] || '').includes(q);
+    return titleMatch || topicMatch || tagMatch || catMatch || gradeMatch;
+  });
+
+  // Grade filter chips
+  const grades = ['7','8','9'];
+  const gradeChips = grades.map(g => {
+    const active = gradeFilter === g ? ' active' : '';
+    const label  = GRADE_HE[g] || `כיתה ${g}`;
+    return `<button class="filter-chip${active}" onclick="setSearchFilter('grade','${g}')">${h(label)}</button>`;
+  }).join('');
+
+  // Doctype filter chips (only types present in index)
+  const presentTypes = [...new Set(S.index.files.map(f => f.document_type).filter(Boolean))];
+  const dtChips = presentTypes.map(dt => {
+    const active = doctypeFilter === dt ? ' active' : '';
+    const label  = DOCTYPE_HE[dt] || dt;
+    if (!label) return '';
+    return `<button class="filter-chip${active}" onclick="setSearchFilter('doctype','${dt}')">${h(label)}</button>`;
+  }).join('');
+
+  const clearGrade   = gradeFilter  ? `<button class="filter-chip active" onclick="setSearchFilter('grade','')">✕ ${h(GRADE_HE[gradeFilter] || gradeFilter)}</button>` : '';
+  const clearDoctype = doctypeFilter? `<button class="filter-chip active" onclick="setSearchFilter('doctype','')">✕ ${h(DOCTYPE_HE[doctypeFilter]||doctypeFilter)}</button>` : '';
+
+  const metaText = q || gradeFilter || doctypeFilter
+    ? `נמצאו ${results.length} תוצאות`
+    : `${S.index.files.length} קבצים במאגר`;
+
+  const resultsHtml = results.length === 0
+    ? `<div class="search-empty">
+        <div class="search-empty-icon">🔍</div>
+        <div class="search-empty-title">לא נמצאו תוצאות</div>
+        <div class="search-empty-msg">נסה מילות חיפוש אחרות או שנה את הסינון.</div>
+       </div>`
+    : `<div class="files-grid">${results.map(fileCard).join('')}</div>`;
+
+  app.innerHTML = `<div class="screen-enter">
+    <div class="search-wrap">
+      <div class="search-input-wrap">
+        <span class="search-icon">🔍</span>
+        <input class="search-input" id="search-field" type="search"
+          placeholder="חפש לפי שם, נושא, תגית..."
+          value="${h(query)}"
+          oninput="updateSearchQuery(this.value)"
+          autofocus>
+      </div>
+      <div class="search-filters">
+        ${gradeChips}
+        ${dtChips}
+        ${clearGrade}
+        ${clearDoctype}
+      </div>
+      <div class="search-results-meta">${metaText}</div>
+      ${resultsHtml}
+    </div>
+  </div>`;
+
+  // Focus cursor at end of input on re-render
+  const inp = document.getElementById('search-field');
+  if (inp) { const len = inp.value.length; inp.setSelectionRange(len, len); }
+}
+
+function updateSearchQuery(val) {
+  S.screen.query = val;
+  const app = document.getElementById('app');
+  const bcs = document.getElementById('breadcrumbs');
+  renderSearch(app, bcs, S.screen);
+}
+
+function setSearchFilter(type, val) {
+  if (type === 'grade')   S.screen.gradeFilter   = S.screen.gradeFilter   === val ? '' : val;
+  if (type === 'doctype') S.screen.doctypeFilter  = S.screen.doctypeFilter === val ? '' : val;
+  const app = document.getElementById('app');
+  const bcs = document.getElementById('breadcrumbs');
+  renderSearch(app, bcs, S.screen);
 }
 
 // ═══════════════════════════════════════════════════════════
