@@ -327,6 +327,7 @@ KEY_FILES=(
   "AGENTS.md"
   "README.md"
   "index.html"
+  ".gitattributes"
   "metadata/index.json"
   "metadata/taxonomy.json"
   "metadata/site-structure.json"
@@ -335,6 +336,8 @@ KEY_FILES=(
   "scripts/validate-all.sh"
   "scripts/serve-local.sh"
   "scripts/test-logic.py"
+  "scripts/add-file.py"
+  "scripts/qa-browser.js"
 )
 
 for f in "${KEY_FILES[@]}"; do

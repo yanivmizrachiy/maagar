@@ -24,14 +24,14 @@
       "source_type": "repo-file",
       "source_url": null,
       "embed_url": null,
-      "can_embed": "unknown",
+      "can_embed": true,
       "print_ready": true,
       "download_ready": true,
       "tags": [
         "כיתה ז",
         "מאגר"
       ],
-      "notes": "Preserved as the active grade-7 maagar file after cleanup of the broad import."
+      "notes": "Preserved as the active grade-7 maagar file after cleanup of the broad import. can_embed verified true via Playwright headless browser test (same-origin GitHub Pages)."
     },
     {
       "id": "8__algebra__ratio-proportion-scale-לתלמידים-1-רמה-ב-8-3-0107-2013-2014__unknown__001",
@@ -59,7 +59,7 @@
       "source_type": "repo-file",
       "source_url": null,
       "embed_url": null,
-      "can_embed": "unknown",
+      "can_embed": true,
       "print_ready": true,
       "download_ready": true,
       "tags": [
@@ -68,7 +68,7 @@
         "פרופורציה",
         "קנה מידה"
       ],
-      "notes": "Kept after cleanup because it is clearly mathematical and belongs in maagar."
+      "notes": "Kept after cleanup because it is clearly mathematical and belongs in maagar. can_embed verified true via Playwright."
     },
     {
       "id": "8__summaries__grade-8-ratio-proportion-וscale-summary-pages-לתלמידים-1-רמה-א-טופס-8-3-0106-2013-2014__unknown__001",
@@ -97,7 +97,7 @@
       "source_type": "repo-file",
       "source_url": null,
       "embed_url": null,
-      "can_embed": "unknown",
+      "can_embed": true,
       "print_ready": true,
       "download_ready": true,
       "tags": [
@@ -134,7 +134,7 @@
       "source_type": "repo-file",
       "source_url": null,
       "embed_url": null,
-      "can_embed": "unknown",
+      "can_embed": true,
       "print_ready": true,
       "download_ready": true,
       "tags": [
