@@ -96,6 +96,11 @@
       max-width: 120px;
       overflow: hidden;
       text-overflow: ellipsis;
+      background: none;
+      border: none;
+      font-family: var(--font);
+      font-size: inherit;
+      padding: 0;
     }
     .bc-item:hover { color: var(--text); }
     .bc-item.active { color: var(--text); font-weight: 600; cursor: default; }
@@ -283,6 +288,15 @@
       border-radius: var(--radius-xs);
       color: var(--text-muted);
     }
+
+    .fc-meta {
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+    .fc-meta span { display: flex; align-items: center; gap: 0.2rem; }
 
     .fc-actions {
       display: flex;
@@ -655,7 +669,7 @@ function renderGrade(app, bcs, grade) {
   const gradeLabel = GRADE_HE[grade] || `כיתה ${grade}`;
   document.title   = `${gradeLabel} — מאגר מתמטיקה`;
   bcs.innerHTML    = `
-    <span class="bc-item" onclick="navHome()" tabindex="0" role="button">בית</span>
+    <button class="bc-item" onclick="navHome()">בית</button>
     <span class="bc-sep">›</span>
     <span class="bc-item active">${h(gradeLabel)}</span>`;
 
@@ -684,10 +698,12 @@ function renderGrade(app, bcs, grade) {
     </button>`);
   }
 
-  // 5 buttons break the 2x2 grid — use a 3-col row for the extra one
+  // 5 buttons: show 4 in 2x2, 5th centered below at reasonable width
   const gridHtml = btnList.length === 5
     ? `<div class="grid-2x2">${btnList.slice(0,4).join('')}</div>
-       <div class="grid-1col" style="max-width:none;margin-top:1.25rem">${btnList[4]}</div>`
+       <div style="margin-top:1.25rem;display:flex;justify-content:center">
+         <div style="width:100%;max-width:320px">${btnList[4]}</div>
+       </div>`
     : `<div class="grid-2x2">${btnList.join('')}</div>`;
 
   app.innerHTML = `
@@ -706,9 +722,9 @@ function renderCategory(app, bcs, grade, category) {
   const catLabel   = CATEGORY_HE[category] || category;
   document.title   = `${catLabel} — ${gradeLabel} — מאגר מתמטיקה`;
   bcs.innerHTML    = `
-    <span class="bc-item" onclick="navHome()" tabindex="0" role="button">בית</span>
+    <button class="bc-item" onclick="navHome()">בית</button>
     <span class="bc-sep">›</span>
-    <span class="bc-item" onclick="navGrade('${grade}')" tabindex="0" role="button">${h(gradeLabel)}</span>
+    <button class="bc-item" onclick="navGrade('${grade}')">${h(gradeLabel)}</button>
     <span class="bc-sep">›</span>
     <span class="bc-item active">${h(catLabel)}</span>`;
 
@@ -734,7 +750,7 @@ function renderCategory(app, bcs, grade, category) {
 function renderHSHome(app, bcs) {
   document.title = 'חטיבה עליונה — מאגר מתמטיקה';
   bcs.innerHTML  = `
-    <span class="bc-item" onclick="navHome()" tabindex="0" role="button">בית</span>
+    <button class="bc-item" onclick="navHome()">בית</button>
     <span class="bc-sep">›</span>
     <span class="bc-item active">חטיבה עליונה</span>`;
 
@@ -767,9 +783,9 @@ function renderUnit(app, bcs, unitLevel) {
   const title     = `בגרות במתמטיקה — ${unitLabel}`;
   document.title  = `${title} — מאגר מתמטיקה`;
   bcs.innerHTML   = `
-    <span class="bc-item" onclick="navHome()"   tabindex="0" role="button">בית</span>
+    <button class="bc-item" onclick="navHome()">בית</button>
     <span class="bc-sep">›</span>
-    <span class="bc-item" onclick="navHSHome()" tabindex="0" role="button">חטיבה עליונה</span>
+    <button class="bc-item" onclick="navHSHome()">חטיבה עליונה</button>
     <span class="bc-sep">›</span>
     <span class="bc-item active">${h(unitLabel)}</span>`;
 
@@ -812,10 +828,16 @@ function fileCard(file) {
 
   const actions = buildActions(file);
 
+  const metaParts = [];
+  if (file.year && file.year !== 'unknown') metaParts.push(`<span>📅 ${h(String(file.year))}</span>`);
+  if (file.author && file.author !== 'unknown') metaParts.push(`<span>✍️ ${h(file.author)}</span>`);
+  const meta = metaParts.join('');
+
   return `<div class="file-card">
     <div class="fc-title">${title}</div>
     ${badges  ? `<div class="fc-badges">${badges}</div>`   : ''}
     ${topics  ? `<div class="fc-topics">${topics}</div>`   : ''}
+    ${meta    ? `<div class="fc-meta">${meta}</div>`       : ''}
     ${actions ? `<div class="fc-actions">${actions}</div>` : ''}
   </div>`;
 }
@@ -832,10 +854,8 @@ function buildActions(file) {
 
   // View — always available for any real file
   if (isRepo) {
-    // Use modal for PDFs (same-origin embed)
-    const safeId = file.id.replace(/'/g, "\\'");
-    actions.push(`<button class="act-btn act-view"
-      onclick="openViewer('${safeId}')" aria-label="צפייה">
+    actions.push(`<button class="act-btn act-view js-viewer"
+      data-fileid="${h(file.id)}" aria-label="צפייה">
       👁 צפייה
     </button>`);
   } else {
@@ -912,12 +932,14 @@ function closeModal() {
 document.getElementById('pdf-modal').addEventListener('click', function(e) {
   if (e.target === this) closeModal();
 });
+
+// Event delegation for viewer buttons (avoids inline onclick with user-derived id)
+document.getElementById('app').addEventListener('click', function(e) {
+  const btn = e.target.closest('.js-viewer');
+  if (btn) openViewer(btn.dataset.fileid);
+});
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
-// Breadcrumb keyboard navigation
-document.getElementById('breadcrumbs').addEventListener('keydown', e => {
-  if (e.key === 'Enter' || e.key === ' ') e.target.click();
-});
 
 // ═══════════════════════════════════════════════════════════
 // ERROR SCREEN
