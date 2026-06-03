@@ -177,7 +177,22 @@
 
 ## 10. תהליך הוספת קובץ אמיתי (New File Workflow)
 
-**הדרך המהירה** — השתמש בסקריפט האוטומטי:
+### כלל מוחלט: לא מוסיפים קבצים עד שיניב מספק קבצים אמיתיים
+
+- אין קבצי דמו.
+- אין מטאדאטה מומצאת.
+- אין רשומות ב-`metadata/index.json` לקבצים שלא קיימים פיזית.
+- תמיד מריצים `--dry-run` לפני כל ייבוא אמיתי.
+- אם מטאדאטה לא ידועה — כותבים `unknown`, לא מנחשים.
+
+### פרוטוקול handoff מ-ChatGPT לקלוד
+
+כשיניב עובד עם ChatGPT לסיווג קבצים, ChatGPT מכין בלוק handoff בפורמט מוגדר.
+קלוד קורא את הבלוק, מריץ dry-run, מציג תצוגה מקדימה, ורק אחרי אישור מייבא.
+
+פרוטוקול מלא: `docs/GPT_TO_CLAUDE_FILE_HANDOFF.md`
+
+### הדרך המהירה — השתמש בסקריפט האוטומטי:
 
 ```bash
 python3 scripts/add-file.py \
@@ -229,7 +244,8 @@ git commit -m "feat(files): add <description>"
 ## 11. סקריפטי אימות
 
 ```bash
-bash scripts/validate-all.sh     # 19 בדיקות: JSON, שדות, קבצים, taxonomy, site-structure, contamination
+bash scripts/validate-all.sh     # 26 בדיקות: JSON, שדות, content_hash, taxonomy, site-structure, contamination, key files, nav logic
 python3 scripts/test-logic.py    # בדיקת לוגיקת ניווט: כל הקבצים נגישים מהממשק
+node scripts/qa-browser.js http://localhost:8181   # 53 בדיקות Playwright (desktop + mobile)
 bash scripts/serve-local.sh      # שרת פיתוח מקומי: http://localhost:8080
 ```
