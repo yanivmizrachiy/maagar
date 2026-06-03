@@ -130,19 +130,33 @@ for i, rec in enumerate(records):
             print(f"  FAIL  [{label}]: {bfield}='{val}' — must be true, false, or 'unknown'")
             errors += 1
 
-    # Physical file existence for repo-file records
+    # Physical file existence + hash integrity for repo-file records
     if rec.get("source_type") == "repo-file":
         path = rec.get("path")
         if not path:
             print(f"  FAIL  [{label}]: source_type=repo-file but 'path' is missing")
             errors += 1
         else:
+            import hashlib
             full = os.path.join(repo_root, path)
             if not os.path.isfile(full):
                 print(f"  FAIL  [{label}]: file not found — {path}")
                 errors += 1
             else:
                 print(f"  OK    [{label}]: file exists — {path}")
+                # Verify content_hash matches the actual file
+                stored_hash = rec.get("content_hash")
+                if stored_hash and stored_hash not in ("unknown", None):
+                    h = hashlib.sha1()
+                    with open(full, "rb") as fh:
+                        while chunk := fh.read(65536):
+                            h.update(chunk)
+                    actual_hash = h.hexdigest()
+                    if actual_hash != stored_hash:
+                        print(f"  FAIL  [{label}]: content_hash mismatch — index={stored_hash[:12]}... actual={actual_hash[:12]}...")
+                        errors += 1
+                    else:
+                        print(f"  OK    [{label}]: content_hash verified")
 
 print(f"\n  Records checked: {len(records)}")
 print(f"  Errors: {errors} | Warnings: {warnings}")
@@ -337,6 +351,8 @@ KEY_FILES=(
   "scripts/serve-local.sh"
   "scripts/test-logic.py"
   "scripts/add-file.py"
+  "scripts/batch-add.py"
+  "scripts/_ingest.py"
   "scripts/qa-browser.js"
 )
 

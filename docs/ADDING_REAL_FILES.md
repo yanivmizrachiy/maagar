@@ -6,9 +6,9 @@
 
 ## עקרונות יסוד
 
-1. **הריפו הוא מקור האמת** — כל קובץ, כל מטאדאטה, כל סיווג — חייב להיות שמור בריפו.
+1. **הריפו הוא מקור האמת** — כל קובץ, כל מטאדאטה, כל סיווג חייב להיות שמור בריפו.
 2. **אין המצאת מטאדאטה** — אם שנה/מחבר לא ידועים, כותבים `"unknown"`.
-3. **אין קבצי דמו** — רק קבצים אמיתיים מגיעים לריפו.
+3. **אין קבצי דמו** — רק קבצים אמיתיים.
 4. **כפילויות נחסמות** — הסקריפט מחשב SHA-1 ומונע הוספה כפולה.
 
 ---
@@ -35,26 +35,25 @@ files/
 
 ---
 
-## שלב 1 — הכנת הקובץ
+## שיטה א׳ — קובץ בודד (`add-file.py`)
 
-לפני הרצת הסקריפט, החלט:
+מתאים ל: הוספת קובץ אחד עם מטאדאטה מדויקת.
 
-| שאלה | ערכים אפשריים |
-|------|--------------|
-| לאיזה כיתה? | `7`, `8`, `9` (חט"ב) · `3-unit`, `4-unit`, `5-unit` (ת"ע) |
-| לאיזה תחום? | `algebra`, `geometry`, `summaries`, `exams`, `uncategorized` |
-| איזה סוג מסמך? | `worksheet`, `summary-work`, `exam`, `link`, `digital-task`, `printable-task`, `embedded-resource`, `mixed` |
-| מה הנושאים? | רשימה מופרדת בפסיקים, עברית בסדר |
-
----
-
-## שלב 2 — הרצת הסקריפט
-
-**מ-root של הריפו:**
+### פקודה בסיסית
 
 ```bash
 python3 scripts/add-file.py \
-  --file /path/to/myfile.pdf \
+  --file /path/to/file.pdf \
+  --grade 8 \
+  --category algebra \
+  --doctype worksheet
+```
+
+### עם מטאדאטה מלאה
+
+```bash
+python3 scripts/add-file.py \
+  --file /path/to/file.pdf \
   --grade 8 \
   --category algebra \
   --doctype worksheet \
@@ -64,15 +63,25 @@ python3 scripts/add-file.py \
   --title "כותרת בעברית"
 ```
 
-### תצוגה מקדימה (dry run)
+### תצוגה מקדימה (dry run) — בלי לכתוב שום דבר
 
 ```bash
-python3 scripts/add-file.py --file myfile.pdf --grade 8 --category algebra --doctype worksheet --dry-run
+python3 scripts/add-file.py \
+  --file /path/to/file.pdf \
+  --grade 8 --category algebra --doctype worksheet \
+  --dry-run
 ```
 
-לא כותב שום דבר — רק מציג מה *יקרה*.
+### ללא אישור ידני (עבור סקריפטים)
 
-### פרמטרים מלאים
+```bash
+python3 scripts/add-file.py \
+  --file /path/to/file.pdf \
+  --grade 8 --category algebra --doctype worksheet \
+  --yes
+```
+
+### כל הפרמטרים
 
 | פרמטר | חובה? | תיאור |
 |-------|-------|-------|
@@ -81,81 +90,132 @@ python3 scripts/add-file.py --file myfile.pdf --grade 8 --category algebra --doc
 | `--unit-level` | ✓ (או `--grade`) | רמה: `3-unit`, `4-unit`, `5-unit` |
 | `--category` | ✓ | תחום לימוד |
 | `--doctype` | ✓ | סוג מסמך |
-| `--title` | לא | כותרת (ברירת מחדל: שם הקובץ) |
-| `--year` | לא | שנה (ברירת מחדל: `unknown`) |
-| `--author` | לא | מחבר (ברירת מחדל: `unknown`) |
-| `--topics` | לא | נושאים מופרדים בפסיק |
-| `--tags` | לא | תגיות נוספות |
-| `--notes` | לא | הערות חופשיות |
-| `--dry-run` | לא | תצוגה מקדימה בלי שמירה |
-| `--grades` | לא | כיתות מרובות: `"7,8"` |
+| `--title` | — | כותרת (ברירת מחדל: שם הקובץ) |
+| `--year` | — | שנה (ברירת מחדל: `unknown`) |
+| `--author` | — | מחבר (ברירת מחדל: `unknown`) |
+| `--topics` | — | נושאים מופרדים בפסיק |
+| `--tags` | — | תגיות נוספות |
+| `--notes` | — | הערות חופשיות |
+| `--can-embed` | — | `true` / `false` / `unknown` |
+| `--grades` | — | כיתות מרובות: `"7,8"` |
+| `--dry-run` | — | תצוגה מקדימה בלי שמירה |
+| `--yes` / `-y` | — | דילוג על אישור ידני |
+| `--no-validate` | — | דילוג על הרצת בדיקות (לשימוש ב-batch) |
+
+### ערכים חוקיים
+
+**`--category`:** `algebra`, `geometry`, `summaries`, `exams`, `uncategorized`
+
+**`--doctype`:** `worksheet`, `summary-work`, `exam`, `link`, `digital-task`, `printable-task`, `embedded-resource`, `mixed`
 
 ---
 
-## שלב 3 — בדיקה ו-commit
+## שיטה ב׳ — הרבה קבצים מתיקייה (`batch-add.py`)
 
-אחרי שהסקריפט מסיים בהצלחה:
+מתאים ל: הוספת קבוצת קבצים מאותה קטגוריה/כיתה בבת אחת.
 
 ```bash
-# בדוק שהקובץ נוסף
-git status
-
-# הוסף לגיט
-git add files/ metadata/index.json
-
-# commit
-git commit -m "feat(files): add [כותרת הקובץ]"
-
-# push
-git push
+python3 scripts/batch-add.py \
+  --folder /path/to/pdfs/ \
+  --grade 8 \
+  --category algebra \
+  --doctype worksheet \
+  --dry-run
 ```
 
----
+כל ה-PDF בתיקייה יתווספו עם אותו grade/category/doctype. הכותרת נלקחת מ-שם הקובץ.
 
-## מה הסקריפט עושה אוטומטית
-
-1. ✅ מאמת שהקלט חוקי (category, doctype, grade)
-2. ✅ מחשב SHA-1 של תוכן הקובץ
-3. ✅ בודק אם כבר קיים קובץ זהה ב-index.json
-4. ✅ קובע את הנתיב הנכון תחת `files/`
-5. ✅ מעתיק את הקובץ לנתיב הנכון
-6. ✅ בונה רשומת מטאדאטה ומוסיף ל-`metadata/index.json`
-7. ✅ מריץ `validate-all.sh` ו-`test-logic.py`
-
----
-
-## שגיאות נפוצות
-
-### "File not found"
-וודא שהנתיב ל-`--file` נכון ושהקובץ קיים.
-
-### "Invalid category"
-הקטגוריות המותרות: `algebra`, `geometry`, `summaries`, `exams`, `uncategorized`
-
-### "DUPLICATE DETECTED"
-הקובץ כבר קיים במאגר (לפי תוכן). אם צריך לעדכן מטאדאטה, ערוך `metadata/index.json` ישירות.
-
-### "validate-all.sh FAILED"
-הסקריפט יציג את השגיאה. בדרך כלל: מסלול קובץ שגוי או שדה חסר.
-
----
-
-## הוספת קובץ לכמה כיתות
-
-אם קובץ מתאים לכיתות ז' **וגם** ח':
+**הרצה אמיתית (בלי dry-run):**
 
 ```bash
-python3 scripts/add-file.py \
-  --file myfile.pdf \
-  --grade 7 \
-  --grades "7,8" \
+python3 scripts/batch-add.py \
+  --folder /path/to/pdfs/ \
+  --grade 8 \
   --category algebra \
   --doctype worksheet
 ```
 
 ---
 
-## דוגמה מלאה
+## שיטה ג׳ — מניפסט CSV (`batch-add.py --manifest`)
+
+מתאים ל: הרבה קבצים עם מטאדאטה שונה לכל אחד.
+
+### שלב 1 — צור קובץ CSV
+
+```csv
+file,title,grade,unit_level,grades,category,doctype,year,author,topics,tags,notes,can_embed
+/path/to/file1.pdf,יחס ופרופורציה,8,,,algebra,worksheet,2024,,יחס|פרופורציה,,
+/path/to/file2.pdf,מבחן גיאומטריה,9,,,geometry,exam,2023,,גיאומטריה,,
+/path/to/file3.pdf,בגרות אלגברה,,5-unit,,algebra,exam,2022,,אלגברה|בגרות,,
+```
+
+**הערות על העמודות:**
+- `grades` — כיתות מרובות: `"7|8"` (מופרד בצינור)
+- `topics` — נושאים: `"יחס|פרופורציה"` (מופרד בצינור)
+- `tags` — תגיות: `"tag1|tag2"`
+- `unit_level` — רק לחטיבה עליונה: `3-unit`, `4-unit`, `5-unit`
+- `can_embed` — `true` / `false` / `unknown`
+
+ראה: `scripts/manifest-example.csv` לדוגמה מלאה.
+
+### שלב 2 — תצוגה מקדימה
+
+```bash
+python3 scripts/batch-add.py --manifest manifest.csv --dry-run
+```
+
+### שלב 3 — הוספה אמיתית
+
+```bash
+python3 scripts/batch-add.py --manifest manifest.csv
+```
+
+---
+
+## שלב אחרון — commit ו-push
+
+אחרי הרצת אחת מהשיטות:
+
+```bash
+# הוספת קובץ בודד
+git add "files/path/to/file.pdf" metadata/index.json
+git commit -m "feat(files): add כותרת הקובץ"
+git push
+
+# batch
+git add files/ metadata/index.json
+git commit -m "feat(files): batch add N files — grade 8 algebra"
+git push
+```
+
+---
+
+## מה הסקריפטים עושים אוטומטית
+
+1. ✅ מאמת שהקלט חוקי (category, doctype, grade)
+2. ✅ מחשב SHA-1 של תוכן הקובץ
+3. ✅ בודק אם קיים כבר קובץ זהה ב-index.json (לפי תוכן)
+4. ✅ בונה ID ייחודי (מונע התנגשויות)
+5. ✅ מעתיק לנתיב הנכון תחת `files/`
+6. ✅ מוסיף רשומת מטאדאטה ל-`metadata/index.json`
+7. ✅ מריץ `validate-all.sh` (26 בדיקות כולל אימות hash) ו-`test-logic.py`
+
+---
+
+## שגיאות נפוצות
+
+| שגיאה | פתרון |
+|-------|--------|
+| `File not found` | ודא שהנתיב ל-`--file` נכון |
+| `Invalid category` | ערכים חוקיים: `algebra`, `geometry`, `summaries`, `exams`, `uncategorized` |
+| `DUPLICATE DETECTED` | הקובץ כבר קיים (לפי תוכן). לא יתווסף שוב. |
+| `validate-all.sh FAILED` | הסקריפט יציג את הבעיה; בדרך כלל שדה חסר או נתיב שגוי |
+| `content_hash mismatch` | הקובץ הפיזי שונה ממה שרשום בindex — עדכן ידנית |
+
+---
+
+## דוגמה מלאה — קובץ בודד
 
 ```bash
 python3 scripts/add-file.py \
@@ -172,16 +232,22 @@ python3 scripts/add-file.py \
 ```
   Computing hash for משוואות-כיתה-ח.pdf...
   SHA-1: abc123...
-  Source      : /home/user/Downloads/משוואות-כיתה-ח.pdf
+
+  Source      : ~/Downloads/משוואות-כיתה-ח.pdf
   Destination : files/middle-school/grade-8/algebra/דף-עבודה-משוואות-כיתה-ח.pdf
   Record ID   : 8__algebra__דף-עבודה-משוואות-כיתה-ח__worksheet__2023__001
   ...
+
 Proceed? [y/N] y
   ✓ File copied to files/middle-school/grade-8/algebra/...
-  ✓ Record added to metadata/index.json
+  ✓ metadata/index.json updated
   ✓ validate-all.sh PASSED
   ✓ test-logic.py PASSED
-──────────────────────────────────────────────────────
+────────────────────────────────────────────────────────
   ✓ FILE ADDED SUCCESSFULLY
-──────────────────────────────────────────────────────
+────────────────────────────────────────────────────────
+  Now run:
+    git add "files/middle-school/grade-8/algebra/..." metadata/index.json
+    git commit -m "feat(files): add דף עבודה משוואות — כיתה ח"
+    git push
 ```

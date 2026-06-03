@@ -1,0 +1,5 @@
+file,title,grade,unit_level,grades,category,doctype,year,author,topics,tags,notes,can_embed
+/path/to/worksheet.pdf,דף עבודה יחס ופרופורציה,8,,,algebra,worksheet,2024,,יחס|פרופורציה,,
+/path/to/exam.pdf,מבחן גיאומטריה כיתה ט,9,,,geometry,exam,2023,,גיאומטריה|שטחים,,
+/path/to/summary.pdf,סיכום משוואות ז-ח,7,,7|8,algebra,summary-work,,,משוואות|אלגברה,,
+/path/to/bagrut.pdf,בגרות אלגברה 5 יחידות,,5-unit,,algebra,exam,2022,,אלגברה|בגרות,,
