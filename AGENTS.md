@@ -172,3 +172,54 @@
 ## 9. כלל ברזל
 
 לא להמציא, לא להוסיף דמו, לא לסמן כקיים מה שלא קיים, לא לשכפל קבצים, ולא לבצע שינוי שסותר את `RULES.md`.
+
+---
+
+## 10. תהליך הוספת קובץ אמיתי (New File Workflow)
+
+**שלב 1 — קלט מיניב:**
+- שם הקובץ / קישור / תיאור
+- כיתה/ות (ז׳/ח׳/ט׳/חטיבה עליונה)
+- תחום (אלגברה/גיאומטריה/משימות מסכמות/מבחנים)
+- סוג מסמך
+- שנה, מחבר — אם ידועים
+
+**שלב 2 — אימות:**
+- לחשב `content_hash` (SHA-1 של תוכן הקובץ)
+- לבדוק אם ה-hash כבר קיים ב-`metadata/index.json`
+- אם קיים — לא להוסיף, לעדכן שיוכים בלבד
+
+**שלב 3 — מיקום פיזי:**
+- לשמור את הקובץ ב-`files/<school_stage>/<grade>/<category>/`
+- לשמור פעם אחת בלבד
+- לא לשכפל לכמה תיקיות
+
+**שלב 4 — עדכון אינדקס:**
+- להוסיף רשומה ל-`metadata/index.json`
+- לכלול את כל שדות החובה לפי RULES.md סעיף 19
+- `source_type: "repo-file"`, `download_ready: true`
+- `print_ready: true` אם worksheet/exam/summary-work
+- `can_embed: "unknown"` עד לבדיקה אמיתית
+
+**שלב 5 — אימות:**
+```bash
+bash scripts/validate-all.sh
+python3 scripts/test-logic.py
+```
+שניהם חייבים לעבור לפני commit.
+
+**שלב 6 — commit:**
+```bash
+git add files/<path> metadata/index.json
+git commit -m "feat(files): add <description>"
+```
+
+---
+
+## 11. סקריפטי אימות
+
+```bash
+bash scripts/validate-all.sh     # 19 בדיקות: JSON, שדות, קבצים, taxonomy, site-structure, contamination
+python3 scripts/test-logic.py    # בדיקת לוגיקת ניווט: כל הקבצים נגישים מהממשק
+bash scripts/serve-local.sh      # שרת פיתוח מקומי: http://localhost:8080
+```

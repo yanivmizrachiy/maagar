@@ -334,6 +334,7 @@ KEY_FILES=(
   "scripts/validate-index.sh"
   "scripts/validate-all.sh"
   "scripts/serve-local.sh"
+  "scripts/test-logic.py"
 )
 
 for f in "${KEY_FILES[@]}"; do
@@ -343,6 +344,18 @@ for f in "${KEY_FILES[@]}"; do
     fail "$f — MISSING"
   fi
 done
+
+# ─────────────────────────────────────────────────────────────
+# 7. NAVIGATION LOGIC TEST
+# ─────────────────────────────────────────────────────────────
+head "7. Navigation Logic"
+
+if python3 "$REPO_ROOT/scripts/test-logic.py" > /tmp/logic-out.txt 2>&1; then
+  ok "All files reachable via navigation paths (test-logic.py)"
+else
+  fail "Navigation logic test failed — see details:"
+  cat /tmp/logic-out.txt | grep -E "ORPHAN|ERROR|✗" | sed 's/^/  /'
+fi
 
 # ─────────────────────────────────────────────────────────────
 # SUMMARY

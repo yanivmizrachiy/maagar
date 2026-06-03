@@ -11,6 +11,14 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    /* Global focus ring for keyboard navigation */
+    :focus-visible {
+      outline: 2px solid rgba(255,255,255,0.6);
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+    .nav-btn:focus-visible { outline-offset: 3px; border-radius: 18px; }
+
     :root {
       --font: 'Heebo', 'Arial Hebrew', Arial, sans-serif;
       --bg: #0d0d0d;
@@ -496,18 +504,26 @@ const GRADE_HE  = { '7': 'שכבת ז׳', '8': 'שכבת ח׳', '9': 'שכבת �
 const UNIT_HE   = { '3-unit':'שלוש יחידות', '4-unit':'ארבע יחידות', '5-unit':'חמש יחידות' };
 
 const NAV_ICONS = {
-  'grade-7':     '📐',
-  'grade-8':     '📊',
-  'grade-9':     '📏',
-  'high-school': '🎓',
-  algebra:       '➕',
-  geometry:      '△',
-  summaries:     '📋',
-  exams:         '📝',
-  '3-unit':      '🔵',
-  '4-unit':      '🔷',
-  '5-unit':      '⭐'
+  'grade-7':      '📐',
+  'grade-8':      '📊',
+  'grade-9':      '📏',
+  'high-school':  '🎓',
+  algebra:        '➕',
+  geometry:       '△',
+  summaries:      '📋',
+  exams:          '📝',
+  uncategorized:  '📁',
+  '3-unit':       '🔵',
+  '4-unit':       '🔷',
+  '5-unit':       '⭐'
 };
+
+// Hebrew count label with correct grammar
+function countLabel(n) {
+  if (n === 0) return 'אין עדיין קבצים';
+  if (n === 1) return 'קובץ אחד';
+  return `${n} קבצים`;
+}
 
 // ═══════════════════════════════════════════════════════════
 // DATA
@@ -556,10 +572,19 @@ function navUnit(u)        { navigate({ type: 'unit', unitLevel: u }); }
 // FILTERING
 // ═══════════════════════════════════════════════════════════
 function filesForGradeCat(grade, category) {
-  return S.index.files.filter(f =>
-    (f.grade === grade || (Array.isArray(f.grades) && f.grades.includes(grade))) &&
-    f.primary_category === category
-  );
+  return S.index.files.filter(f => {
+    const gradeMatch = f.grade === grade || (Array.isArray(f.grades) && f.grades.includes(grade));
+    if (!gradeMatch) return false;
+    // 'uncategorized' bucket catches both 'uncategorized' and 'unknown' primary_category
+    if (category === 'uncategorized') {
+      return f.primary_category === 'uncategorized' || f.primary_category === 'unknown';
+    }
+    return f.primary_category === category;
+  });
+}
+
+function uncategorizedCountForGrade(grade) {
+  return filesForGradeCat(grade, 'uncategorized').length;
 }
 
 function filesForUnit(unitLevel) {
@@ -606,7 +631,7 @@ function renderHome(app, bcs) {
       : countForGrade(btn.grade);
     const onclick = isHS ? 'navHSHome()' : `navGrade('${btn.grade}')`;
     const icon    = NAV_ICONS[btn.id] || '📚';
-    const sub     = count > 0 ? `${count} קבצים` : 'אין עדיין קבצים';
+    const sub     = countLabel(count);
     return `<button class="nav-btn" style="background:${btn.style.background}"
         onclick="${onclick}" aria-label="${h(btn.label)}">
       <span class="nav-btn-icon">${icon}</span>
@@ -636,25 +661,41 @@ function renderGrade(app, bcs, grade) {
 
   const ss   = S.structure;
   const cats = ['algebra', 'geometry', 'summaries', 'exams'];
-  const btns = cats.map(cat => {
+  const btnList = cats.map(cat => {
     const info  = ss.category_cards[cat];
     const count = filesForGradeCat(grade, cat).length;
-    const sub   = count > 0 ? `${count} קבצים` : 'אין עדיין קבצים';
     const icon  = NAV_ICONS[cat] || '📄';
     return `<button class="nav-btn" style="background:${info.style.background}"
         onclick="navCat('${grade}','${cat}')" aria-label="${h(info.label)}">
       <span class="nav-btn-icon">${icon}</span>
       <span class="nav-btn-label">${h(info.label)}</span>
-      <span class="nav-btn-count">${sub}</span>
+      <span class="nav-btn-count">${countLabel(count)}</span>
     </button>`;
-  }).join('');
+  });
+
+  // Show 'uncategorized' bucket only when files exist in it for this grade
+  const uncatCount = uncategorizedCountForGrade(grade);
+  if (uncatCount > 0) {
+    btnList.push(`<button class="nav-btn" style="background:linear-gradient(135deg,#1f2937,#4b5563)"
+        onclick="navCat('${grade}','uncategorized')" aria-label="חומרים שונים">
+      <span class="nav-btn-icon">📁</span>
+      <span class="nav-btn-label">חומרים שונים</span>
+      <span class="nav-btn-count">${countLabel(uncatCount)}</span>
+    </button>`);
+  }
+
+  // 5 buttons break the 2x2 grid — use a 3-col row for the extra one
+  const gridHtml = btnList.length === 5
+    ? `<div class="grid-2x2">${btnList.slice(0,4).join('')}</div>
+       <div class="grid-1col" style="max-width:none;margin-top:1.25rem">${btnList[4]}</div>`
+    : `<div class="grid-2x2">${btnList.join('')}</div>`;
 
   app.innerHTML = `
     <div class="screen-header">
       <h1 class="screen-title">${h(gradeLabel)}</h1>
       <p class="screen-sub">בחר תחום לצפייה בחומרים</p>
     </div>
-    <div class="grid-2x2">${btns}</div>`;
+    ${gridHtml}`;
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -673,7 +714,7 @@ function renderCategory(app, bcs, grade, category) {
 
   const files = filesForGradeCat(grade, category);
   const ss    = S.structure;
-  const bg    = ss.category_cards[category]?.style.background || '#1a1a2e';
+  const bg    = ss.category_cards[category]?.style.background || 'linear-gradient(135deg,#1f2937,#4b5563)';
 
   const content = files.length === 0
     ? emptyState(ss.empty_state_he)
@@ -682,7 +723,7 @@ function renderCategory(app, bcs, grade, category) {
   app.innerHTML = `
     <div class="screen-banner" style="background:${bg}">
       <h1>${h(catLabel)}</h1>
-      <p>${h(gradeLabel)} · ${files.length === 0 ? 'אין עדיין קבצים' : files.length + ' קבצים'}</p>
+      <p>${h(gradeLabel)} · ${countLabel(files.length)}</p>
     </div>
     ${content}`;
 }
@@ -700,7 +741,7 @@ function renderHSHome(app, bcs) {
   const ss   = S.structure;
   const btns = ss.high_school_home.buttons.map(btn => {
     const count = filesForUnit(btn.unit_level).length;
-    const sub   = count > 0 ? `${count} קבצים` : 'אין עדיין קבצים';
+    const sub   = countLabel(count);
     const icon  = NAV_ICONS[btn.unit_level] || '📚';
     return `<button class="nav-btn" style="background:${btn.style.background}"
         onclick="navUnit('${btn.unit_level}')" aria-label="${h(btn.label)}">
@@ -744,7 +785,7 @@ function renderUnit(app, bcs, unitLevel) {
   app.innerHTML = `
     <div class="screen-banner" style="background:${bg}">
       <h1>${h(title)}</h1>
-      <p>${files.length === 0 ? 'אין עדיין קבצים' : files.length + ' קבצים'}</p>
+      <p>${countLabel(files.length)}</p>
     </div>
     ${content}`;
 }
