@@ -11,32 +11,51 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    /* Global focus ring for keyboard navigation */
-    :focus-visible {
-      outline: 2px solid rgba(255,255,255,0.6);
-      outline-offset: 2px;
-      border-radius: 4px;
-    }
-    .nav-btn:focus-visible { outline-offset: 3px; border-radius: 18px; }
-
     :root {
       --font: 'Heebo', 'Arial Hebrew', Arial, sans-serif;
-      --bg: #0d0d0d;
-      --surface: #181818;
-      --surface2: #222;
-      --border: rgba(255,255,255,0.08);
-      --border-hover: rgba(255,255,255,0.18);
-      --text: #f0f0f0;
-      --text-muted: #777;
-      --text-dim: #555;
-      --radius: 18px;
-      --radius-sm: 10px;
-      --radius-xs: 6px;
-      --shadow: 0 8px 40px rgba(0,0,0,0.5);
-      --shadow-lg: 0 20px 60px rgba(0,0,0,0.6);
-      --header-h: 60px;
+
+      /* Backgrounds */
+      --bg:        #070B14;
+      --bg2:       #0C1120;
+      --surface:   #111827;
+      --surface2:  #1A2236;
+      --surface3:  #222D44;
+      --surface-glass: rgba(17,24,39,0.7);
+
+      /* Borders */
+      --border:       rgba(255,255,255,0.06);
+      --border-mid:   rgba(255,255,255,0.10);
+      --border-hover: rgba(255,255,255,0.22);
+      --border-glow:  rgba(99,102,241,0.35);
+
+      /* Text */
+      --text:       #F0F4FC;
+      --text-muted: #8A9BC0;
+      --text-dim:   #4A5878;
+
+      /* Radius */
+      --radius:    22px;
+      --radius-sm: 14px;
+      --radius-xs:  8px;
+
+      /* Shadows */
+      --shadow:    0 2px 16px rgba(0,0,0,0.45);
+      --shadow-md: 0 8px 32px rgba(0,0,0,0.55);
+      --shadow-lg: 0 16px 56px rgba(0,0,0,0.65);
+      --shadow-xl: 0 28px 80px rgba(0,0,0,0.75);
+
+      /* Header */
+      --header-h: 58px;
     }
 
+    /* ── FOCUS ─────────────────────────────── */
+    :focus-visible {
+      outline: 2px solid rgba(99,102,241,0.7);
+      outline-offset: 3px;
+      border-radius: 6px;
+    }
+
+    /* ── BASE ──────────────────────────────── */
     html { scroll-behavior: smooth; }
 
     body {
@@ -46,193 +65,400 @@
       min-height: 100vh;
       direction: rtl;
       -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* Ambient background glow */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 20% 0%, rgba(99,102,241,0.07) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 80% 100%, rgba(8,145,178,0.05) 0%, transparent 55%);
+      pointer-events: none;
+      z-index: 0;
     }
 
     /* ── HEADER ─────────────────────────────── */
     .header {
       position: sticky;
       top: 0;
-      z-index: 50;
+      z-index: 100;
       height: var(--header-h);
-      background: rgba(13,13,13,0.92);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      background: rgba(7,11,20,0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--border);
       display: flex;
       align-items: center;
       gap: 1rem;
-      padding: 0 1.25rem;
+      padding: 0 1.5rem;
     }
 
     .header-logo {
-      font-size: 1rem;
-      font-weight: 800;
-      color: white;
-      white-space: nowrap;
-      letter-spacing: -0.01em;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      text-decoration: none;
+      flex-shrink: 0;
     }
 
-    .header-logo span {
-      font-weight: 300;
-      opacity: 0.6;
-      font-size: 0.85rem;
-      margin-right: 0.4rem;
+    .header-logo-icon {
+      width: 30px;
+      height: 30px;
+      background: linear-gradient(135deg, #4F46E5, #7C3AED);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95rem;
+      flex-shrink: 0;
+    }
+
+    .header-logo-text {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+
+    .header-logo-text span {
+      font-weight: 400;
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      margin-right: 0.3rem;
     }
 
     .breadcrumbs {
       flex: 1;
       display: flex;
       align-items: center;
-      gap: 0.35rem;
-      font-size: 0.82rem;
+      gap: 0.3rem;
+      font-size: 0.8rem;
       overflow: hidden;
+      min-width: 0;
     }
 
     .bc-item {
-      color: var(--text-muted);
-      cursor: pointer;
-      white-space: nowrap;
-      transition: color 0.15s;
-      max-width: 120px;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      color: var(--text-dim);
       background: none;
       border: none;
       font-family: var(--font);
-      font-size: inherit;
-      padding: 0;
+      font-size: 0.8rem;
+      cursor: pointer;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 130px;
+      padding: 0.2rem 0.35rem;
+      border-radius: 5px;
+      transition: color 0.15s, background 0.15s;
+      line-height: 1;
     }
-    .bc-item:hover { color: var(--text); }
-    .bc-item.active { color: var(--text); font-weight: 600; cursor: default; }
-    .bc-sep { color: var(--text-dim); flex-shrink: 0; }
+    .bc-item:hover { color: var(--text); background: rgba(255,255,255,0.05); }
+    .bc-item.active { color: var(--text-muted); cursor: default; font-weight: 500; }
+    .bc-item.active:hover { background: none; }
+
+    .bc-sep { color: var(--text-dim); flex-shrink: 0; font-size: 0.7rem; opacity: 0.5; }
 
     .back-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
       background: var(--surface2);
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 0.35rem 0.8rem;
+      border: 1px solid var(--border-mid);
+      color: var(--text-muted);
+      padding: 0.38rem 0.85rem;
       border-radius: var(--radius-xs);
       cursor: pointer;
       font-family: var(--font);
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 600;
-      transition: border-color 0.15s, background 0.15s;
+      transition: all 0.15s;
       white-space: nowrap;
       flex-shrink: 0;
     }
-    .back-btn:hover { border-color: var(--border-hover); background: var(--surface); }
+    .back-btn:hover {
+      border-color: var(--border-hover);
+      color: var(--text);
+      background: var(--surface3);
+    }
 
-    /* ── MAIN CONTENT ────────────────────────── */
+    /* ── MAIN ──────────────────────────────── */
     .main {
-      max-width: 1060px;
+      position: relative;
+      z-index: 1;
+      max-width: 1080px;
       margin: 0 auto;
-      padding: 2.5rem 1.25rem 4rem;
+      padding: 2.5rem 1.5rem 5rem;
     }
 
-    /* ── SCREEN HEADER ───────────────────────── */
-    .screen-header {
+    /* ── HERO ──────────────────────────────── */
+    .hero {
       text-align: center;
-      margin-bottom: 2.5rem;
+      padding: 3.5rem 1rem 3rem;
+      position: relative;
     }
-    .screen-title {
-      font-size: 1.75rem;
-      font-weight: 800;
-      letter-spacing: -0.02em;
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(99,102,241,0.12);
+      border: 1px solid rgba(99,102,241,0.25);
+      color: #A5B4FC;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.3rem 0.85rem;
+      border-radius: 999px;
+      margin-bottom: 1.5rem;
+      letter-spacing: 0.03em;
     }
-    .screen-sub {
-      font-size: 0.9rem;
+
+    .hero-title {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 900;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      background: linear-gradient(135deg, #F0F4FC 30%, #A5B4FC 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1rem;
+    }
+
+    .hero-sub {
+      font-size: 1rem;
       color: var(--text-muted);
-      margin-top: 0.4rem;
+      font-weight: 400;
+      max-width: 480px;
+      margin: 0 auto 2rem;
+      line-height: 1.65;
     }
 
-    /* ── COLORED SCREEN BANNER ───────────────── */
-    .screen-banner {
-      border-radius: var(--radius);
-      padding: 1.4rem 1.75rem;
-      margin-bottom: 2rem;
-      color: white;
-    }
-    .screen-banner h1 {
-      font-size: 1.5rem;
-      font-weight: 800;
-      margin: 0;
-    }
-    .screen-banner p {
-      margin: 0.25rem 0 0;
-      opacity: 0.75;
-      font-size: 0.88rem;
-    }
-
-    /* ── NAVIGATION BUTTON GRIDS ─────────────── */
-    .grid-2x2 {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 1.25rem;
-    }
-    .grid-1col {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      max-width: 580px;
-      margin: 0 auto;
-    }
-
-    @media (max-width: 560px) {
-      .grid-2x2 { grid-template-columns: 1fr; }
-    }
-
-    /* ── BIG NAV BUTTON ──────────────────────── */
-    .nav-btn {
-      border: none;
-      border-radius: var(--radius);
-      padding: 2.25rem 1.75rem;
-      cursor: pointer;
-      color: white;
-      font-family: var(--font);
-      font-size: 1.3rem;
-      font-weight: 800;
-      letter-spacing: -0.01em;
-      transition: transform 0.16s cubic-bezier(.2,.8,.2,1), box-shadow 0.16s;
-      box-shadow: var(--shadow);
-      text-align: center;
-      display: flex;
-      flex-direction: column;
+    .hero-stats {
+      display: inline-flex;
       align-items: center;
       gap: 0;
+      background: var(--surface);
+      border: 1px solid var(--border-mid);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+
+    .hero-stat {
+      padding: 0.6rem 1.25rem;
+      text-align: center;
+    }
+    .hero-stat + .hero-stat {
+      border-right: 1px solid var(--border);
+    }
+    .hero-stat-val {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text);
+      display: block;
+      letter-spacing: -0.02em;
+    }
+    .hero-stat-label {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      display: block;
+      margin-top: 0.1rem;
+    }
+
+    /* ── SECTION DIVIDER ─────────────────────── */
+    .section-label {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 1.25rem;
+      margin-top: 2.5rem;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── GRADE CARDS GRID ────────────────────── */
+    .grade-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+
+    @media (max-width: 580px) {
+      .grade-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ── GRADE CARD ──────────────────────────── */
+    .grade-card {
+      position: relative;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      cursor: pointer;
+      background: var(--surface);
+      transition: transform 0.2s cubic-bezier(.2,.8,.2,1), box-shadow 0.2s, border-color 0.2s;
+      text-align: right;
+      color: white;
+      font-family: var(--font);
+      padding: 0;
+      display: block;
+      width: 100%;
+    }
+
+    .grade-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+      border-color: rgba(255,255,255,0.14);
+    }
+
+    .grade-card:active { transform: translateY(-2px) scale(0.995); }
+
+    .grade-card-bg {
+      position: absolute;
+      inset: 0;
+      opacity: 0.12;
+      transition: opacity 0.2s;
+    }
+    .grade-card:hover .grade-card-bg { opacity: 0.2; }
+
+    .grade-card-accent {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+    }
+
+    .grade-card-body {
+      position: relative;
+      padding: 1.75rem 1.5rem 1.5rem;
+    }
+
+    .grade-card-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 1.1rem;
+      background: rgba(255,255,255,0.1);
+    }
+
+    .grade-card-label {
+      font-size: 1.35rem;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 0.35rem;
+    }
+
+    .grade-card-desc {
+      font-size: 0.78rem;
+      opacity: 0.6;
+      font-weight: 400;
+      margin-bottom: 1.25rem;
+      line-height: 1.5;
+    }
+
+    .grade-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .grade-card-count {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.25rem 0.65rem;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.13);
+    }
+
+    .grade-card-arrow {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      transition: background 0.15s, transform 0.15s;
+    }
+    .grade-card:hover .grade-card-arrow {
+      background: rgba(255,255,255,0.22);
+      transform: translateX(-3px);
+    }
+
+    /* ── SCREEN BANNER ───────────────────────── */
+    .screen-banner {
+      border-radius: var(--radius);
+      padding: 1.75rem 2rem;
+      margin-bottom: 2rem;
       position: relative;
       overflow: hidden;
     }
-    .nav-btn::before {
-      content: '';
+
+    .screen-banner-bg {
       position: absolute;
       inset: 0;
-      background: rgba(255,255,255,0);
-      transition: background 0.16s;
-    }
-    .nav-btn:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
-    .nav-btn:hover::before { background: rgba(255,255,255,0.05); }
-    .nav-btn:active { transform: scale(0.99) translateY(-1px); }
-
-    .nav-btn-icon {
-      font-size: 2.2rem;
-      margin-bottom: 0.6rem;
-      line-height: 1;
-      display: block;
-    }
-    .nav-btn-label { display: block; }
-    .nav-btn-count {
-      display: block;
-      font-size: 0.8rem;
-      font-weight: 400;
-      opacity: 0.72;
-      margin-top: 0.4rem;
+      opacity: 0.15;
     }
 
-    /* ── FILE CARDS GRID ─────────────────────── */
+    .screen-banner-body { position: relative; }
+
+    .screen-banner h1 {
+      font-size: 1.65rem;
+      font-weight: 900;
+      color: white;
+      letter-spacing: -0.02em;
+      margin: 0 0 0.3rem;
+    }
+
+    .screen-banner-meta {
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.65);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .screen-banner-meta-sep { opacity: 0.4; }
+
+    /* ── CATEGORY GRID ───────────────────────── */
+    .cat-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+    @media (max-width: 560px) { .cat-grid { grid-template-columns: 1fr; } }
+
+    .cat-extra {
+      margin-top: 1rem;
+      display: flex;
+      justify-content: center;
+    }
+    .cat-extra .grade-card { max-width: 320px; }
+
+    /* ── FILES GRID ──────────────────────────── */
     .files-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-      gap: 1.1rem;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1rem;
     }
 
     /* ── FILE CARD ───────────────────────────── */
@@ -240,40 +466,74 @@
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 1.2rem;
       display: flex;
       flex-direction: column;
-      gap: 0.75rem;
-      transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+      overflow: hidden;
+      transition: border-color 0.15s, transform 0.18s cubic-bezier(.2,.8,.2,1), box-shadow 0.18s;
     }
     .file-card:hover {
-      border-color: var(--border-hover);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+      border-color: var(--border-mid);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .fc-type-strip {
+      height: 3px;
+      flex-shrink: 0;
+    }
+
+    .fc-body {
+      padding: 1.25rem 1.25rem 0;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+
+    .fc-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+
+    .fc-type-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
     }
 
     .fc-title {
-      font-size: 0.97rem;
+      font-size: 0.95rem;
       font-weight: 700;
       line-height: 1.45;
       color: var(--text);
+      flex: 1;
+      padding-top: 0.1rem;
     }
 
     .fc-badges {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.35rem;
+      gap: 0.3rem;
     }
     .badge {
-      font-size: 0.7rem;
+      font-size: 0.67rem;
       font-weight: 700;
       padding: 0.18rem 0.55rem;
       border-radius: 999px;
+      letter-spacing: 0.01em;
       line-height: 1.5;
     }
-    .badge-grade  { background: rgba(139,92,246,0.2);  color: #c4b5fd; }
-    .badge-cat    { background: rgba(16,185,129,0.18); color: #6ee7b7; }
-    .badge-type   { background: rgba(245,158,11,0.18); color: #fcd34d; }
+    .badge-grade  { background: rgba(139,92,246,0.18); color: #C4B5FD; border: 1px solid rgba(139,92,246,0.2); }
+    .badge-cat    { background: rgba(16,185,129,0.14); color: #6EE7B7; border: 1px solid rgba(16,185,129,0.18); }
+    .badge-type   { background: rgba(245,158,11,0.14); color: #FCD34D; border: 1px solid rgba(245,158,11,0.18); }
 
     .fc-topics {
       display: flex;
@@ -281,106 +541,183 @@
       gap: 0.3rem;
     }
     .topic-tag {
-      font-size: 0.7rem;
-      padding: 0.14rem 0.45rem;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.08);
+      font-size: 0.68rem;
+      padding: 0.15rem 0.5rem;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
       border-radius: var(--radius-xs);
-      color: var(--text-muted);
+      color: var(--text-dim);
     }
 
     .fc-meta {
-      font-size: 0.72rem;
-      color: var(--text-dim);
       display: flex;
       flex-wrap: wrap;
-      gap: 0.6rem;
+      gap: 0.65rem;
+      font-size: 0.7rem;
+      color: var(--text-dim);
     }
-    .fc-meta span { display: flex; align-items: center; gap: 0.2rem; }
+    .fc-meta span { display: flex; align-items: center; gap: 0.25rem; }
 
     .fc-actions {
+      padding: 0.85rem 1.25rem;
       display: flex;
       gap: 0.45rem;
+      border-top: 1px solid var(--border);
+      margin-top: 0.65rem;
       flex-wrap: wrap;
-      margin-top: auto;
     }
 
     /* ── ACTION BUTTONS ──────────────────────── */
     .act-btn {
       flex: 1;
-      min-width: 72px;
-      padding: 0.48rem 0.65rem;
+      min-width: 68px;
+      padding: 0.52rem 0.7rem;
       border-radius: var(--radius-xs);
       border: none;
       cursor: pointer;
       font-family: var(--font);
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       font-weight: 700;
       text-align: center;
       text-decoration: none;
-      color: white;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 0.25rem;
-      transition: opacity 0.13s, transform 0.13s;
+      gap: 0.3rem;
+      transition: all 0.13s;
       line-height: 1;
+      letter-spacing: 0.01em;
     }
-    .act-btn:hover { opacity: 0.85; transform: translateY(-1px); }
-    .act-btn:active { transform: scale(0.98); }
+    .act-btn:hover { transform: translateY(-1px); }
+    .act-btn:active { transform: scale(0.97); }
 
-    .act-view     { background: linear-gradient(135deg, #2563EB, #4F46E5); }
-    .act-download { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); color: white; }
-    .act-print    { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); color: rgba(255,255,255,0.7); }
-    .act-print:hover { color: white; opacity: 1; }
+    .act-view {
+      background: linear-gradient(135deg, #3B4CE8, #6D28D9);
+      color: white;
+      box-shadow: 0 2px 8px rgba(79,70,229,0.35);
+    }
+    .act-view:hover { box-shadow: 0 4px 16px rgba(79,70,229,0.5); opacity: 0.93; }
+
+    .act-download {
+      background: var(--surface2);
+      border: 1px solid var(--border-mid);
+      color: var(--text-muted);
+    }
+    .act-download:hover { border-color: var(--border-hover); color: var(--text); background: var(--surface3); }
+
+    .act-print {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+    }
+    .act-print:hover { border-color: var(--border-mid); color: var(--text-muted); }
 
     /* ── EMPTY STATE ─────────────────────────── */
     .empty-state {
       text-align: center;
-      padding: 5rem 2rem;
-      color: var(--text-muted);
+      padding: 5rem 2rem 4rem;
     }
-    .empty-icon { font-size: 2.75rem; margin-bottom: 1rem; opacity: 0.5; }
-    .empty-msg { font-size: 0.95rem; line-height: 1.6; }
+
+    .empty-illustration {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 1.75rem;
+      background: var(--surface2);
+      border: 1px solid var(--border-mid);
+      border-radius: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+    }
+
+    .empty-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.01em;
+    }
+
+    .empty-msg {
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      line-height: 1.7;
+      max-width: 320px;
+      margin: 0 auto;
+    }
 
     /* ── PDF MODAL ───────────────────────────── */
     .modal-back {
       position: fixed;
       inset: 0;
       background: rgba(0,0,0,0.88);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
       z-index: 200;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 1rem;
+      animation: fadeIn 0.15s ease;
     }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
     .modal {
       background: var(--surface);
-      border: 1px solid var(--border);
+      border: 1px solid var(--border-mid);
       border-radius: var(--radius);
       width: 100%;
-      max-width: 920px;
+      max-width: 940px;
       height: 88vh;
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      box-shadow: var(--shadow-lg);
+      box-shadow: var(--shadow-xl);
+      animation: slideUp 0.18s ease;
     }
+
     .modal-head {
-      padding: 0.9rem 1.1rem;
+      padding: 1rem 1.25rem;
       border-bottom: 1px solid var(--border);
       display: flex;
       align-items: center;
       gap: 0.75rem;
       flex-shrink: 0;
+      background: var(--surface2);
     }
-    .modal-title { flex: 1; font-weight: 700; font-size: 0.9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .modal-acts  { display: flex; gap: 0.45rem; flex-shrink: 0; }
-    .modal-body  { flex: 1; position: relative; overflow: hidden; background: #111; }
+
+    .modal-title-wrap {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .modal-label {
+      font-size: 0.65rem;
+      color: var(--text-dim);
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 0.15rem;
+    }
+
+    .modal-title {
+      font-weight: 700;
+      font-size: 0.9rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: var(--text);
+    }
+
+    .modal-acts { display: flex; gap: 0.45rem; flex-shrink: 0; align-items: center; }
+
+    .modal-body { flex: 1; position: relative; overflow: hidden; background: #0A0E18; }
 
     .pdf-frame { width: 100%; height: 100%; border: none; display: block; }
 
-    /* Shown only if iframe content cannot load */
     .pdf-fallback {
       display: none;
       position: absolute;
@@ -388,13 +725,32 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 1rem;
+      gap: 1.25rem;
       background: var(--surface2);
       padding: 2rem;
       text-align: center;
     }
     .pdf-fallback.visible { display: flex; }
-    .pdf-fallback p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; }
+    .pdf-fallback-icon { font-size: 2.5rem; opacity: 0.5; }
+    .pdf-fallback p { color: var(--text-muted); font-size: 0.88rem; line-height: 1.7; max-width: 360px; }
+
+    .modal-close {
+      width: 32px;
+      height: 32px;
+      background: var(--surface3);
+      border: 1px solid var(--border-mid);
+      border-radius: 8px;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-family: var(--font);
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.13s;
+      flex-shrink: 0;
+    }
+    .modal-close:hover { background: var(--surface); color: var(--text); border-color: var(--border-hover); }
 
     /* ── LOADING ─────────────────────────────── */
     .loading {
@@ -402,77 +758,194 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      min-height: 50vh;
-      gap: 1rem;
-      color: var(--text-muted);
+      min-height: 55vh;
+      gap: 1.25rem;
+      color: var(--text-dim);
     }
+
     .spinner {
-      width: 36px; height: 36px;
-      border: 3px solid rgba(255,255,255,0.08);
-      border-top-color: rgba(255,255,255,0.5);
+      width: 38px; height: 38px;
+      border: 2px solid rgba(99,102,241,0.15);
+      border-top-color: rgba(99,102,241,0.7);
       border-radius: 50%;
-      animation: spin 0.75s linear infinite;
+      animation: spin 0.7s linear infinite;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
+
+    .loading-text {
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--text-dim);
+    }
 
     /* ── ERROR ───────────────────────────────── */
     .error-scr {
       text-align: center;
-      padding: 4rem 1.5rem;
+      padding: 5rem 1.5rem;
       max-width: 480px;
       margin: 0 auto;
     }
-    .error-icon { font-size: 2.5rem; margin-bottom: 1rem; }
-    .error-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.75rem; }
-    .error-body { color: var(--text-muted); font-size: 0.88rem; line-height: 1.7; }
-    .error-code { font-size: 0.78rem; font-family: monospace; background: var(--surface2); padding: 0.75rem 1rem; border-radius: var(--radius-xs); margin-top: 1rem; color: #f87171; text-align: right; direction: ltr; }
+    .error-icon-wrap {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 1.5rem;
+      background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.2);
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.75rem;
+    }
+    .error-title { font-size: 1.15rem; font-weight: 800; margin-bottom: 0.75rem; letter-spacing: -0.02em; }
+    .error-body { color: var(--text-muted); font-size: 0.87rem; line-height: 1.75; }
+    .error-code {
+      font-size: 0.75rem;
+      font-family: monospace;
+      background: var(--surface2);
+      border: 1px solid var(--border-mid);
+      padding: 0.85rem 1rem;
+      border-radius: var(--radius-xs);
+      margin-top: 1.25rem;
+      color: #F87171;
+      text-align: left;
+      direction: ltr;
+      overflow-x: auto;
+    }
+
+    /* ── SCREEN FADE-IN ──────────────────────── */
+    .screen-enter {
+      animation: screenFade 0.18s ease;
+    }
+    @keyframes screenFade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ── HIGH SCHOOL LIST ────────────────────── */
+    .hs-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      max-width: 560px;
+      margin: 0 auto;
+    }
+
+    /* ── UNIT CARD (high school) ─────────────── */
+    .unit-card {
+      position: relative;
+      border-radius: var(--radius);
+      overflow: hidden;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      transition: transform 0.18s cubic-bezier(.2,.8,.2,1), box-shadow 0.18s, border-color 0.18s;
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      padding: 1.25rem 1.5rem;
+      color: white;
+      font-family: var(--font);
+      text-align: right;
+      width: 100%;
+    }
+    .unit-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+      border-color: rgba(255,255,255,0.12);
+    }
+    .unit-card:active { transform: scale(0.99); }
+
+    .unit-card-accent {
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      border-radius: 0 var(--radius) var(--radius) 0;
+    }
+
+    .unit-card-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      flex-shrink: 0;
+    }
+
+    .unit-card-body { flex: 1; }
+    .unit-card-label { font-size: 1.1rem; font-weight: 800; letter-spacing: -0.02em; line-height: 1.2; }
+    .unit-card-sublabel { font-size: 0.75rem; opacity: 0.55; margin-top: 0.2rem; }
+
+    .unit-card-count {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.25rem 0.65rem;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.12);
+      flex-shrink: 0;
+    }
 
     /* ── RESPONSIVE ──────────────────────────── */
-    @media (max-width: 480px) {
-      .main { padding: 1.5rem 1rem 3rem; }
-      .nav-btn { padding: 1.75rem 1.25rem; font-size: 1.15rem; }
-      .nav-btn-icon { font-size: 1.8rem; }
-      .modal { height: 94vh; }
-      .modal-head { padding: 0.7rem 0.85rem; }
-      .bc-item { max-width: 80px; }
+    @media (max-width: 520px) {
+      .main { padding: 1.75rem 1rem 4rem; }
+      .hero { padding: 2.5rem 0.5rem 2rem; }
+      .hero-stats { flex-direction: row; }
+      .grade-card-body { padding: 1.4rem 1.25rem 1.25rem; }
+      .screen-banner { padding: 1.4rem 1.5rem; }
+      .modal { height: 95vh; border-radius: var(--radius-sm); }
+      .modal-head { padding: 0.8rem 1rem; }
+      .bc-item { max-width: 85px; }
     }
   </style>
 </head>
 <body>
 
 <noscript>
-  <div style="padding:2rem;text-align:center;font-family:Arial,sans-serif;direction:rtl;color:#fff;background:#111;min-height:100vh">
-    <p>אתר זה דורש JavaScript. אנא הפעל JavaScript בדפדפן שלך.</p>
+  <div style="padding:3rem;text-align:center;font-family:Arial,sans-serif;direction:rtl;color:#fff;background:#0a0e18;min-height:100vh;display:flex;align-items:center;justify-content:center">
+    <p style="font-size:1.1rem;line-height:1.8;max-width:400px">אתר זה דורש JavaScript. אנא הפעל JavaScript בדפדפן שלך כדי לגשת למאגר.</p>
   </div>
 </noscript>
 
 <!-- ── HEADER ──────────────────────────────────── -->
 <header class="header">
-  <div class="header-logo">מאגר מתמטיקה <span>| math repo</span></div>
+  <div class="header-logo">
+    <div class="header-logo-icon">∑</div>
+    <div class="header-logo-text">מאגר מתמטיקה <span>| math repo</span></div>
+  </div>
   <nav class="breadcrumbs" id="breadcrumbs" aria-label="ניווט נוכחי"></nav>
-  <button class="back-btn" id="back-btn" style="display:none" onclick="goBack()" aria-label="חזרה לעמוד הקודם">← חזרה</button>
+  <button class="back-btn" id="back-btn" style="display:none" onclick="goBack()" aria-label="חזרה לעמוד הקודם">
+    ← חזרה
+  </button>
 </header>
 
 <!-- ── MAIN ────────────────────────────────────── -->
 <main class="main" id="app" role="main">
-  <div class="loading"><div class="spinner"></div><span>טוען נתונים...</span></div>
+  <div class="loading">
+    <div class="spinner"></div>
+    <span class="loading-text">טוען נתונים...</span>
+  </div>
 </main>
 
 <!-- ── PDF MODAL ────────────────────────────────── -->
 <div class="modal-back" id="pdf-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="modal-title-text">
   <div class="modal">
     <div class="modal-head">
-      <span class="modal-title" id="modal-title-text"></span>
+      <div class="modal-title-wrap">
+        <div class="modal-label">צפייה בקובץ</div>
+        <div class="modal-title" id="modal-title-text"></div>
+      </div>
       <div class="modal-acts">
         <a id="modal-dl"  href="#" download class="act-btn act-download">⬇ הורדה</a>
         <a id="modal-tab" href="#" target="_blank" rel="noopener noreferrer" class="act-btn act-view">↗ כרטיסייה</a>
-        <button class="back-btn" onclick="closeModal()" aria-label="סגור חלון">✕</button>
+        <button class="modal-close" onclick="closeModal()" aria-label="סגור חלון">✕</button>
       </div>
     </div>
     <div class="modal-body">
       <iframe id="pdf-frame" class="pdf-frame" title="צפייה בקובץ"></iframe>
       <div class="pdf-fallback" id="pdf-fallback">
-        <div style="font-size:2rem">📄</div>
+        <div class="pdf-fallback-icon">📄</div>
         <p>לא ניתן להציג את הקובץ ישירות בדפדפן זה.<br>השתמש בכפתורים למעלה לפתיחה בכרטיסייה חדשה או להורדה.</p>
       </div>
     </div>
@@ -491,15 +964,15 @@ const S = {
 };
 
 // ═══════════════════════════════════════════════════════════
-// LABELS (Hebrew, from taxonomy)
+// LABELS (Hebrew)
 // ═══════════════════════════════════════════════════════════
 const CATEGORY_HE = {
   algebra:      'אלגברה',
   geometry:     'גיאומטריה',
   summaries:    'משימות מסכמות',
   exams:        'מבחנים',
-  uncategorized:'לא מסווג',
-  unknown:      'לא מסווג'
+  uncategorized:'חומרים שונים',
+  unknown:      'חומרים שונים'
 };
 
 const DOCTYPE_HE = {
@@ -514,22 +987,53 @@ const DOCTYPE_HE = {
   'unknown':            ''
 };
 
-const GRADE_HE  = { '7': 'שכבת ז׳', '8': 'שכבת ח׳', '9': 'שכבת ט׳' };
-const UNIT_HE   = { '3-unit':'שלוש יחידות', '4-unit':'ארבע יחידות', '5-unit':'חמש יחידות' };
+const GRADE_HE = { '7': 'שכבת ז׳', '8': 'שכבת ח׳', '9': 'שכבת ט׳' };
+const UNIT_HE  = { '3-unit':'שלוש יחידות', '4-unit':'ארבע יחידות', '5-unit':'חמש יחידות' };
 
-const NAV_ICONS = {
-  'grade-7':      '📐',
-  'grade-8':      '📊',
-  'grade-9':      '📏',
-  'high-school':  '🎓',
-  algebra:        '➕',
-  geometry:       '△',
-  summaries:      '📋',
-  exams:          '📝',
-  uncategorized:  '📁',
-  '3-unit':       '🔵',
-  '4-unit':       '🔷',
-  '5-unit':       '⭐'
+// Visual identities per grade/section
+const GRADE_IDENTITY = {
+  '7':           { bg: 'linear-gradient(135deg,#4338CA,#6D28D9)', accent: '#6366F1', desc: 'אלגברה · גיאומטריה · מבחנים · סיכומים', icon: '📐' },
+  '8':           { bg: 'linear-gradient(135deg,#0369A1,#0891B2)', accent: '#22D3EE', desc: 'אלגברה · גיאומטריה · מבחנים · סיכומים', icon: '📊' },
+  '9':           { bg: 'linear-gradient(135deg,#1D4ED8,#4F46E5)', accent: '#60A5FA', desc: 'אלגברה · גיאומטריה · מבחנים · סיכומים', icon: '📏' },
+  'high-school': { bg: 'linear-gradient(135deg,#92400E,#B45309)', accent: '#F59E0B', desc: 'בגרות 3 · 4 · 5 יחידות', icon: '🎓' }
+};
+
+const CAT_IDENTITY = {
+  algebra:       { bg: 'linear-gradient(135deg,#3730A3,#5B21B6)', accent: '#818CF8', icon: '✕' },
+  geometry:      { bg: 'linear-gradient(135deg,#065F46,#047857)', accent: '#34D399', icon: '△' },
+  summaries:     { bg: 'linear-gradient(135deg,#78350F,#92400E)', accent: '#FBBF24', icon: '◎' },
+  exams:         { bg: 'linear-gradient(135deg,#881337,#9F1239)', accent: '#FB7185', icon: '≡' },
+  uncategorized: { bg: 'linear-gradient(135deg,#1E293B,#334155)', accent: '#94A3B8', icon: '◫' }
+};
+
+const UNIT_IDENTITY = {
+  '3-unit': { bg: 'linear-gradient(135deg,#1E3A5F,#1D4ED8)', accent: '#60A5FA', sublabel: 'בגרות מתמטיקה ברמה בסיסית', icon: '🔵' },
+  '4-unit': { bg: 'linear-gradient(135deg,#3730A3,#5B21B6)', accent: '#A78BFA', sublabel: 'בגרות מתמטיקה ברמה מוגברת', icon: '🔷' },
+  '5-unit': { bg: 'linear-gradient(135deg,#78350F,#B45309)', accent: '#FCD34D', sublabel: 'בגרות מתמטיקה ברמה גבוהה', icon: '⭐' }
+};
+
+const DOCTYPE_ICON = {
+  'worksheet':         '📄',
+  'summary-work':      '📋',
+  'exam':              '📝',
+  'link':              '🔗',
+  'digital-task':      '💻',
+  'printable-task':    '🖨',
+  'embedded-resource': '📎',
+  'mixed':             '📚',
+  'unknown':           '📄'
+};
+
+const DOCTYPE_STRIP = {
+  'worksheet':         'linear-gradient(90deg,#4338CA,#6D28D9)',
+  'summary-work':      'linear-gradient(90deg,#065F46,#047857)',
+  'exam':              'linear-gradient(90deg,#881337,#9F1239)',
+  'link':              'linear-gradient(90deg,#0369A1,#0891B2)',
+  'digital-task':      'linear-gradient(90deg,#0369A1,#0891B2)',
+  'printable-task':    'linear-gradient(90deg,#78350F,#92400E)',
+  'embedded-resource': 'linear-gradient(90deg,#374151,#4B5563)',
+  'mixed':             'linear-gradient(90deg,#374151,#4B5563)',
+  'unknown':           'linear-gradient(90deg,#1E293B,#334155)'
 };
 
 // Hebrew count label with correct grammar
@@ -575,7 +1079,6 @@ function goBack() {
   window.scrollTo({ top: 0, behavior: 'instant' });
 }
 
-// Convenience wrappers used in onclick attributes
 function navHome()         { navigate({ type: 'home' }); }
 function navGrade(g)       { navigate({ type: 'grade', grade: g }); }
 function navCat(g, c)      { navigate({ type: 'category', grade: g, category: c }); }
@@ -623,7 +1126,7 @@ function renderScreen() {
   backBtn.style.display = S.history.length > 0 ? '' : 'none';
 
   const sc = S.screen;
-  if (sc.type === 'home')     renderHome(app, bcs);
+  if      (sc.type === 'home')     renderHome(app, bcs);
   else if (sc.type === 'grade')    renderGrade(app, bcs, sc.grade);
   else if (sc.type === 'category') renderCategory(app, bcs, sc.grade, sc.category);
   else if (sc.type === 'hs-home')  renderHSHome(app, bcs);
@@ -635,31 +1138,60 @@ function renderScreen() {
 // ═══════════════════════════════════════════════════════════
 function renderHome(app, bcs) {
   document.title = 'מאגר מתמטיקה';
-  bcs.innerHTML = `<span class="bc-item active">בית</span>`;
+  bcs.innerHTML  = `<span class="bc-item active">בית</span>`;
 
-  const ss = S.structure;
-  const btns = ss.home.buttons.map(btn => {
+  const ss    = S.structure;
+  const total = S.index.files.length;
+  const hsCount = S.index.files.filter(f => f.school_stage === 'high-school').length;
+  const msCount = total - hsCount;
+
+  const cards = ss.home.buttons.map(btn => {
     const isHS    = btn.id === 'high-school';
     const count   = isHS
       ? S.index.files.filter(f => f.school_stage === 'high-school').length
       : countForGrade(btn.grade);
+    const id      = isHS ? 'high-school' : `grade-${btn.grade}`;
+    const idn     = GRADE_IDENTITY[isHS ? 'high-school' : btn.grade] || {};
     const onclick = isHS ? 'navHSHome()' : `navGrade('${btn.grade}')`;
-    const icon    = NAV_ICONS[btn.id] || '📚';
-    const sub     = countLabel(count);
-    return `<button class="nav-btn" style="background:${btn.style.background}"
-        onclick="${onclick}" aria-label="${h(btn.label)}">
-      <span class="nav-btn-icon">${icon}</span>
-      <span class="nav-btn-label">${h(btn.label)}</span>
-      <span class="nav-btn-count">${sub}</span>
+
+    return `<button class="grade-card" onclick="${onclick}" aria-label="${h(btn.label)}">
+      <div class="grade-card-bg" style="background:${idn.bg || btn.style.background}"></div>
+      <div class="grade-card-accent" style="background:${idn.bg || btn.style.background}"></div>
+      <div class="grade-card-body">
+        <div class="grade-card-icon">${idn.icon || '📚'}</div>
+        <div class="grade-card-label">${h(btn.label)}</div>
+        <div class="grade-card-desc">${h(idn.desc || '')}</div>
+        <div class="grade-card-footer">
+          <span class="grade-card-count">${countLabel(count)}</span>
+          <span class="grade-card-arrow">←</span>
+        </div>
+      </div>
     </button>`;
   }).join('');
 
-  app.innerHTML = `
-    <div class="screen-header">
-      <h1 class="screen-title">${h(ss.home.title)}</h1>
-      <p class="screen-sub">${h(ss.home.subtitle)}</p>
+  app.innerHTML = `<div class="screen-enter">
+    <div class="hero">
+      <div class="hero-eyebrow">✦ חומרי לימוד מקצועיים</div>
+      <h1 class="hero-title">מאגר חומרי לימוד<br>במתמטיקה</h1>
+      <p class="hero-sub">גישה מהירה לכל החומרים לפי שכבה, תחום וסוג מסמך. מיועד למורים ולתלמידים.</p>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <span class="hero-stat-val">${total}</span>
+          <span class="hero-stat-label">קבצים</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat-val">3</span>
+          <span class="hero-stat-label">שכבות חטיבת ביניים</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat-val">3</span>
+          <span class="hero-stat-label">רמות חטיבה עליונה</span>
+        </div>
+      </div>
     </div>
-    <div class="grid-2x2">${btns}</div>`;
+    <div class="section-label">בחר שכבת לימוד</div>
+    <div class="grade-grid">${cards}</div>
+  </div>`;
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -675,43 +1207,63 @@ function renderGrade(app, bcs, grade) {
 
   const ss   = S.structure;
   const cats = ['algebra', 'geometry', 'summaries', 'exams'];
-  const btnList = cats.map(cat => {
+  const idn  = GRADE_IDENTITY[grade] || {};
+
+  const cardList = cats.map(cat => {
     const info  = ss.category_cards[cat];
     const count = filesForGradeCat(grade, cat).length;
-    const icon  = NAV_ICONS[cat] || '📄';
-    return `<button class="nav-btn" style="background:${info.style.background}"
-        onclick="navCat('${grade}','${cat}')" aria-label="${h(info.label)}">
-      <span class="nav-btn-icon">${icon}</span>
-      <span class="nav-btn-label">${h(info.label)}</span>
-      <span class="nav-btn-count">${countLabel(count)}</span>
+    const cidn  = CAT_IDENTITY[cat] || {};
+    return `<button class="grade-card" onclick="navCat('${grade}','${cat}')" aria-label="${h(info.label)}">
+      <div class="grade-card-bg" style="background:${cidn.bg}"></div>
+      <div class="grade-card-accent" style="background:${cidn.bg}"></div>
+      <div class="grade-card-body">
+        <div class="grade-card-icon" style="background:rgba(255,255,255,0.1)">${cidn.icon || '📄'}</div>
+        <div class="grade-card-label">${h(info.label)}</div>
+        <div class="grade-card-desc">${count === 0 ? 'עדיין לא הועלו קבצים לקטגוריה זו' : `${countLabel(count)} זמינים`}</div>
+        <div class="grade-card-footer">
+          <span class="grade-card-count">${countLabel(count)}</span>
+          <span class="grade-card-arrow">←</span>
+        </div>
+      </div>
     </button>`;
   });
 
-  // Show 'uncategorized' bucket only when files exist in it for this grade
   const uncatCount = uncategorizedCountForGrade(grade);
   if (uncatCount > 0) {
-    btnList.push(`<button class="nav-btn" style="background:linear-gradient(135deg,#1f2937,#4b5563)"
-        onclick="navCat('${grade}','uncategorized')" aria-label="חומרים שונים">
-      <span class="nav-btn-icon">📁</span>
-      <span class="nav-btn-label">חומרים שונים</span>
-      <span class="nav-btn-count">${countLabel(uncatCount)}</span>
+    const cidn = CAT_IDENTITY.uncategorized;
+    cardList.push(`<button class="grade-card" onclick="navCat('${grade}','uncategorized')" aria-label="חומרים שונים">
+      <div class="grade-card-bg" style="background:${cidn.bg}"></div>
+      <div class="grade-card-accent" style="background:${cidn.bg}"></div>
+      <div class="grade-card-body">
+        <div class="grade-card-icon">◫</div>
+        <div class="grade-card-label">חומרים שונים</div>
+        <div class="grade-card-desc">קבצים שטרם סווגו לקטגוריה ספציפית</div>
+        <div class="grade-card-footer">
+          <span class="grade-card-count">${countLabel(uncatCount)}</span>
+          <span class="grade-card-arrow">←</span>
+        </div>
+      </div>
     </button>`);
   }
 
-  // 5 buttons: show 4 in 2x2, 5th centered below at reasonable width
-  const gridHtml = btnList.length === 5
-    ? `<div class="grid-2x2">${btnList.slice(0,4).join('')}</div>
-       <div style="margin-top:1.25rem;display:flex;justify-content:center">
-         <div style="width:100%;max-width:320px">${btnList[4]}</div>
-       </div>`
-    : `<div class="grid-2x2">${btnList.join('')}</div>`;
+  const gridHtml = cardList.length === 5
+    ? `<div class="cat-grid">${cardList.slice(0,4).join('')}</div>
+       <div class="cat-extra">${cardList[4]}</div>`
+    : `<div class="cat-grid">${cardList.join('')}</div>`;
 
-  app.innerHTML = `
-    <div class="screen-header">
-      <h1 class="screen-title">${h(gradeLabel)}</h1>
-      <p class="screen-sub">בחר תחום לצפייה בחומרים</p>
+  app.innerHTML = `<div class="screen-enter">
+    <div class="screen-banner" style="background:${idn.bg || '#111'}">
+      <div class="screen-banner-body">
+        <h1>${h(gradeLabel)}</h1>
+        <div class="screen-banner-meta">
+          <span>${countLabel(countForGrade(grade))} בסה"כ</span>
+          <span class="screen-banner-meta-sep">·</span>
+          <span>בחר תחום לימוד</span>
+        </div>
+      </div>
     </div>
-    ${gridHtml}`;
+    ${gridHtml}
+  </div>`;
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -729,19 +1281,25 @@ function renderCategory(app, bcs, grade, category) {
     <span class="bc-item active">${h(catLabel)}</span>`;
 
   const files = filesForGradeCat(grade, category);
-  const ss    = S.structure;
-  const bg    = ss.category_cards[category]?.style.background || 'linear-gradient(135deg,#1f2937,#4b5563)';
+  const cidn  = CAT_IDENTITY[category] || CAT_IDENTITY.uncategorized;
 
   const content = files.length === 0
-    ? emptyState(ss.empty_state_he)
+    ? emptyState()
     : `<div class="files-grid">${files.map(fileCard).join('')}</div>`;
 
-  app.innerHTML = `
-    <div class="screen-banner" style="background:${bg}">
-      <h1>${h(catLabel)}</h1>
-      <p>${h(gradeLabel)} · ${countLabel(files.length)}</p>
+  app.innerHTML = `<div class="screen-enter">
+    <div class="screen-banner" style="background:${cidn.bg}">
+      <div class="screen-banner-body">
+        <h1>${h(catLabel)}</h1>
+        <div class="screen-banner-meta">
+          <span>${h(gradeLabel)}</span>
+          <span class="screen-banner-meta-sep">·</span>
+          <span>${countLabel(files.length)}</span>
+        </div>
+      </div>
     </div>
-    ${content}`;
+    ${content}
+  </div>`;
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -754,25 +1312,37 @@ function renderHSHome(app, bcs) {
     <span class="bc-sep">›</span>
     <span class="bc-item active">חטיבה עליונה</span>`;
 
-  const ss   = S.structure;
-  const btns = ss.high_school_home.buttons.map(btn => {
+  const ss    = S.structure;
+  const idn   = GRADE_IDENTITY['high-school'];
+  const total = S.index.files.filter(f => f.school_stage === 'high-school').length;
+
+  const units = ss.high_school_home.buttons.map(btn => {
     const count = filesForUnit(btn.unit_level).length;
-    const sub   = countLabel(count);
-    const icon  = NAV_ICONS[btn.unit_level] || '📚';
-    return `<button class="nav-btn" style="background:${btn.style.background}"
-        onclick="navUnit('${btn.unit_level}')" aria-label="${h(btn.label)}">
-      <span class="nav-btn-icon">${icon}</span>
-      <span class="nav-btn-label">${h(btn.label)}</span>
-      <span class="nav-btn-count">${sub}</span>
+    const uidn  = UNIT_IDENTITY[btn.unit_level] || {};
+    return `<button class="unit-card" onclick="navUnit('${btn.unit_level}')" aria-label="${h(btn.label)}">
+      <div class="unit-card-accent" style="background:${uidn.bg}"></div>
+      <div class="unit-card-icon">${uidn.icon || '📚'}</div>
+      <div class="unit-card-body">
+        <div class="unit-card-label">${h(btn.label)}</div>
+        <div class="unit-card-sublabel">${h(uidn.sublabel || '')}</div>
+      </div>
+      <div class="unit-card-count">${countLabel(count)}</div>
     </button>`;
   }).join('');
 
-  app.innerHTML = `
-    <div class="screen-header">
-      <h1 class="screen-title">חטיבה עליונה</h1>
-      <p class="screen-sub">בגרות במתמטיקה לפי רמת יחידות</p>
+  app.innerHTML = `<div class="screen-enter">
+    <div class="screen-banner" style="background:${idn.bg}">
+      <div class="screen-banner-body">
+        <h1>חטיבה עליונה</h1>
+        <div class="screen-banner-meta">
+          <span>בגרות במתמטיקה</span>
+          <span class="screen-banner-meta-sep">·</span>
+          <span>${countLabel(total)}</span>
+        </div>
+      </div>
     </div>
-    <div class="grid-1col">${btns}</div>`;
+    <div class="hs-list">${units}</div>
+  </div>`;
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -790,20 +1360,25 @@ function renderUnit(app, bcs, unitLevel) {
     <span class="bc-item active">${h(unitLabel)}</span>`;
 
   const files = filesForUnit(unitLevel);
-  const ss    = S.structure;
-  const btn   = ss.high_school_home.buttons.find(b => b.unit_level === unitLevel);
-  const bg    = btn?.style.background || '#1a1a2e';
+  const uidn  = UNIT_IDENTITY[unitLevel] || {};
 
   const content = files.length === 0
-    ? emptyState(ss.empty_state_he)
+    ? emptyState()
     : `<div class="files-grid">${files.map(fileCard).join('')}</div>`;
 
-  app.innerHTML = `
-    <div class="screen-banner" style="background:${bg}">
-      <h1>${h(title)}</h1>
-      <p>${countLabel(files.length)}</p>
+  app.innerHTML = `<div class="screen-enter">
+    <div class="screen-banner" style="background:${uidn.bg || '#111'}">
+      <div class="screen-banner-body">
+        <h1>${h(title)}</h1>
+        <div class="screen-banner-meta">
+          <span>${h(uidn.sublabel || '')}</span>
+          <span class="screen-banner-meta-sep">·</span>
+          <span>${countLabel(files.length)}</span>
+        </div>
+      </div>
     </div>
-    ${content}`;
+    ${content}
+  </div>`;
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -811,13 +1386,16 @@ function renderUnit(app, bcs, unitLevel) {
 // ═══════════════════════════════════════════════════════════
 function fileCard(file) {
   const title      = h(file.title || 'ללא שם');
+  const docType    = file.document_type || 'unknown';
   const gradeLabel = file.grade && file.grade !== 'unknown' ? `כיתה ${file.grade}` : null;
   const catLabel   = CATEGORY_HE[file.primary_category];
-  const docLabel   = DOCTYPE_HE[file.document_type] || '';
+  const docLabel   = DOCTYPE_HE[docType] || '';
+  const typeIcon   = DOCTYPE_ICON[docType] || '📄';
+  const stripBg    = DOCTYPE_STRIP[docType] || DOCTYPE_STRIP['unknown'];
 
   const badges = [
     gradeLabel ? `<span class="badge badge-grade">${h(gradeLabel)}</span>` : '',
-    catLabel && catLabel !== 'לא מסווג' ? `<span class="badge badge-cat">${h(catLabel)}</span>` : '',
+    catLabel && catLabel !== 'חומרים שונים' ? `<span class="badge badge-cat">${h(catLabel)}</span>` : '',
     docLabel ? `<span class="badge badge-type">${h(docLabel)}</span>` : ''
   ].filter(Boolean).join('');
 
@@ -826,18 +1404,24 @@ function fileCard(file) {
     .map(t => `<span class="topic-tag">${h(t)}</span>`)
     .join('');
 
-  const actions = buildActions(file);
-
   const metaParts = [];
-  if (file.year && file.year !== 'unknown') metaParts.push(`<span>📅 ${h(String(file.year))}</span>`);
+  if (file.year   && file.year   !== 'unknown') metaParts.push(`<span>📅 ${h(String(file.year))}</span>`);
   if (file.author && file.author !== 'unknown') metaParts.push(`<span>✍️ ${h(file.author)}</span>`);
   const meta = metaParts.join('');
 
+  const actions = buildActions(file);
+
   return `<div class="file-card">
-    <div class="fc-title">${title}</div>
-    ${badges  ? `<div class="fc-badges">${badges}</div>`   : ''}
-    ${topics  ? `<div class="fc-topics">${topics}</div>`   : ''}
-    ${meta    ? `<div class="fc-meta">${meta}</div>`       : ''}
+    <div class="fc-type-strip" style="background:${stripBg}"></div>
+    <div class="fc-body">
+      <div class="fc-header">
+        <div class="fc-type-icon">${typeIcon}</div>
+        <div class="fc-title">${title}</div>
+      </div>
+      ${badges ? `<div class="fc-badges">${badges}</div>` : ''}
+      ${topics ? `<div class="fc-topics">${topics}</div>` : ''}
+      ${meta   ? `<div class="fc-meta">${meta}</div>`     : ''}
+    </div>
     ${actions ? `<div class="fc-actions">${actions}</div>` : ''}
   </div>`;
 }
@@ -846,16 +1430,15 @@ function fileCard(file) {
 // COMPONENT: FILE ACTIONS
 // ═══════════════════════════════════════════════════════════
 function buildActions(file) {
-  const actions   = [];
-  const isRepo    = file.source_type === 'repo-file' && file.path;
-  const fileUrl   = isRepo ? `./${file.path}` : (file.source_url || null);
+  const actions = [];
+  const isRepo  = file.source_type === 'repo-file' && file.path;
+  const fileUrl = isRepo ? `./${file.path}` : (file.source_url || null);
 
   if (!fileUrl) return '';
 
-  // View — always available for any real file
   if (isRepo) {
     actions.push(`<button class="act-btn act-view js-viewer"
-      data-fileid="${h(file.id)}" aria-label="צפייה">
+      data-fileid="${h(file.id)}" aria-label="צפייה בקובץ">
       👁 צפייה
     </button>`);
   } else {
@@ -863,14 +1446,12 @@ function buildActions(file) {
       target="_blank" rel="noopener noreferrer" aria-label="פתח קישור">↗ פתח</a>`);
   }
 
-  // Download — only when download_ready=true
   if (file.download_ready === true && isRepo) {
     actions.push(`<a class="act-btn act-download"
       href="${ha(fileUrl)}" download="${ha(file.file_name || 'file')}"
-      aria-label="הורדה">⬇ הורדה</a>`);
+      aria-label="הורדת קובץ">⬇ הורדה</a>`);
   }
 
-  // Print — only when print_ready=true; opens in new tab (user prints from browser)
   if (file.print_ready === true && isRepo) {
     actions.push(`<a class="act-btn act-print"
       href="${ha(fileUrl)}" target="_blank" rel="noopener noreferrer"
@@ -883,10 +1464,11 @@ function buildActions(file) {
 // ═══════════════════════════════════════════════════════════
 // COMPONENT: EMPTY STATE
 // ═══════════════════════════════════════════════════════════
-function emptyState(msg) {
+function emptyState() {
   return `<div class="empty-state">
-    <div class="empty-icon">📂</div>
-    <div class="empty-msg">${h(msg || 'אין עדיין קבצים משויכים לקטגוריה הזו.')}</div>
+    <div class="empty-illustration">📂</div>
+    <div class="empty-title">עדיין לא הועלו קבצים</div>
+    <div class="empty-msg">הקטגוריה הזו ריקה כרגע.<br>קבצים חדשים יופיעו כאן כשיתווספו למאגר.</div>
   </div>`;
 }
 
@@ -912,9 +1494,6 @@ function openViewer(fileId) {
 
   fallback.classList.remove('visible');
   frame.src = url;
-
-  // If the browser blocks the iframe (e.g., X-Frame-Options), show fallback
-  // We use a load timeout as a heuristic — a proper error event is not fired for X-Frame-Options
   frame.onload = () => { fallback.classList.remove('visible'); };
 
   modal.style.display = 'flex';
@@ -933,13 +1512,13 @@ document.getElementById('pdf-modal').addEventListener('click', function(e) {
   if (e.target === this) closeModal();
 });
 
-// Event delegation for viewer buttons (avoids inline onclick with user-derived id)
+// Event delegation for viewer buttons
 document.getElementById('app').addEventListener('click', function(e) {
   const btn = e.target.closest('.js-viewer');
   if (btn) openViewer(btn.dataset.fileid);
 });
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
 // ═══════════════════════════════════════════════════════════
 // ERROR SCREEN
@@ -948,11 +1527,11 @@ function renderError(err) {
   const app    = document.getElementById('app');
   const detail = err && err.message ? err.message : String(err);
   app.innerHTML = `<div class="error-scr">
-    <div class="error-icon">⚠️</div>
+    <div class="error-icon-wrap">⚠</div>
     <div class="error-title">לא ניתן לטעון את המאגר</div>
     <div class="error-body">
       ודא שהדף מוגש משרת ולא ישירות מקובץ (file://).<br>
-      לבדיקה מקומית: הרץ <code>python3 -m http.server 8080</code> בתיקיית הריפו ופתח <code>http://localhost:8080</code>.
+      לבדיקה מקומית: הרץ <code>python3 -m http.server 8080</code> ופתח <code>http://localhost:8080</code>.
       <div class="error-code">${h(detail)}</div>
     </div>
   </div>`;
@@ -961,8 +1540,6 @@ function renderError(err) {
 // ═══════════════════════════════════════════════════════════
 // ESCAPING UTILITIES
 // ═══════════════════════════════════════════════════════════
-
-// Safe HTML text content escaping
 function h(str) {
   return String(str == null ? '' : str)
     .replace(/&/g, '&amp;')
@@ -972,7 +1549,6 @@ function h(str) {
     .replace(/'/g, '&#39;');
 }
 
-// Safe HTML attribute escaping (for href / download)
 function ha(str) {
   return encodeURI(String(str == null ? '' : str))
     .replace(/"/g, '%22')
