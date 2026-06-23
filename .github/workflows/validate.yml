@@ -39,8 +39,12 @@ jobs:
           mkdir -p reports
           python3 scripts/topic-organizer.py --report reports/topic-audit.json
 
-      - name: Upload topic audit
+      - name: Metadata audit
+        run: |
+          python3 scripts/metadata-audit.py --report reports/metadata-audit.json
+
+      - name: Upload reports
         uses: actions/upload-artifact@v4
         with:
-          name: topic-audit
-          path: reports/topic-audit.json
+          name: maagar-audit-reports
+          path: reports/*.json
