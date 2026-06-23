@@ -2,8 +2,9 @@
 # Full Repository Truth Report
 
 **ריפו:** `yanivmizrachiy/maagar`
-**תאריך עדכון:** 2026-06-03
+**תאריך עדכון:** 2026-06-23
 **ענף ראשי:** `main` (SHA: `4ff5ce4` — PR #11 מוזג)
+**עדכון אחרון:** PR #13 (בתהליך) — קליטת מאגר מתמטיקה גדול (300+ קבצים אמיתיים). ראה RULES.md §26.
 
 ---
 
@@ -17,8 +18,8 @@
 | GitHub Pages | **פעיל** ✅ |
 | Last Pages Deploy | PR #11 → SHA `4ff5ce4` |
 | אתר חי | `https://yanivmizrachiy.github.io/maagar/` |
-| קבצים אמיתיים | 4 PDF |
-| רשומות באינדקס | 4 |
+| קבצים אמיתיים | 300+ (ז/ח/ט + חט"ע) — מקור האמת: `metadata/index.json` |
+| רשומות באינדקס | ראה `metadata/index.json` (הורחב מאוד ב-PR #13) |
 | Backend | אין — הכל סטטי |
 | עיצוב | Premium redesign v2 (PR #11) ✅ |
 | חיפוש | חיפוש חי client-side + פילטרים (PR #7) ✅ |
@@ -45,6 +46,7 @@
 | #10 | docs: GPT→Claude handoff protocol, first-import checklist, AGENTS sync | ✅ merged |
 | #11 | feat: docs, maintainability, visual design upgrade | ✅ merged |
 | #12 | feat: continuity system, CONTINUITY_GUIDE.md, startup protocol | 🔄 in progress |
+| #13 | feat(files): ingest 300+ real math files (grades 7-9 + HS) + fix batch-add build_id | 🔄 in progress |
 
 ---
 
