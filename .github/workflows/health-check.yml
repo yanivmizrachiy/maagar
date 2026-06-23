@@ -1,0 +1,55 @@
+name: Daily Maagar Health Check
+
+on:
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  health-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Validate site and repository
+        run: |
+          mkdir -p reports
+          python3 scripts/validate-single-rules-page.py
+          python3 scripts/validate-site-shell.py
+          node --check assets/site.js
+          node --check assets/site-deeplink.js
+          node --check assets/site-share.js
+          python3 scripts/validate-file-links.py
+          bash scripts/validate-all.sh
+          python3 scripts/validate-topic-map.py
+          python3 scripts/test-logic.py
+
+      - name: Generate health reports
+        run: |
+          mkdir -p reports
+          python3 scripts/topic-organizer.py --report reports/topic-audit.json
+          python3 scripts/metadata-audit.py --report reports/metadata-audit.json
+          python3 scripts/title-cleaner.py --report reports/title-cleanup.json
+          python3 scripts/smart-topic-review.py --report reports/smart-topic-review.json
+          python3 scripts/smart-cleanup-plan.py --json reports/smart-cleanup-plan.json --md reports/smart-cleanup-plan.md
+          python3 scripts/site-action-report.py --report reports/site-action-report.json
+
+      - name: Upload health reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: maagar-daily-health-reports
+          path: reports/*
