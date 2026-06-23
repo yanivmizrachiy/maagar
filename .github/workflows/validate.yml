@@ -36,6 +36,10 @@ jobs:
           python3 scripts/validate-site-shell.py
           node --check assets/site.js
 
+      - name: Validate file links
+        run: |
+          python3 scripts/validate-file-links.py
+
       - name: Validate metadata
         run: |
           bash scripts/validate-all.sh
