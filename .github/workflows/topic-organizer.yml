@@ -27,17 +27,24 @@ jobs:
         with:
           python-version: "3.x"
 
-      - name: Run topic audit
+      - name: Validate topic map
+        run: |
+          python3 scripts/validate-topic-map.py
+
+      - name: Run audits
         run: |
           mkdir -p reports
           python3 scripts/topic-organizer.py --report reports/topic-audit.json
+          python3 scripts/metadata-audit.py --report reports/metadata-audit.json
 
       - name: Apply topic organization and site grouping
         if: ${{ github.event.inputs.apply == 'true' }}
         run: |
           python3 scripts/topic-organizer.py --apply --report reports/topic-audit.json
           python3 scripts/patch-site-topic-groups.py
+          python3 scripts/metadata-audit.py --report reports/metadata-audit.json
           bash scripts/validate-all.sh
+          python3 scripts/validate-topic-map.py
           python3 scripts/test-logic.py
 
       - name: Commit changes
@@ -45,7 +52,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add metadata/index.json reports/topic-audit.json index.html
+          git add metadata/index.json reports/*.json index.html
           if git diff --cached --quiet; then
             echo "No topic changes to commit"
           else
@@ -53,8 +60,8 @@ jobs:
             git push
           fi
 
-      - name: Upload topic audit
+      - name: Upload audit reports
         uses: actions/upload-artifact@v4
         with:
-          name: topic-audit
-          path: reports/topic-audit.json
+          name: maagar-topic-audit
+          path: reports/*.json
