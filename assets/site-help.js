@@ -70,11 +70,11 @@
       a.rel = 'noopener noreferrer';
     });
     document.querySelectorAll('.acts').forEach(group => {
-      const seen = new Set();
+      const seenTargets = new Set();
       group.querySelectorAll('a.act').forEach(a => {
-        const key = (a.getAttribute('href') || '') + '|' + a.textContent.trim();
-        if (seen.has(key)) a.remove();
-        else seen.add(key);
+        const target = (a.getAttribute('href') || '').trim();
+        if (seenTargets.has(target)) a.remove();
+        else seenTargets.add(target);
       });
     });
   }
