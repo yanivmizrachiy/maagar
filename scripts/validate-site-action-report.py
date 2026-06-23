@@ -23,11 +23,13 @@ REQUIRED_FEATURES = [
     "file_share_buttons",
     "current_view_share_buttons",
     "modal_file_share_buttons",
+    "teacher_help_panel",
 ]
 
 REQUIRED_SUMMARY_FLAGS = [
     "current_view_share_available",
     "modal_file_share_available",
+    "teacher_help_available",
     "url_state_share_available",
     "deep_link_share_available",
 ]
