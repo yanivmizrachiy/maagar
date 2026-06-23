@@ -27,10 +27,18 @@
     }
   }
 
+  function findViewButton(fileId) {
+    const buttons = document.querySelectorAll('[data-view]');
+    for (const btn of buttons) {
+      if ((btn.dataset.view || '') === fileId) return btn;
+    }
+    return null;
+  }
+
   function openRequestedFile() {
     const fileId = getFileIdFromUrl();
     if (!fileId) return false;
-    const btn = document.querySelector(`[data-view="${CSS.escape(fileId)}"]`);
+    const btn = findViewButton(fileId);
     if (!btn) return false;
     btn.scrollIntoView({ behavior: 'smooth', block: 'center' });
     setTimeout(() => btn.click(), 250);
