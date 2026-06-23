@@ -173,7 +173,7 @@ def process_batch(specs: list[dict], dry_run: bool) -> tuple[dict, dict]:
         dest_path     = determine_path(grade, unit_level, spec['category'], dest_filename)
         rel_path      = dest_path.relative_to(REPO)
 
-        base_id   = build_id(grade or unit_level, spec['category'], title,
+        base_id   = build_id(grade, unit_level, spec['category'], title,
                              spec['doctype'], spec['year'])
         record_id = unique_id(base_id, existing_ids)
 
