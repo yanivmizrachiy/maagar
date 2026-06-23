@@ -22,11 +22,15 @@ jobs:
         with:
           python-version: "3.x"
 
-      - name: Validate metadata and repository rules
+      - name: Validate metadata
         run: |
           bash scripts/validate-all.sh
 
-      - name: Validate site navigation logic
+      - name: Validate topic map
+        run: |
+          python3 scripts/validate-topic-map.py
+
+      - name: Validate navigation
         run: |
           python3 scripts/test-logic.py
 
