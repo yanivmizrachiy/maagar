@@ -63,10 +63,12 @@ async function expectVisibleAndTouchable(locator, minHeight = 40) {
 }
 
 const viewports = [
-  { name: 'small-phone', width: 360, height: 740, minButton: 42 },
-  { name: 'large-phone', width: 430, height: 932, minButton: 42 },
-  { name: 'tablet', width: 820, height: 1180, minButton: 40 },
-  { name: 'desktop', width: 1440, height: 1000, minButton: 40 },
+  { name: 'small-phone', width: 360, height: 740, minButton: 42, modalButton: 36 },
+  { name: 'large-phone', width: 430, height: 932, minButton: 42, modalButton: 36 },
+  { name: 'phone-landscape', width: 740, height: 360, minButton: 40, modalButton: 34 },
+  { name: 'tablet', width: 820, height: 1180, minButton: 40, modalButton: 36 },
+  { name: 'desktop', width: 1440, height: 1000, minButton: 40, modalButton: 36 },
+  { name: 'short-desktop', width: 1200, height: 560, minButton: 40, modalButton: 34 },
 ];
 
 for (const vp of viewports) {
@@ -113,11 +115,11 @@ for (const vp of viewports) {
       await viewButton.click();
       await expect(page.locator('#modal')).toBeVisible();
       await noHorizontalOverflow(page);
-      await expectVisibleAndTouchable(page.locator('#mo'), 36);
-      await expectVisibleAndTouchable(page.locator('#md'), 36);
-      await expectVisibleAndTouchable(page.locator('#copy-modal-file-link'), 36);
-      await expectVisibleAndTouchable(page.locator('#share-modal-file-whatsapp'), 36);
-      await expectVisibleAndTouchable(page.locator('#x'), 36);
+      await expectVisibleAndTouchable(page.locator('#mo'), vp.modalButton);
+      await expectVisibleAndTouchable(page.locator('#md'), vp.modalButton);
+      await expectVisibleAndTouchable(page.locator('#copy-modal-file-link'), vp.modalButton);
+      await expectVisibleAndTouchable(page.locator('#share-modal-file-whatsapp'), vp.modalButton);
+      await expectVisibleAndTouchable(page.locator('#x'), vp.modalButton);
       await page.locator('#x').click();
       await expect(page.locator('#modal')).not.toBeVisible();
 
