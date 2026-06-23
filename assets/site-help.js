@@ -58,6 +58,7 @@
       .help-card{background:#ffffff0b;border:1px solid #ffffff18;border-radius:16px;padding:14px;min-width:0;overflow-wrap:anywhere}
       .help-card b{display:block;color:#fff;margin-bottom:6px}
       .help-close{float:left;border:0;background:#ffffff18;color:white;border-radius:12px;padding:8px 12px;font-weight:800;cursor:pointer;min-height:40px}
+      .act.disabled{opacity:.55;cursor:not-allowed;background:#64748b22!important;border-color:#94a3b855!important;color:#cbd5e1!important;box-shadow:none!important}
     `;
     document.head.appendChild(style);
   }
@@ -73,6 +74,14 @@
       const seen = new Set();
       group.querySelectorAll('a.act').forEach(a => {
         const target = (a.getAttribute('href') || '').trim();
+        if (!target || target === '#') {
+          const disabled = document.createElement('span');
+          disabled.className = 'act disabled';
+          disabled.setAttribute('aria-disabled', 'true');
+          disabled.textContent = 'אין קישור פעיל';
+          a.replaceWith(disabled);
+          return;
+        }
         const kind = a.hasAttribute('download') ? 'download' : 'open';
         const key = target + '|' + kind;
         if (seen.has(key)) a.remove();
