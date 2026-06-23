@@ -38,6 +38,10 @@ jobs:
           node --check assets/site-deeplink.js
           node --check assets/site-share.js
 
+      - name: Validate browser metadata contract
+        run: |
+          python3 scripts/validate-site-data-contract.py
+
       - name: Validate file links
         run: |
           python3 scripts/validate-file-links.py
