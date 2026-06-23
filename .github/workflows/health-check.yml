@@ -51,6 +51,7 @@ jobs:
           python3 scripts/smart-topic-review.py --report reports/smart-topic-review.json
           python3 scripts/smart-cleanup-plan.py --json reports/smart-cleanup-plan.json --md reports/smart-cleanup-plan.md
           python3 scripts/site-action-report.py --report reports/site-action-report.json
+          python3 scripts/site-action-report-md.py --json reports/site-action-report.json --md reports/site-action-report.md
 
       - name: Upload health reports
         uses: actions/upload-artifact@v4
