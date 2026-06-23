@@ -51,8 +51,12 @@ jobs:
         run: |
           python3 scripts/smart-topic-review.py --report reports/smart-topic-review.json
 
+      - name: Smart cleanup plan
+        run: |
+          python3 scripts/smart-cleanup-plan.py --json reports/smart-cleanup-plan.json --md reports/smart-cleanup-plan.md
+
       - name: Upload reports
         uses: actions/upload-artifact@v4
         with:
           name: maagar-audit-reports
-          path: reports/*.json
+          path: reports/*
