@@ -4,6 +4,7 @@
 validate-workflow-site-checks.py
 
 בודק שה-workflows המרכזיים מגנים על כל קבצי ה-JS של האתר.
+הבדיקה מגלה אוטומטית כל assets/*.js, ולכן קובץ JS חדש שלא נכנס ל-CI ייתפס.
 הבדיקה לא משנה קבצים.
 """
 
@@ -13,20 +14,13 @@ import sys
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
+ASSETS = REPO / "assets"
 
 WORKFLOWS = [
     ".github/workflows/validate.yml",
     ".github/workflows/topic-organizer.yml",
     ".github/workflows/health-check.yml",
     ".github/workflows/auto-metadata-cleanup.yml",
-]
-
-SITE_JS_CHECKS = [
-    "node --check assets/site.js",
-    "node --check assets/site-url-state.js",
-    "node --check assets/site-deeplink.js",
-    "node --check assets/site-share.js",
-    "node --check assets/site-view-share.js",
 ]
 
 CORE_SITE_CHECKS = [
@@ -36,8 +30,17 @@ CORE_SITE_CHECKS = [
 ]
 
 
+def site_js_checks() -> list[str]:
+    files = sorted(ASSETS.glob("*.js"))
+    return [f"node --check assets/{path.name}" for path in files]
+
+
 def main() -> int:
     errors: list[str] = []
+    js_checks = site_js_checks()
+
+    if not js_checks:
+        errors.append("no assets/*.js files found")
 
     for rel in WORKFLOWS:
         path = REPO / rel
@@ -45,7 +48,7 @@ def main() -> int:
             errors.append(f"missing workflow: {rel}")
             continue
         text = path.read_text(encoding="utf-8", errors="ignore")
-        for needle in SITE_JS_CHECKS:
+        for needle in js_checks:
             if needle not in text:
                 errors.append(f"{rel}: missing {needle}")
         for needle in CORE_SITE_CHECKS:
@@ -54,7 +57,9 @@ def main() -> int:
 
     print("MAAGAR WORKFLOW SITE CHECKS")
     print(f"Workflows checked: {len(WORKFLOWS)}")
-    print(f"Required JS checks: {len(SITE_JS_CHECKS)}")
+    print(f"Discovered JS checks: {len(js_checks)}")
+    for check in js_checks:
+        print(f"CHECK {check}")
     print(f"Required core checks: {len(CORE_SITE_CHECKS)}")
 
     if errors:
@@ -62,7 +67,7 @@ def main() -> int:
             print(f"FAIL  {err}")
         return 1
 
-    print("OK    all workflows protect the browser site files")
+    print("OK    all workflows protect every browser site JS file")
     return 0
 
 
