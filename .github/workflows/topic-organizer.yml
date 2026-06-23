@@ -40,6 +40,7 @@ jobs:
         run: |
           python3 scripts/validate-site-shell.py
           node --check assets/site.js
+          node --check assets/site-url-state.js
           node --check assets/site-deeplink.js
           node --check assets/site-share.js
           python3 scripts/validate-site-data-contract.py
@@ -69,6 +70,7 @@ jobs:
           python3 scripts/validate-topic-map.py
           python3 scripts/validate-site-shell.py
           node --check assets/site.js
+          node --check assets/site-url-state.js
           node --check assets/site-deeplink.js
           node --check assets/site-share.js
           python3 scripts/validate-site-data-contract.py
