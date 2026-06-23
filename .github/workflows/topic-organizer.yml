@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       apply:
-        description: "Apply changes to metadata/index.json"
+        description: "Apply changes to metadata/index.json and site grouping"
         required: true
         default: "false"
         type: choice
@@ -32,10 +32,11 @@ jobs:
           mkdir -p reports
           python3 scripts/topic-organizer.py --report reports/topic-audit.json
 
-      - name: Apply topic organization
+      - name: Apply topic organization and site grouping
         if: ${{ github.event.inputs.apply == 'true' }}
         run: |
           python3 scripts/topic-organizer.py --apply --report reports/topic-audit.json
+          python3 scripts/patch-site-topic-groups.py
           bash scripts/validate-all.sh
           python3 scripts/test-logic.py
 
@@ -44,11 +45,11 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add metadata/index.json reports/topic-audit.json
+          git add metadata/index.json reports/topic-audit.json index.html
           if git diff --cached --quiet; then
             echo "No topic changes to commit"
           else
-            git commit -m "chore(topics): organize metadata topics"
+            git commit -m "chore(topics): organize metadata and site grouping"
             git push
           fi
 
