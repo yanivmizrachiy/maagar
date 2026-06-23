@@ -13,6 +13,7 @@ validate-site-shell.py
 - קיימת שכבת שיתוף קובץ מכרטיס.
 - קיימת שכבת שיתוף תצוגה נוכחית.
 - קיימת שכבת שיתוף קובץ מתוך חלון הצפייה.
+- קיימת שכבת עזרה מהירה למורים.
 
 הבדיקה לא משנה קבצים.
 """
@@ -31,6 +32,7 @@ DEEPLINK_JS = REPO / "assets" / "site-deeplink.js"
 SHARE_JS = REPO / "assets" / "site-share.js"
 VIEW_SHARE_JS = REPO / "assets" / "site-view-share.js"
 MODAL_SHARE_JS = REPO / "assets" / "site-modal-share.js"
+HELP_JS = REPO / "assets" / "site-help.js"
 
 REQUIRED_IDS = [
     "q",
@@ -100,6 +102,15 @@ REQUIRED_MODAL_SHARE_SNIPPETS = [
     "https://wa.me/",
 ]
 
+REQUIRED_HELP_SNIPPETS = [
+    "site-help-open",
+    "site-help-panel",
+    "עזרה מהירה",
+    "צפייה מוטמעת",
+    "שיתוף תצוגה",
+    "help-card",
+]
+
 
 def main() -> int:
     errors: list[str] = []
@@ -113,6 +124,7 @@ def main() -> int:
         (SHARE_JS, "assets/site-share.js"),
         (VIEW_SHARE_JS, "assets/site-view-share.js"),
         (MODAL_SHARE_JS, "assets/site-modal-share.js"),
+        (HELP_JS, "assets/site-help.js"),
     ]:
         if not path.exists():
             errors.append(f"{label} missing")
@@ -129,6 +141,7 @@ def main() -> int:
     share_js = SHARE_JS.read_text(encoding="utf-8", errors="ignore")
     view_share_js = VIEW_SHARE_JS.read_text(encoding="utf-8", errors="ignore")
     modal_share_js = MODAL_SHARE_JS.read_text(encoding="utf-8", errors="ignore")
+    help_js = HELP_JS.read_text(encoding="utf-8", errors="ignore")
     css = CSS.read_text(encoding="utf-8", errors="ignore")
 
     script_order = [
@@ -138,6 +151,7 @@ def main() -> int:
         "site-share.js",
         "site-view-share.js",
         "site-modal-share.js",
+        "site-help.js",
     ]
 
     if 'href="assets/site.css"' not in html:
@@ -182,6 +196,10 @@ def main() -> int:
         if snippet not in modal_share_js:
             errors.append(f"assets/site-modal-share.js missing snippet: {snippet}")
 
+    for snippet in REQUIRED_HELP_SNIPPETS:
+        if snippet not in help_js:
+            errors.append(f"assets/site-help.js missing snippet: {snippet}")
+
     for css_class in [".file", ".act", ".modal", ".viewer", ".chip"]:
         if css_class not in css:
             errors.append(f"assets/site.css missing class: {css_class}")
@@ -191,7 +209,7 @@ def main() -> int:
             print(f"FAIL  {err}")
         return 1
 
-    print("OK    standalone site shell, URL state, deep links, file sharing, view sharing and modal sharing are wired correctly")
+    print("OK    standalone site shell, URL state, deep links, sharing and teacher help are wired correctly")
     return 0
 
 
