@@ -47,6 +47,10 @@ jobs:
         run: |
           python3 scripts/metadata-audit.py --report reports/metadata-audit.json
 
+      - name: Smart topic review
+        run: |
+          python3 scripts/smart-topic-review.py --report reports/smart-topic-review.json
+
       - name: Upload reports
         uses: actions/upload-artifact@v4
         with:
