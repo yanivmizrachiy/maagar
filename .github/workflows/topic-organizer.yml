@@ -42,6 +42,7 @@ jobs:
           node --check assets/site.js
           node --check assets/site-deeplink.js
           node --check assets/site-share.js
+          python3 scripts/validate-site-data-contract.py
           python3 scripts/validate-file-links.py
 
       - name: Run audits
@@ -70,6 +71,7 @@ jobs:
           node --check assets/site.js
           node --check assets/site-deeplink.js
           node --check assets/site-share.js
+          python3 scripts/validate-site-data-contract.py
           python3 scripts/validate-file-links.py
           python3 scripts/test-logic.py
 
