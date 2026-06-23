@@ -8,7 +8,7 @@ site-action-report.py
 - כמה יקבלו הורדה.
 - כמה יקבלו פתיחה בכרטיסייה.
 - כמה הם PDF / Office / קישור חיצוני / לא מזוהים.
-- אילו יכולות דפדפן מחוברות בפועל: URL state, קישור עומק, שיתוף קובץ ושיתוף תצוגה.
+- אילו יכולות דפדפן מחוברות בפועל: URL state, קישור עומק, שיתוף קובץ, שיתוף תצוגה ושיתוף מתוך חלון צפייה.
 
 הסקריפט לא משנה קבצים, למעט כתיבת הדוח המבוקש.
 """
@@ -35,6 +35,7 @@ FEATURE_FILES = {
     "file_deep_links": "site-deeplink.js",
     "file_share_buttons": "site-share.js",
     "current_view_share_buttons": "site-view-share.js",
+    "modal_file_share_buttons": "site-modal-share.js",
 }
 
 FEATURE_SNIPPETS = {
@@ -42,6 +43,7 @@ FEATURE_SNIPPETS = {
     "file_deep_links": ["searchParams.get('file')", "window.maagarFileLink", "data-view"],
     "file_share_buttons": ["maagarFileLink", "https://wa.me/", "העתק קישור"],
     "current_view_share_buttons": ["copy-view-link", "share-view-whatsapp", "העתק תצוגה", "שתף תצוגה"],
+    "modal_file_share_buttons": ["copy-modal-file-link", "share-modal-file-whatsapp", "currentFileLink", "currentFileTitle"],
 }
 
 
@@ -154,6 +156,7 @@ def main() -> int:
             "no_action_cards": len(no_action),
             "file_share_cards": len(open_ready),
             "current_view_share_available": bool(browser_features.get("current_view_share_buttons", {}).get("loaded_in_index")),
+            "modal_file_share_available": bool(browser_features.get("modal_file_share_buttons", {}).get("loaded_in_index")),
             "url_state_share_available": bool(browser_features.get("url_state_filters", {}).get("loaded_in_index")),
             "deep_link_share_available": bool(browser_features.get("file_deep_links", {}).get("loaded_in_index")),
             "download_coverage_percent": round((len(download_ready) / total * 100), 2) if total else 0,
