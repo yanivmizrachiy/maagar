@@ -13,6 +13,11 @@
     return document.getElementById('mt')?.textContent?.trim() || 'קובץ מהמאגר';
   }
 
+  function modalWhatsAppHref() {
+    const text = `${currentFileTitle()}\n${currentFileLink()}`;
+    return 'https://wa.me/?text=' + encodeURIComponent(text);
+  }
+
   function toast(text) {
     let el = document.getElementById('share-toast');
     if (!el) {
@@ -42,9 +47,17 @@
     ta.remove();
   }
 
+  function updateWhatsApp() {
+    const wa = document.getElementById('share-modal-file-whatsapp');
+    if (wa) wa.href = modalWhatsAppHref();
+  }
+
   function ensureButtons() {
     const actions = document.querySelector('#modal .ma');
-    if (!actions || document.getElementById('copy-modal-file-link')) return;
+    if (!actions || document.getElementById('copy-modal-file-link')) {
+      updateWhatsApp();
+      return;
+    }
 
     const copy = document.createElement('button');
     copy.id = 'copy-modal-file-link';
@@ -58,6 +71,7 @@
       } catch {
         toast('לא הצלחתי להעתיק קישור לקובץ');
       }
+      updateWhatsApp();
     });
 
     const wa = document.createElement('a');
@@ -66,18 +80,19 @@
     wa.target = '_blank';
     wa.rel = 'noopener noreferrer';
     wa.textContent = '🟢 WhatsApp';
-    wa.addEventListener('click', () => {
-      const text = `${currentFileTitle()}\n${currentFileLink()}`;
-      wa.href = 'https://wa.me/?text=' + encodeURIComponent(text);
-    });
+    wa.href = modalWhatsAppHref();
+    wa.addEventListener('focus', updateWhatsApp);
+    wa.addEventListener('pointerdown', updateWhatsApp);
+    wa.addEventListener('click', updateWhatsApp);
 
     const close = document.getElementById('x');
     actions.insertBefore(copy, close);
     actions.insertBefore(wa, close);
+    updateWhatsApp();
   }
 
   document.addEventListener('DOMContentLoaded', ensureButtons);
   const observer = new MutationObserver(ensureButtons);
-  observer.observe(document.documentElement, { childList: true, subtree: true });
+  observer.observe(document.documentElement, { childList: true, subtree: true, attributes: true });
   setTimeout(ensureButtons, 500);
 })();
