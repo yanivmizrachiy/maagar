@@ -69,6 +69,10 @@ jobs:
         run: |
           python3 scripts/smart-cleanup-plan.py --json reports/smart-cleanup-plan.json --md reports/smart-cleanup-plan.md
 
+      - name: Site action report
+        run: |
+          python3 scripts/site-action-report.py --report reports/site-action-report.json
+
       - name: Upload reports
         uses: actions/upload-artifact@v4
         with:
