@@ -46,6 +46,7 @@ jobs:
           python3 scripts/title-cleaner.py --apply --report reports/title-cleanup.json
           python3 scripts/patch-site-topic-groups.py
           python3 scripts/patch-site-display-title.py
+          python3 scripts/patch-site-file-buttons.py
           python3 scripts/sync-rules-tools.py
           python3 scripts/metadata-audit.py --report reports/metadata-audit.json
           python3 scripts/smart-topic-review.py --report reports/smart-topic-review.json
@@ -62,7 +63,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "No cleanup changes to commit"
           else
-            git commit -m "chore(metadata): organize topics and clean display titles"
+            git commit -m "chore(metadata): organize topics and improve file viewing"
             git push
           fi
 
