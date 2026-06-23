@@ -41,7 +41,7 @@ function startServer() {
   });
 }
 
-test('accessibility helpers and app icon are injected', async ({ browser }) => {
+test('accessibility helpers, app icon and keyboard shortcuts are active', async ({ browser }) => {
   const { server, url } = await startServer();
   const context = await browser.newContext({ baseURL: url, viewport: { width: 390, height: 850 } });
   const page = await context.newPage();
@@ -64,12 +64,26 @@ test('accessibility helpers and app icon are injected', async ({ browser }) => {
     await expect(page.locator('#clear')).toHaveAttribute('aria-label', /נקה/);
     await expect(page.locator('#app')).toHaveAttribute('aria-live', 'polite');
 
+    await page.locator('body').click();
+    await page.keyboard.press('/');
+    await expect(page.locator('#q')).toBeFocused();
+    await page.keyboard.press('Escape');
+    await page.locator('body').click();
+    await page.keyboard.press('?');
+    await expect(page.locator('#site-help-panel')).toHaveClass(/open/);
+    await expect(page.locator('#site-help-close')).toBeFocused();
+    await page.keyboard.press('Escape');
+    await expect(page.locator('#site-help-panel')).not.toHaveClass(/open/);
+
     const viewButton = page.locator('[data-view]').first();
     await expect(viewButton).toBeVisible({ timeout: 15000 });
     await viewButton.click();
     await expect(page.locator('#modal')).toHaveAttribute('aria-labelledby', 'mt');
     await expect(page.locator('#modal')).toHaveAttribute('aria-describedby', 'ms');
     await expect(page.locator('#x')).toHaveAttribute('aria-label', /סגור/);
+    await expect(page.locator('#modal')).toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(page.locator('#modal')).not.toBeVisible();
 
     expect(pageErrors).toEqual([]);
   } finally {
