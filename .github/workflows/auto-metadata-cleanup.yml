@@ -32,6 +32,7 @@ jobs:
           node --check assets/site.js
           node --check assets/site-deeplink.js
           node --check assets/site-share.js
+          python3 scripts/validate-site-data-contract.py
           python3 scripts/validate-file-links.py
           bash scripts/validate-all.sh
           python3 scripts/validate-topic-map.py
@@ -55,6 +56,7 @@ jobs:
           node --check assets/site.js
           node --check assets/site-deeplink.js
           node --check assets/site-share.js
+          python3 scripts/validate-site-data-contract.py
           python3 scripts/validate-file-links.py
           bash scripts/validate-all.sh
           python3 scripts/validate-topic-map.py
