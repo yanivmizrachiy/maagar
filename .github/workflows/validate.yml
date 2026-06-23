@@ -35,6 +35,7 @@ jobs:
         run: |
           python3 scripts/validate-site-shell.py
           node --check assets/site.js
+          node --check assets/site-deeplink.js
           node --check assets/site-share.js
 
       - name: Validate file links
