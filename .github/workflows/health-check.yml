@@ -29,6 +29,7 @@ jobs:
         run: |
           mkdir -p reports
           python3 scripts/validate-single-rules-page.py
+          python3 scripts/validate-workflow-site-checks.py
           python3 scripts/validate-site-shell.py
           node --check assets/site.js
           node --check assets/site-url-state.js
