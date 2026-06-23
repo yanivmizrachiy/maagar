@@ -85,13 +85,17 @@ test('all main site buttons work without JavaScript errors', async ({ browser })
 
     const viewButton = page.locator('[data-view]').first();
     await expect(viewButton).toBeVisible();
+    const fileId = await viewButton.getAttribute('data-view');
+    expect(fileId).toBeTruthy();
     await viewButton.click();
+    await expect(page).toHaveURL(new RegExp(`[?&]file=${fileId}`));
     await expect(page.locator('#modal')).toBeVisible();
     await expect(page.locator('#mo')).toHaveAttribute('href', /.+/);
     await expect(page.locator('#md')).toHaveAttribute('href', /.+/);
     await expect(page.locator('#copy-modal-file-link')).toBeVisible();
     await expect(page.locator('#share-modal-file-whatsapp')).toBeVisible();
     await expect(page.locator('#share-modal-file-whatsapp')).toHaveAttribute('href', /wa\.me/);
+    await expect(page.locator('#share-modal-file-whatsapp')).toHaveAttribute('href', new RegExp(encodeURIComponent(`file=${fileId}`)));
     await page.locator('#copy-modal-file-link').click();
     await expect(page.locator('#share-toast')).toContainText('קובץ');
     await page.locator('#x').click();
