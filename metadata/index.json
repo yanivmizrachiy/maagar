@@ -9987,11 +9987,11 @@
       "source_type": "repo-file",
       "source_url": null,
       "embed_url": null,
-      "can_embed": "unknown",
+      "can_embed": false,
       "print_ready": false,
       "download_ready": true,
       "tags": [],
-      "notes": "auto-classified best-effort (PR 13)"
+      "notes": "auto-classified best-effort (PR 13) | 97MB — גדול מדי להטמעה אמינה (בייחוד בנייד); מוצג כקישור פתיחה/הורדה."
     },
     {
       "id": "7__uncategorized__חוברת_מתוקן_עברית_לחיץ_20260618_171902__mixed__unknown__001",
