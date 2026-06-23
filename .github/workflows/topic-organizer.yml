@@ -50,6 +50,7 @@ jobs:
           python3 scripts/title-cleaner.py --report reports/title-cleanup.json
           python3 scripts/smart-topic-review.py --report reports/smart-topic-review.json
           python3 scripts/smart-cleanup-plan.py --json reports/smart-cleanup-plan.json --md reports/smart-cleanup-plan.md
+          python3 scripts/site-action-report.py --report reports/site-action-report.json
 
       - name: Apply metadata cleanup
         if: ${{ github.event.inputs.apply == 'true' }}
@@ -60,6 +61,7 @@ jobs:
           python3 scripts/metadata-audit.py --report reports/metadata-audit.json
           python3 scripts/smart-topic-review.py --report reports/smart-topic-review.json
           python3 scripts/smart-cleanup-plan.py --json reports/smart-cleanup-plan.json --md reports/smart-cleanup-plan.md
+          python3 scripts/site-action-report.py --report reports/site-action-report.json
           bash scripts/validate-all.sh
           python3 scripts/validate-topic-map.py
           python3 scripts/validate-site-shell.py
