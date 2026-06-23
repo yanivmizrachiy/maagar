@@ -84,6 +84,7 @@ jobs:
       - name: Site action report
         run: |
           python3 scripts/site-action-report.py --report reports/site-action-report.json
+          python3 scripts/site-action-report-md.py --json reports/site-action-report.json --md reports/site-action-report.md
 
       - name: Upload reports
         uses: actions/upload-artifact@v4
