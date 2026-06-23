@@ -62,6 +62,23 @@
     document.head.appendChild(style);
   }
 
+  function normalizeActionButtons() {
+    document.querySelectorAll('button').forEach(btn => {
+      if (!btn.getAttribute('type')) btn.setAttribute('type', 'button');
+    });
+    document.querySelectorAll('a[target="_blank"]').forEach(a => {
+      a.rel = 'noopener noreferrer';
+    });
+    document.querySelectorAll('.acts').forEach(group => {
+      const seen = new Set();
+      group.querySelectorAll('a.act').forEach(a => {
+        const key = (a.getAttribute('href') || '') + '|' + a.textContent.trim();
+        if (seen.has(key)) a.remove();
+        else seen.add(key);
+      });
+    });
+  }
+
   function ensureHelpPanel() {
     if (document.getElementById('site-help-panel')) return;
     const backdrop = document.createElement('div');
@@ -150,6 +167,7 @@
     ensureHelpPanel();
     ensureHelpButton();
     ensureKeyboardShortcuts();
+    normalizeActionButtons();
   }
 
   document.addEventListener('DOMContentLoaded', boot);
