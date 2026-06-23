@@ -22,6 +22,10 @@ jobs:
         with:
           python-version: "3.x"
 
+      - name: Validate single rules page
+        run: |
+          python3 scripts/validate-single-rules-page.py
+
       - name: Validate metadata
         run: |
           bash scripts/validate-all.sh
