@@ -14,6 +14,7 @@ validate-site-shell.py
 - קיימת שכבת שיתוף תצוגה נוכחית.
 - קיימת שכבת שיתוף קובץ מתוך חלון הצפייה.
 - קיימת שכבת עזרה מהירה למורים.
+- קיימות הגדרות התאמה מתקדמות למובייל.
 
 הבדיקה לא משנה קבצים.
 """
@@ -49,6 +50,14 @@ REQUIRED_IDS = [
     "md",
     "x",
     "viewer",
+]
+
+REQUIRED_HTML_SNIPPETS = [
+    "viewport-fit=cover",
+    'name="theme-color"',
+    'name="color-scheme"',
+    'apple-mobile-web-app-capable',
+    'black-translucent',
 ]
 
 REQUIRED_JS_SNIPPETS = [
@@ -111,6 +120,16 @@ REQUIRED_HELP_SNIPPETS = [
     "help-card",
 ]
 
+REQUIRED_RESPONSIVE_CSS_SNIPPETS = [
+    "safe-area-inset-top",
+    "overflow-x:hidden",
+    "@media(max-width:920px)",
+    "@media(max-width:760px)",
+    "@media(max-width:390px)",
+    "@media(max-height:620px)",
+    "minmax(min(285px,100%),1fr)",
+]
+
 
 def main() -> int:
     errors: list[str] = []
@@ -156,6 +175,10 @@ def main() -> int:
 
     if 'href="assets/site.css"' not in html:
         errors.append("index.html does not load assets/site.css")
+
+    for snippet in REQUIRED_HTML_SNIPPETS:
+        if snippet not in html:
+            errors.append(f"index.html missing responsive/mobile snippet: {snippet}")
 
     last_pos = -1
     for script in script_order:
@@ -204,12 +227,16 @@ def main() -> int:
         if css_class not in css:
             errors.append(f"assets/site.css missing class: {css_class}")
 
+    for snippet in REQUIRED_RESPONSIVE_CSS_SNIPPETS:
+        if snippet not in css:
+            errors.append(f"assets/site.css missing responsive snippet: {snippet}")
+
     if errors:
         for err in errors:
             print(f"FAIL  {err}")
         return 1
 
-    print("OK    standalone site shell, URL state, deep links, sharing and teacher help are wired correctly")
+    print("OK    standalone site shell, responsive adaptation, URL state, deep links, sharing and teacher help are wired correctly")
     return 0
 
 
