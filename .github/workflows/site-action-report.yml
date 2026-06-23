@@ -28,6 +28,7 @@ jobs:
           python3 scripts/site-action-report.py --report reports/site-action-report.json
           python3 scripts/validate-site-action-report.py --report reports/site-action-report.json
           python3 scripts/site-action-report-md.py --json reports/site-action-report.json --md reports/site-action-report.md
+          python3 scripts/polish-site-action-report-md.py --md reports/site-action-report.md
 
       - name: Upload site action reports
         uses: actions/upload-artifact@v4
