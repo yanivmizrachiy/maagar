@@ -18,6 +18,10 @@ const MIME = {
   '.txt': 'text/plain; charset=utf-8',
 };
 
+function escapeRegExp(text) {
+  return String(text).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 function startServer() {
   const server = http.createServer((req, res) => {
     const url = new URL(req.url, 'http://127.0.0.1');
@@ -87,15 +91,16 @@ test('all main site buttons work without JavaScript errors', async ({ browser })
     await expect(viewButton).toBeVisible();
     const fileId = await viewButton.getAttribute('data-view');
     expect(fileId).toBeTruthy();
+    const safeFileId = escapeRegExp(fileId);
     await viewButton.click();
-    await expect(page).toHaveURL(new RegExp(`[?&]file=${fileId}`));
+    await expect(page).toHaveURL(new RegExp(`[?&]file=${safeFileId}`));
     await expect(page.locator('#modal')).toBeVisible();
     await expect(page.locator('#mo')).toHaveAttribute('href', /.+/);
     await expect(page.locator('#md')).toHaveAttribute('href', /.+/);
     await expect(page.locator('#copy-modal-file-link')).toBeVisible();
     await expect(page.locator('#share-modal-file-whatsapp')).toBeVisible();
     await expect(page.locator('#share-modal-file-whatsapp')).toHaveAttribute('href', /wa\.me/);
-    await expect(page.locator('#share-modal-file-whatsapp')).toHaveAttribute('href', new RegExp(encodeURIComponent(`file=${fileId}`)));
+    await expect(page.locator('#share-modal-file-whatsapp')).toHaveAttribute('href', new RegExp(escapeRegExp(encodeURIComponent(`file=${fileId}`))));
     await page.locator('#copy-modal-file-link').click();
     await expect(page.locator('#share-toast')).toContainText('קובץ');
     await page.locator('#x').click();
