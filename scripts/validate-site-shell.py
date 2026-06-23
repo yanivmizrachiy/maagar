@@ -4,14 +4,15 @@
 validate-site-shell.py
 
 בדיקת מעטפת לאתר החדש:
-- index.html טוען assets/site.css, assets/site.js, assets/site-url-state.js, assets/site-deeplink.js, assets/site-share.js ו-assets/site-view-share.js.
+- index.html טוען assets/site.css ואת כל קבצי ה-JS של האתר.
 - קבצי CSS/JS קיימים.
 - קיימים ה-IDs שה-JS משתמש בהם.
 - קיימת טעינת metadata/index.json.
 - קיימת שמירת מצב סינון ב-URL.
 - קיימת שכבת קישור עומק: ?file=ID.
-- קיימת שכבת שיתוף קובץ: העתק קישור ו-WhatsApp.
+- קיימת שכבת שיתוף קובץ מכרטיס.
 - קיימת שכבת שיתוף תצוגה נוכחית.
+- קיימת שכבת שיתוף קובץ מתוך חלון הצפייה.
 
 הבדיקה לא משנה קבצים.
 """
@@ -29,6 +30,7 @@ URL_STATE_JS = REPO / "assets" / "site-url-state.js"
 DEEPLINK_JS = REPO / "assets" / "site-deeplink.js"
 SHARE_JS = REPO / "assets" / "site-share.js"
 VIEW_SHARE_JS = REPO / "assets" / "site-view-share.js"
+MODAL_SHARE_JS = REPO / "assets" / "site-modal-share.js"
 
 REQUIRED_IDS = [
     "q",
@@ -89,24 +91,31 @@ REQUIRED_VIEW_SHARE_SNIPPETS = [
     "searchParams.delete('file')",
 ]
 
+REQUIRED_MODAL_SHARE_SNIPPETS = [
+    "currentFileLink",
+    "currentFileTitle",
+    "copy-modal-file-link",
+    "share-modal-file-whatsapp",
+    "קישור לקובץ הועתק",
+    "https://wa.me/",
+]
+
 
 def main() -> int:
     errors: list[str] = []
 
-    if not INDEX.exists():
-        errors.append("index.html missing")
-    if not CSS.exists():
-        errors.append("assets/site.css missing")
-    if not JS.exists():
-        errors.append("assets/site.js missing")
-    if not URL_STATE_JS.exists():
-        errors.append("assets/site-url-state.js missing")
-    if not DEEPLINK_JS.exists():
-        errors.append("assets/site-deeplink.js missing")
-    if not SHARE_JS.exists():
-        errors.append("assets/site-share.js missing")
-    if not VIEW_SHARE_JS.exists():
-        errors.append("assets/site-view-share.js missing")
+    for path, label in [
+        (INDEX, "index.html"),
+        (CSS, "assets/site.css"),
+        (JS, "assets/site.js"),
+        (URL_STATE_JS, "assets/site-url-state.js"),
+        (DEEPLINK_JS, "assets/site-deeplink.js"),
+        (SHARE_JS, "assets/site-share.js"),
+        (VIEW_SHARE_JS, "assets/site-view-share.js"),
+        (MODAL_SHARE_JS, "assets/site-modal-share.js"),
+    ]:
+        if not path.exists():
+            errors.append(f"{label} missing")
 
     if errors:
         for err in errors:
@@ -119,26 +128,31 @@ def main() -> int:
     deeplink_js = DEEPLINK_JS.read_text(encoding="utf-8", errors="ignore")
     share_js = SHARE_JS.read_text(encoding="utf-8", errors="ignore")
     view_share_js = VIEW_SHARE_JS.read_text(encoding="utf-8", errors="ignore")
+    modal_share_js = MODAL_SHARE_JS.read_text(encoding="utf-8", errors="ignore")
     css = CSS.read_text(encoding="utf-8", errors="ignore")
+
+    script_order = [
+        "site.js",
+        "site-url-state.js",
+        "site-deeplink.js",
+        "site-share.js",
+        "site-view-share.js",
+        "site-modal-share.js",
+    ]
 
     if 'href="assets/site.css"' not in html:
         errors.append("index.html does not load assets/site.css")
-    if 'src="assets/site.js"' not in html:
-        errors.append("index.html does not load assets/site.js")
-    if 'src="assets/site-url-state.js"' not in html:
-        errors.append("index.html does not load assets/site-url-state.js")
-    if 'src="assets/site-deeplink.js"' not in html:
-        errors.append("index.html does not load assets/site-deeplink.js")
-    if 'src="assets/site-share.js"' not in html:
-        errors.append("index.html does not load assets/site-share.js")
-    if 'src="assets/site-view-share.js"' not in html:
-        errors.append("index.html does not load assets/site-view-share.js")
-    if html.find('src="assets/site-url-state.js"') > html.find('src="assets/site-deeplink.js"'):
-        errors.append("site-url-state.js must load before site-deeplink.js")
-    if html.find('src="assets/site-deeplink.js"') > html.find('src="assets/site-share.js"'):
-        errors.append("site-deeplink.js must load before site-share.js")
-    if html.find('src="assets/site-share.js"') > html.find('src="assets/site-view-share.js"'):
-        errors.append("site-share.js must load before site-view-share.js")
+
+    last_pos = -1
+    for script in script_order:
+        needle = f'src="assets/{script}"'
+        pos = html.find(needle)
+        if pos < 0:
+            errors.append(f"index.html does not load assets/{script}")
+        elif pos < last_pos:
+            errors.append(f"assets/{script} is loaded out of order")
+        else:
+            last_pos = pos
 
     for item_id in REQUIRED_IDS:
         if f'id="{item_id}"' not in html:
@@ -164,6 +178,10 @@ def main() -> int:
         if snippet not in view_share_js:
             errors.append(f"assets/site-view-share.js missing snippet: {snippet}")
 
+    for snippet in REQUIRED_MODAL_SHARE_SNIPPETS:
+        if snippet not in modal_share_js:
+            errors.append(f"assets/site-modal-share.js missing snippet: {snippet}")
+
     for css_class in [".file", ".act", ".modal", ".viewer", ".chip"]:
         if css_class not in css:
             errors.append(f"assets/site.css missing class: {css_class}")
@@ -173,7 +191,7 @@ def main() -> int:
             print(f"FAIL  {err}")
         return 1
 
-    print("OK    standalone site shell, URL state, deep links, file sharing and view sharing are wired correctly")
+    print("OK    standalone site shell, URL state, deep links, file sharing, view sharing and modal sharing are wired correctly")
     return 0
 
 
