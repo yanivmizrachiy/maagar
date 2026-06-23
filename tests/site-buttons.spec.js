@@ -63,19 +63,19 @@ async function expectRealActionLinks(page) {
     .filter(item => !item.href || item.href === '#'));
   expect(badLinks).toEqual([]);
 
-  const duplicateKeys = await page.locator('.acts').evaluateAll(groups => {
+  const duplicateTargets = await page.locator('.acts').evaluateAll(groups => {
     const duplicates = [];
     for (const group of groups) {
       const seen = new Set();
       for (const a of group.querySelectorAll('a.act')) {
-        const key = `${a.getAttribute('href') || ''}|${a.textContent.trim()}`;
-        if (seen.has(key)) duplicates.push(key);
-        seen.add(key);
+        const href = (a.getAttribute('href') || '').trim();
+        if (seen.has(href)) duplicates.push(href);
+        seen.add(href);
       }
     }
     return duplicates;
   });
-  expect(duplicateKeys).toEqual([]);
+  expect(duplicateTargets).toEqual([]);
 }
 
 test('all main site buttons work without JavaScript errors', async ({ browser }) => {
