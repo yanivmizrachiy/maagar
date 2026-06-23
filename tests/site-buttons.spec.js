@@ -69,13 +69,24 @@ async function expectRealActionLinks(page) {
       const seen = new Set();
       for (const a of group.querySelectorAll('a.act')) {
         const href = (a.getAttribute('href') || '').trim();
-        if (seen.has(href)) duplicates.push(href);
-        seen.add(href);
+        const kind = a.hasAttribute('download') ? 'download' : 'open';
+        const key = `${href}|${kind}`;
+        if (seen.has(key)) duplicates.push(key);
+        seen.add(key);
       }
     }
     return duplicates;
   });
   expect(duplicateTargets).toEqual([]);
+}
+
+async function expectDownloadButtonsRemainReal(page) {
+  const downloadButtons = page.locator('.acts a.down[download]');
+  await expect(downloadButtons.first()).toBeVisible();
+  const badDownloads = await downloadButtons.evaluateAll(links => links
+    .map(a => ({ href: (a.getAttribute('href') || '').trim(), download: (a.getAttribute('download') || '').trim() }))
+    .filter(item => !item.href || item.href === '#' || !item.download));
+  expect(badDownloads).toEqual([]);
 }
 
 test('all main site buttons work without JavaScript errors', async ({ browser }) => {
@@ -91,6 +102,7 @@ test('all main site buttons work without JavaScript errors', async ({ browser })
     await expect(page.locator('.brand')).toContainText('מאגר מתמטיקה');
     await expect(page.locator('.file').first()).toBeVisible({ timeout: 15000 });
     await expectRealActionLinks(page);
+    await expectDownloadButtonsRemainReal(page);
 
     await expectTouchTarget(page.locator('#clear'));
     await expectTouchTarget(page.locator('.act').first(), 42);
@@ -100,6 +112,7 @@ test('all main site buttons work without JavaScript errors', async ({ browser })
     await page.locator('#clear').click();
     await expect(page.locator('#q')).toHaveValue('');
     await expectRealActionLinks(page);
+    await expectDownloadButtonsRemainReal(page);
 
     const firstGradeChip = page.locator('[data-k="g"]').nth(1);
     if (await firstGradeChip.count()) {
@@ -107,6 +120,7 @@ test('all main site buttons work without JavaScript errors', async ({ browser })
       await firstGradeChip.click();
       await expect(firstGradeChip).toHaveClass(/on/);
       await expectRealActionLinks(page);
+      await expectDownloadButtonsRemainReal(page);
     }
 
     await expect(page.locator('#copy-view-link')).toBeVisible();
@@ -134,6 +148,7 @@ test('all main site buttons work without JavaScript errors', async ({ browser })
     await expect(page.locator('#modal')).toBeVisible();
     await expect(page.locator('#mo')).toHaveAttribute('href', /.+/);
     await expect(page.locator('#md')).toHaveAttribute('href', /.+/);
+    await expect(page.locator('#md')).toHaveAttribute('download', /.+/);
     await expect(page.locator('#copy-modal-file-link')).toBeVisible();
     await expect(page.locator('#share-modal-file-whatsapp')).toBeVisible();
     await expectTouchTarget(page.locator('#copy-modal-file-link'), 38);
@@ -149,6 +164,7 @@ test('all main site buttons work without JavaScript errors', async ({ browser })
     await expectTouchTarget(page.locator('.act').first(), 44);
     await expectTouchTarget(page.locator('#clear'), 42);
     await expectRealActionLinks(page);
+    await expectDownloadButtonsRemainReal(page);
 
     expect(pageErrors).toEqual([]);
   } finally {
