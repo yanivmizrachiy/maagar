@@ -70,11 +70,13 @@
       a.rel = 'noopener noreferrer';
     });
     document.querySelectorAll('.acts').forEach(group => {
-      const seenTargets = new Set();
+      const seen = new Set();
       group.querySelectorAll('a.act').forEach(a => {
         const target = (a.getAttribute('href') || '').trim();
-        if (seenTargets.has(target)) a.remove();
-        else seenTargets.add(target);
+        const kind = a.hasAttribute('download') ? 'download' : 'open';
+        const key = target + '|' + kind;
+        if (seen.has(key)) a.remove();
+        else seen.add(key);
       });
     });
   }
