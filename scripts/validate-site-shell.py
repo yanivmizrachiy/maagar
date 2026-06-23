@@ -4,10 +4,11 @@
 validate-site-shell.py
 
 בדיקת מעטפת לאתר החדש:
-- index.html טוען assets/site.css, assets/site.js, assets/site-deeplink.js ו-assets/site-share.js.
+- index.html טוען assets/site.css, assets/site.js, assets/site-url-state.js, assets/site-deeplink.js ו-assets/site-share.js.
 - קבצי CSS/JS קיימים.
 - קיימים ה-IDs שה-JS משתמש בהם.
 - קיימת טעינת metadata/index.json.
+- קיימת שמירת מצב סינון ב-URL.
 - קיימת שכבת קישור עומק: ?file=ID.
 - קיימת שכבת שיתוף: העתק קישור ו-WhatsApp.
 
@@ -23,6 +24,7 @@ REPO = Path(__file__).resolve().parent.parent
 INDEX = REPO / "index.html"
 CSS = REPO / "assets" / "site.css"
 JS = REPO / "assets" / "site.js"
+URL_STATE_JS = REPO / "assets" / "site-url-state.js"
 DEEPLINK_JS = REPO / "assets" / "site-deeplink.js"
 SHARE_JS = REPO / "assets" / "site-share.js"
 
@@ -51,6 +53,15 @@ REQUIRED_JS_SNIPPETS = [
     "view.officeapps.live.com",
 ]
 
+REQUIRED_URL_STATE_SNIPPETS = [
+    "searchParams",
+    "grade",
+    "category",
+    "type",
+    "history.replaceState",
+    "data-k",
+]
+
 REQUIRED_DEEPLINK_SNIPPETS = [
     "searchParams.get('file')",
     "window.maagarFileLink",
@@ -77,6 +88,8 @@ def main() -> int:
         errors.append("assets/site.css missing")
     if not JS.exists():
         errors.append("assets/site.js missing")
+    if not URL_STATE_JS.exists():
+        errors.append("assets/site-url-state.js missing")
     if not DEEPLINK_JS.exists():
         errors.append("assets/site-deeplink.js missing")
     if not SHARE_JS.exists():
@@ -89,6 +102,7 @@ def main() -> int:
 
     html = INDEX.read_text(encoding="utf-8", errors="ignore")
     js = JS.read_text(encoding="utf-8", errors="ignore")
+    url_state_js = URL_STATE_JS.read_text(encoding="utf-8", errors="ignore")
     deeplink_js = DEEPLINK_JS.read_text(encoding="utf-8", errors="ignore")
     share_js = SHARE_JS.read_text(encoding="utf-8", errors="ignore")
     css = CSS.read_text(encoding="utf-8", errors="ignore")
@@ -97,10 +111,14 @@ def main() -> int:
         errors.append("index.html does not load assets/site.css")
     if 'src="assets/site.js"' not in html:
         errors.append("index.html does not load assets/site.js")
+    if 'src="assets/site-url-state.js"' not in html:
+        errors.append("index.html does not load assets/site-url-state.js")
     if 'src="assets/site-deeplink.js"' not in html:
         errors.append("index.html does not load assets/site-deeplink.js")
     if 'src="assets/site-share.js"' not in html:
         errors.append("index.html does not load assets/site-share.js")
+    if html.find('src="assets/site-url-state.js"') > html.find('src="assets/site-deeplink.js"'):
+        errors.append("site-url-state.js must load before site-deeplink.js")
     if html.find('src="assets/site-deeplink.js"') > html.find('src="assets/site-share.js"'):
         errors.append("site-deeplink.js must load before site-share.js")
 
@@ -111,6 +129,10 @@ def main() -> int:
     for snippet in REQUIRED_JS_SNIPPETS:
         if snippet not in js:
             errors.append(f"assets/site.js missing snippet: {snippet}")
+
+    for snippet in REQUIRED_URL_STATE_SNIPPETS:
+        if snippet not in url_state_js:
+            errors.append(f"assets/site-url-state.js missing snippet: {snippet}")
 
     for snippet in REQUIRED_DEEPLINK_SNIPPETS:
         if snippet not in deeplink_js:
@@ -129,7 +151,7 @@ def main() -> int:
             print(f"FAIL  {err}")
         return 1
 
-    print("OK    standalone site shell, deep links and share actions are wired correctly")
+    print("OK    standalone site shell, URL state, deep links and share actions are wired correctly")
     return 0
 
 
