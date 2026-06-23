@@ -57,6 +57,27 @@ async function expectTouchTarget(locator, minHeight = 40) {
   expect(box.height).toBeGreaterThanOrEqual(minHeight);
 }
 
+async function expectRealActionLinks(page) {
+  const badLinks = await page.locator('.acts a.act').evaluateAll(links => links
+    .map(a => ({ text: a.textContent.trim(), href: (a.getAttribute('href') || '').trim() }))
+    .filter(item => !item.href || item.href === '#'));
+  expect(badLinks).toEqual([]);
+
+  const duplicateKeys = await page.locator('.acts').evaluateAll(groups => {
+    const duplicates = [];
+    for (const group of groups) {
+      const seen = new Set();
+      for (const a of group.querySelectorAll('a.act')) {
+        const key = `${a.getAttribute('href') || ''}|${a.textContent.trim()}`;
+        if (seen.has(key)) duplicates.push(key);
+        seen.add(key);
+      }
+    }
+    return duplicates;
+  });
+  expect(duplicateKeys).toEqual([]);
+}
+
 test('all main site buttons work without JavaScript errors', async ({ browser }) => {
   const { server, url } = await startServer();
   const context = await browser.newContext({ baseURL: url });
@@ -69,6 +90,7 @@ test('all main site buttons work without JavaScript errors', async ({ browser })
     await page.goto(url);
     await expect(page.locator('.brand')).toContainText('מאגר מתמטיקה');
     await expect(page.locator('.file').first()).toBeVisible({ timeout: 15000 });
+    await expectRealActionLinks(page);
 
     await expectTouchTarget(page.locator('#clear'));
     await expectTouchTarget(page.locator('.act').first(), 42);
@@ -77,12 +99,14 @@ test('all main site buttons work without JavaScript errors', async ({ browser })
     await expect(page.locator('#q')).toHaveValue('משוואות');
     await page.locator('#clear').click();
     await expect(page.locator('#q')).toHaveValue('');
+    await expectRealActionLinks(page);
 
     const firstGradeChip = page.locator('[data-k="g"]').nth(1);
     if (await firstGradeChip.count()) {
       await expectTouchTarget(firstGradeChip);
       await firstGradeChip.click();
       await expect(firstGradeChip).toHaveClass(/on/);
+      await expectRealActionLinks(page);
     }
 
     await expect(page.locator('#copy-view-link')).toBeVisible();
@@ -124,6 +148,7 @@ test('all main site buttons work without JavaScript errors', async ({ browser })
     await page.setViewportSize({ width: 390, height: 850 });
     await expectTouchTarget(page.locator('.act').first(), 44);
     await expectTouchTarget(page.locator('#clear'), 42);
+    await expectRealActionLinks(page);
 
     expect(pageErrors).toEqual([]);
   } finally {
