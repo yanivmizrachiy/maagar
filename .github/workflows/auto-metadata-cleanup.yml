@@ -1,0 +1,79 @@
+name: Weekly Safe Metadata Cleanup
+
+on:
+  schedule:
+    - cron: "43 3 * * 0"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  safe-cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Validate before cleanup
+        run: |
+          python3 scripts/validate-single-rules-page.py
+          python3 scripts/validate-site-shell.py
+          node --check assets/site.js
+          node --check assets/site-deeplink.js
+          node --check assets/site-share.js
+          python3 scripts/validate-file-links.py
+          bash scripts/validate-all.sh
+          python3 scripts/validate-topic-map.py
+          python3 scripts/test-logic.py
+
+      - name: Apply safe metadata cleanup
+        run: |
+          mkdir -p reports
+          python3 scripts/topic-organizer.py --apply --report reports/topic-audit.json
+          python3 scripts/title-cleaner.py --apply --report reports/title-cleanup.json
+          python3 scripts/sync-rules-tools.py
+          python3 scripts/metadata-audit.py --report reports/metadata-audit.json
+          python3 scripts/smart-topic-review.py --report reports/smart-topic-review.json
+          python3 scripts/smart-cleanup-plan.py --json reports/smart-cleanup-plan.json --md reports/smart-cleanup-plan.md
+          python3 scripts/site-action-report.py --report reports/site-action-report.json
+
+      - name: Validate after cleanup
+        run: |
+          python3 scripts/validate-single-rules-page.py
+          python3 scripts/validate-site-shell.py
+          node --check assets/site.js
+          node --check assets/site-deeplink.js
+          node --check assets/site-share.js
+          python3 scripts/validate-file-links.py
+          bash scripts/validate-all.sh
+          python3 scripts/validate-topic-map.py
+          python3 scripts/test-logic.py
+
+      - name: Commit safe cleanup changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add metadata/index.json RULES.md reports/*.json reports/*.md
+          if git diff --cached --quiet; then
+            echo "No safe cleanup changes to commit"
+          else
+            git commit -m "chore(metadata): weekly safe cleanup"
+            git push
+          fi
+
+      - name: Upload cleanup reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: maagar-weekly-safe-cleanup-reports
+          path: reports/*
