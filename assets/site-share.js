@@ -3,6 +3,15 @@
     try { return new URL(url, location.href).href; } catch { return url; }
   }
 
+  function siteLinkForCard(card, fallbackUrl) {
+    const viewBtn = card.querySelector('[data-view]');
+    const fileId = viewBtn?.dataset?.view || '';
+    if (fileId && typeof window.maagarFileLink === 'function') {
+      return window.maagarFileLink(fileId);
+    }
+    return abs(fallbackUrl);
+  }
+
   function toast(text) {
     let el = document.getElementById('share-toast');
     if (!el) {
@@ -39,7 +48,7 @@
     const firstLink = actions.querySelector('a[href]');
     if (!firstLink) return;
     const title = (card.querySelector('.title')?.textContent || 'קובץ מהמאגר').trim();
-    const link = abs(firstLink.getAttribute('href'));
+    const link = siteLinkForCard(card, firstLink.getAttribute('href'));
 
     const copy = document.createElement('button');
     copy.type = 'button';
@@ -48,7 +57,7 @@
     copy.addEventListener('click', async () => {
       try {
         await copyText(link);
-        toast('הקישור הועתק');
+        toast('קישור לעמוד הקובץ הועתק');
       } catch {
         toast('לא הצלחתי להעתיק קישור');
       }
