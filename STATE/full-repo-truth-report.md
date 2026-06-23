@@ -4,7 +4,7 @@
 **ריפו:** `yanivmizrachiy/maagar`
 **תאריך עדכון:** 2026-06-23
 **ענף ראשי:** `main` (SHA: `4ff5ce4` — PR #11 מוזג)
-**עדכון אחרון:** PR #13 (בתהליך) — קליטת מאגר מתמטיקה גדול (300+ קבצים אמיתיים). ראה RULES.md §26.
+**עדכון אחרון:** PR #13 ✅ מוזג ל-main — מאגר מתמטיקה גדול (321 קבצים: ז104/ח134/ט80/חט"ע3). ראה RULES.md §26.
 
 ---
 
@@ -46,7 +46,7 @@
 | #10 | docs: GPT→Claude handoff protocol, first-import checklist, AGENTS sync | ✅ merged |
 | #11 | feat: docs, maintainability, visual design upgrade | ✅ merged |
 | #12 | feat: continuity system, CONTINUITY_GUIDE.md, startup protocol | 🔄 in progress |
-| #13 | feat(files): ingest 300+ real math files (grades 7-9 + HS) + fix batch-add build_id | 🔄 in progress |
+| #13 | feat(files): ingest 321 real math files (grades 7-9 + HS) + fix batch-add build_id | ✅ merged |
 
 ---
 
