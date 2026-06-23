@@ -10,6 +10,10 @@
     }
   }
 
+  function viewWhatsAppHref() {
+    return 'https://wa.me/?text=' + encodeURIComponent('מאגר מתמטיקה - תצוגה מסוננת\n' + currentViewLink());
+  }
+
   function toast(text) {
     let el = document.getElementById('share-toast');
     if (!el) {
@@ -39,6 +43,11 @@
     ta.remove();
   }
 
+  function updateWhatsApp() {
+    const wa = document.getElementById('share-view-whatsapp');
+    if (wa) wa.href = viewWhatsAppHref();
+  }
+
   function ensureButtons() {
     const bar = document.querySelector('.bar');
     if (!bar || document.getElementById('copy-view-link')) return;
@@ -55,6 +64,7 @@
       } catch {
         toast('לא הצלחתי להעתיק את התצוגה');
       }
+      updateWhatsApp();
     });
 
     const wa = document.createElement('a');
@@ -63,16 +73,23 @@
     wa.textContent = '🟢 שתף תצוגה';
     wa.target = '_blank';
     wa.rel = 'noopener noreferrer';
-    wa.addEventListener('click', () => {
-      wa.href = 'https://wa.me/?text=' + encodeURIComponent('מאגר מתמטיקה - תצוגה מסוננת\n' + currentViewLink());
-    });
+    wa.href = viewWhatsAppHref();
+    wa.addEventListener('focus', updateWhatsApp);
+    wa.addEventListener('pointerdown', updateWhatsApp);
+    wa.addEventListener('click', updateWhatsApp);
 
     bar.appendChild(copy);
     bar.appendChild(wa);
   }
 
   document.addEventListener('DOMContentLoaded', ensureButtons);
-  const observer = new MutationObserver(ensureButtons);
-  observer.observe(document.documentElement, { childList: true, subtree: true });
-  setTimeout(ensureButtons, 500);
+  const observer = new MutationObserver(() => {
+    ensureButtons();
+    updateWhatsApp();
+  });
+  observer.observe(document.documentElement, { childList: true, subtree: true, attributes: true });
+  setTimeout(() => {
+    ensureButtons();
+    updateWhatsApp();
+  }, 500);
 })();
