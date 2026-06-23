@@ -51,6 +51,12 @@ function startServer() {
   });
 }
 
+async function expectTouchTarget(locator, minHeight = 40) {
+  const box = await locator.boundingBox();
+  expect(box).toBeTruthy();
+  expect(box.height).toBeGreaterThanOrEqual(minHeight);
+}
+
 test('all main site buttons work without JavaScript errors', async ({ browser }) => {
   const { server, url } = await startServer();
   const context = await browser.newContext({ baseURL: url });
@@ -64,6 +70,9 @@ test('all main site buttons work without JavaScript errors', async ({ browser })
     await expect(page.locator('.brand')).toContainText('מאגר מתמטיקה');
     await expect(page.locator('.file').first()).toBeVisible({ timeout: 15000 });
 
+    await expectTouchTarget(page.locator('#clear'));
+    await expectTouchTarget(page.locator('.act').first(), 42);
+
     await page.locator('#q').fill('משוואות');
     await expect(page.locator('#q')).toHaveValue('משוואות');
     await page.locator('#clear').click();
@@ -71,16 +80,19 @@ test('all main site buttons work without JavaScript errors', async ({ browser })
 
     const firstGradeChip = page.locator('[data-k="g"]').nth(1);
     if (await firstGradeChip.count()) {
+      await expectTouchTarget(firstGradeChip);
       await firstGradeChip.click();
       await expect(firstGradeChip).toHaveClass(/on/);
     }
 
     await expect(page.locator('#copy-view-link')).toBeVisible();
+    await expectTouchTarget(page.locator('#copy-view-link'));
     await page.locator('#copy-view-link').click();
     await expect(page.locator('#share-toast')).toContainText('תצוגה');
     await expect(page.locator('#share-view-whatsapp')).toHaveAttribute('href', /wa\.me/);
 
     await expect(page.locator('#site-help-open')).toBeVisible();
+    await expectTouchTarget(page.locator('#site-help-open'));
     await page.locator('#site-help-open').click();
     await expect(page.locator('#site-help-panel')).toHaveClass(/open/);
     await expect(page.locator('#site-help-panel')).toContainText('עזרה מהירה');
@@ -89,6 +101,7 @@ test('all main site buttons work without JavaScript errors', async ({ browser })
 
     const viewButton = page.locator('[data-view]').first();
     await expect(viewButton).toBeVisible();
+    await expectTouchTarget(viewButton, 42);
     const fileId = await viewButton.getAttribute('data-view');
     expect(fileId).toBeTruthy();
     const safeFileId = escapeRegExp(fileId);
@@ -99,12 +112,18 @@ test('all main site buttons work without JavaScript errors', async ({ browser })
     await expect(page.locator('#md')).toHaveAttribute('href', /.+/);
     await expect(page.locator('#copy-modal-file-link')).toBeVisible();
     await expect(page.locator('#share-modal-file-whatsapp')).toBeVisible();
+    await expectTouchTarget(page.locator('#copy-modal-file-link'), 38);
+    await expectTouchTarget(page.locator('#share-modal-file-whatsapp'), 38);
     await expect(page.locator('#share-modal-file-whatsapp')).toHaveAttribute('href', /wa\.me/);
     await expect(page.locator('#share-modal-file-whatsapp')).toHaveAttribute('href', new RegExp(escapeRegExp(encodeURIComponent(`file=${fileId}`))));
     await page.locator('#copy-modal-file-link').click();
     await expect(page.locator('#share-toast')).toContainText('קובץ');
     await page.locator('#x').click();
     await expect(page.locator('#modal')).not.toBeVisible();
+
+    await page.setViewportSize({ width: 390, height: 850 });
+    await expectTouchTarget(page.locator('.act').first(), 44);
+    await expectTouchTarget(page.locator('#clear'), 42);
 
     expect(pageErrors).toEqual([]);
   } finally {
