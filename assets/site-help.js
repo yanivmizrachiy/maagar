@@ -79,6 +79,7 @@
           <div class="help-card"><b>4. הורדה</b><span>לחץ על “הורדה” כדי לשמור את הקובץ למחשב או לטלפון.</span></div>
           <div class="help-card"><b>5. שיתוף קובץ</b><span>השתמש בכפתור העתק קישור או WhatsApp בכרטיס או בחלון הצפייה.</span></div>
           <div class="help-card"><b>6. שיתוף תצוגה</b><span>אחרי חיפוש וסינון, לחץ “העתק תצוגה” כדי לשלוח בדיוק את אותה תצוגה.</span></div>
+          <div class="help-card"><b>קיצורי מקלדת</b><span>Esc סוגר חלונות, / מעביר לחיפוש, ? פותח עזרה מהירה.</span></div>
         </div>
         <p>טיפ: קישור לקובץ נפתח ישירות בקובץ. קישור לתצוגה שומר את החיפוש והסינון הנוכחיים.</p>
       </section>
@@ -90,6 +91,44 @@
     document.getElementById('site-help-close')?.addEventListener('click', () => backdrop.classList.remove('open'));
   }
 
+  function openHelp() {
+    ensureHelpStyles();
+    ensureHelpPanel();
+    document.getElementById('site-help-panel')?.classList.add('open');
+    setTimeout(() => document.getElementById('site-help-close')?.focus(), 20);
+  }
+
+  function closeHelp() {
+    document.getElementById('site-help-panel')?.classList.remove('open');
+  }
+
+  function closeModal() {
+    const modal = document.getElementById('modal');
+    const close = document.getElementById('x');
+    if (modal && getComputedStyle(modal).display !== 'none') close?.click();
+  }
+
+  function ensureKeyboardShortcuts() {
+    if (window.__maagarKeyboardShortcutsReady) return;
+    window.__maagarKeyboardShortcutsReady = true;
+    document.addEventListener('keydown', (event) => {
+      const active = document.activeElement;
+      const typing = active && ['INPUT', 'TEXTAREA', 'SELECT'].includes(active.tagName);
+      if (event.key === 'Escape') {
+        closeHelp();
+        closeModal();
+      }
+      if (!typing && event.key === '/') {
+        event.preventDefault();
+        document.getElementById('q')?.focus();
+      }
+      if (!typing && event.key === '?') {
+        event.preventDefault();
+        openHelp();
+      }
+    });
+  }
+
   function ensureHelpButton() {
     const bar = document.querySelector('.bar');
     if (!bar || document.getElementById('site-help-open')) return;
@@ -99,11 +138,7 @@
     btn.className = 'btn';
     btn.textContent = '❔ עזרה מהירה';
     btn.setAttribute('aria-label', 'פתח עזרה מהירה לשימוש במאגר');
-    btn.addEventListener('click', () => {
-      ensureHelpStyles();
-      ensureHelpPanel();
-      document.getElementById('site-help-panel')?.classList.add('open');
-    });
+    btn.addEventListener('click', openHelp);
     bar.appendChild(btn);
   }
 
@@ -114,6 +149,7 @@
     ensureSkipLink();
     ensureHelpPanel();
     ensureHelpButton();
+    ensureKeyboardShortcuts();
   }
 
   document.addEventListener('DOMContentLoaded', boot);
