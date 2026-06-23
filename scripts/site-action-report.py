@@ -8,8 +8,9 @@ site-action-report.py
 - כמה יקבלו הורדה.
 - כמה יקבלו פתיחה בכרטיסייה.
 - כמה הם PDF / Office / קישור חיצוני / לא מזוהים.
+- אילו יכולות דפדפן מחוברות בפועל: URL state, קישור עומק, שיתוף קובץ ושיתוף תצוגה.
 
-הסקריפט לא משנה קבצים.
+הסקריפט לא משנה קבצים, למעט כתיבת הדוח המבוקש.
 """
 
 from __future__ import annotations
@@ -22,9 +23,26 @@ from typing import Any, Dict, List
 
 REPO = Path(__file__).resolve().parent.parent
 INDEX = REPO / "metadata" / "index.json"
+INDEX_HTML = REPO / "index.html"
+ASSETS = REPO / "assets"
 
 OFFICE_EXTS = {"doc", "docx", "ppt", "pptx", "xls", "xlsx"}
 DIRECT_EMBED_EXTS = {"pdf", "png", "jpg", "jpeg", "gif", "webp", "txt"}
+
+FEATURE_FILES = {
+    "core_browser": "site.js",
+    "url_state_filters": "site-url-state.js",
+    "file_deep_links": "site-deeplink.js",
+    "file_share_buttons": "site-share.js",
+    "current_view_share_buttons": "site-view-share.js",
+}
+
+FEATURE_SNIPPETS = {
+    "url_state_filters": ["history.replaceState", "grade", "category", "type"],
+    "file_deep_links": ["searchParams.get('file')", "window.maagarFileLink", "data-view"],
+    "file_share_buttons": ["maagarFileLink", "https://wa.me/", "העתק קישור"],
+    "current_view_share_buttons": ["copy-view-link", "share-view-whatsapp", "העתק תצוגה", "שתף תצוגה"],
+}
 
 
 def ext_of(record: Dict[str, Any]) -> str:
@@ -48,6 +66,32 @@ def pick(record: Dict[str, Any]) -> Dict[str, Any]:
         "path": record.get("path"),
         "source_url": record.get("source_url"),
     }
+
+
+def script_loaded(html: str, file_name: str) -> bool:
+    return f'src="assets/{file_name}"' in html
+
+
+def browser_feature_report() -> Dict[str, Any]:
+    html = INDEX_HTML.read_text(encoding="utf-8", errors="ignore") if INDEX_HTML.exists() else ""
+    features: Dict[str, Any] = {}
+
+    for feature, file_name in FEATURE_FILES.items():
+        path = ASSETS / file_name
+        text = path.read_text(encoding="utf-8", errors="ignore") if path.exists() else ""
+        snippets = FEATURE_SNIPPETS.get(feature, [])
+        features[feature] = {
+            "file": f"assets/{file_name}",
+            "exists": path.exists(),
+            "loaded_in_index": script_loaded(html, file_name),
+            "required_snippets_present": all(snippet in text for snippet in snippets),
+            "missing_snippets": [snippet for snippet in snippets if snippet not in text],
+        }
+
+    features["all_feature_files_present"] = all(item["exists"] for item in features.values() if isinstance(item, dict))
+    features["all_feature_files_loaded"] = all(item["loaded_in_index"] for item in features.values() if isinstance(item, dict))
+    features["all_feature_snippets_present"] = all(item["required_snippets_present"] for item in features.values() if isinstance(item, dict))
+    return features
 
 
 def main() -> int:
@@ -96,6 +140,7 @@ def main() -> int:
             no_action.append(pick(record))
 
     total = len(files)
+    browser_features = browser_feature_report()
     report = {
         "summary": {
             "total_files": total,
@@ -107,13 +152,19 @@ def main() -> int:
             "office_embed_cards": len(office_embed),
             "embedded_view_total": len(direct_embed) + len(office_embed),
             "no_action_cards": len(no_action),
+            "file_share_cards": len(open_ready),
+            "current_view_share_available": bool(browser_features.get("current_view_share_buttons", {}).get("loaded_in_index")),
+            "url_state_share_available": bool(browser_features.get("url_state_filters", {}).get("loaded_in_index")),
+            "deep_link_share_available": bool(browser_features.get("file_deep_links", {}).get("loaded_in_index")),
             "download_coverage_percent": round((len(download_ready) / total * 100), 2) if total else 0,
             "open_coverage_percent": round((len(open_ready) / total * 100), 2) if total else 0,
             "embed_coverage_percent": round(((len(direct_embed) + len(office_embed)) / total * 100), 2) if total else 0,
+            "file_share_coverage_percent": round((len(open_ready) / total * 100), 2) if total else 0,
             "by_extension": dict(sorted(by_ext.items())),
             "by_grade": dict(sorted(by_grade.items())),
             "by_category": dict(sorted(by_category.items())),
         },
+        "browser_features": browser_features,
         "no_action_cards": no_action,
         "direct_embed_examples": direct_embed[:50],
         "office_embed_examples": office_embed[:50],
@@ -128,6 +179,9 @@ def main() -> int:
     print("MAAGAR SITE ACTION REPORT")
     for key, value in report["summary"].items():
         print(f"{key}: {value}")
+    print("browser_features:")
+    for key, value in browser_features.items():
+        print(f"  {key}: {value}")
     print(f"Report: {report_path.relative_to(REPO)}")
     return 0
 
