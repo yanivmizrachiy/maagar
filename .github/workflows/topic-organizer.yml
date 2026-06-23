@@ -40,6 +40,7 @@ jobs:
         run: |
           python3 scripts/validate-site-shell.py
           node --check assets/site.js
+          python3 scripts/validate-file-links.py
 
       - name: Run audits
         run: |
@@ -63,6 +64,7 @@ jobs:
           python3 scripts/validate-topic-map.py
           python3 scripts/validate-site-shell.py
           node --check assets/site.js
+          python3 scripts/validate-file-links.py
           python3 scripts/test-logic.py
 
       - name: Commit changes
