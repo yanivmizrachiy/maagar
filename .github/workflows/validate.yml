@@ -1,0 +1,42 @@
+name: Validate Maagar
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Validate metadata and repository rules
+        run: |
+          bash scripts/validate-all.sh
+
+      - name: Validate site navigation logic
+        run: |
+          python3 scripts/test-logic.py
+
+      - name: Topic organizer dry run
+        run: |
+          mkdir -p reports
+          python3 scripts/topic-organizer.py --report reports/topic-audit.json
+
+      - name: Upload topic audit
+        uses: actions/upload-artifact@v4
+        with:
+          name: topic-audit
+          path: reports/topic-audit.json
