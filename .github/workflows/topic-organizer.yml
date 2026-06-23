@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       apply:
-        description: "Apply metadata topics, clean display titles, and site grouping"
+        description: "Apply metadata topics and clean display titles"
         required: true
         default: "false"
         type: choice
@@ -27,9 +27,19 @@ jobs:
         with:
           python-version: "3.x"
 
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
       - name: Validate topic map
         run: |
           python3 scripts/validate-topic-map.py
+
+      - name: Validate standalone site shell
+        run: |
+          python3 scripts/validate-site-shell.py
+          node --check assets/site.js
 
       - name: Run audits
         run: |
@@ -38,20 +48,21 @@ jobs:
           python3 scripts/metadata-audit.py --report reports/metadata-audit.json
           python3 scripts/title-cleaner.py --report reports/title-cleanup.json
           python3 scripts/smart-topic-review.py --report reports/smart-topic-review.json
+          python3 scripts/smart-cleanup-plan.py --json reports/smart-cleanup-plan.json --md reports/smart-cleanup-plan.md
 
-      - name: Apply metadata cleanup and site patches
+      - name: Apply metadata cleanup
         if: ${{ github.event.inputs.apply == 'true' }}
         run: |
           python3 scripts/topic-organizer.py --apply --report reports/topic-audit.json
           python3 scripts/title-cleaner.py --apply --report reports/title-cleanup.json
-          python3 scripts/patch-site-topic-groups.py
-          python3 scripts/patch-site-display-title.py
-          python3 scripts/patch-site-file-buttons.py
           python3 scripts/sync-rules-tools.py
           python3 scripts/metadata-audit.py --report reports/metadata-audit.json
           python3 scripts/smart-topic-review.py --report reports/smart-topic-review.json
+          python3 scripts/smart-cleanup-plan.py --json reports/smart-cleanup-plan.json --md reports/smart-cleanup-plan.md
           bash scripts/validate-all.sh
           python3 scripts/validate-topic-map.py
+          python3 scripts/validate-site-shell.py
+          node --check assets/site.js
           python3 scripts/test-logic.py
 
       - name: Commit changes
@@ -59,11 +70,11 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add metadata/index.json reports/*.json index.html RULES.md
+          git add metadata/index.json reports/*.json RULES.md
           if git diff --cached --quiet; then
             echo "No cleanup changes to commit"
           else
-            git commit -m "chore(metadata): organize topics and improve file viewing"
+            git commit -m "chore(metadata): organize topics and clean display titles"
             git push
           fi
 
@@ -71,4 +82,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: maagar-topic-audit
-          path: reports/*.json
+          path: reports/*
