@@ -91,6 +91,7 @@ test('all main site buttons work without JavaScript errors', async ({ browser })
     await expect(page.locator('#md')).toHaveAttribute('href', /.+/);
     await expect(page.locator('#copy-modal-file-link')).toBeVisible();
     await expect(page.locator('#share-modal-file-whatsapp')).toBeVisible();
+    await expect(page.locator('#share-modal-file-whatsapp')).toHaveAttribute('href', /wa\.me/);
     await page.locator('#copy-modal-file-link').click();
     await expect(page.locator('#share-toast')).toContainText('קובץ');
     await page.locator('#x').click();
