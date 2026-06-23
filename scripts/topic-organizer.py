@@ -9,6 +9,7 @@ topic-organizer.py
 - קורא את metadata/index.json.
 - קורא את metadata/topic-map.json כמפת הנושאים הקנונית.
 - משפר topics לפי כותרת/שם קובץ/נתיב/תגיות/הערות.
+- משפר primary_category רק כאשר הערך הקיים הוא unknown/uncategorized ויש זיהוי נושא ברור.
 - מסדר את index.json כך שקבצים מאותו נושא יופיעו יחד.
 - לא מוחק קבצים.
 - לא מזיז קבצים פיזיים.
@@ -111,16 +112,32 @@ def load_topic_rules() -> List[Dict[str, Any]]:
     return rules
 
 
-def infer_topics(record: Dict[str, Any], rules: List[Dict[str, Any]]) -> List[str]:
+def matching_rules(record: Dict[str, Any], rules: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     text = searchable_text(record)
-    found: List[str] = []
+    found: List[Dict[str, Any]] = []
     for rule in rules:
         for keyword in rule["keywords"]:
             nk = normalize_text(keyword)
             if nk and nk in text:
-                found.append(rule["topic"])
+                found.append(rule)
                 break
     return found
+
+
+def infer_topics(record: Dict[str, Any], rules: List[Dict[str, Any]]) -> List[str]:
+    return [rule["topic"] for rule in matching_rules(record, rules)]
+
+
+def infer_category(record: Dict[str, Any], rules: List[Dict[str, Any]]) -> str | None:
+    matches = matching_rules(record, rules)
+    if not matches:
+        return None
+    categories = [str(rule.get("category", "unknown")) for rule in matches if rule.get("category")]
+    categories = [cat for cat in categories if cat and cat != "unknown"]
+    if not categories:
+        return None
+    # Use the first matching rule because topic-map order is intentionally specific-to-general.
+    return categories[0]
 
 
 def clean_topics(existing: Iterable[Any], inferred: Iterable[str]) -> List[str]:
@@ -157,9 +174,13 @@ def topic_order(topic: str, rules: List[Dict[str, Any]]) -> int:
 def sort_key(record: Dict[str, Any], rules: List[Dict[str, Any]]) -> Tuple[Any, ...]:
     grade = record.get("grade") or ((record.get("grades") or ["unknown"])[0])
     topic = primary_topic(record, rules)
+    category = record.get("primary_category", "unknown")
+    inferred_category = infer_category(record, rules)
+    if category in (None, "", "unknown", "uncategorized") and inferred_category:
+        category = inferred_category
     return (
         GRADE_ORDER.get(str(grade), 8),
-        CATEGORY_ORDER.get(record.get("primary_category", "unknown"), 8),
+        CATEGORY_ORDER.get(category, 8),
         topic_order(topic, rules),
         topic,
         DOCTYPE_ORDER.get(record.get("document_type", "unknown"), 8),
@@ -176,10 +197,12 @@ def build_audit(files: List[Dict[str, Any]], rules: List[Dict[str, Any]]) -> Dic
     by_extension: Counter[str] = Counter()
     by_topic: Dict[str, List[Dict[str, str]]] = defaultdict(list)
     unknown_topic_ids: List[str] = []
+    category_fix_candidates: List[Dict[str, str]] = []
 
     for record in files:
         grade = str(record.get("grade", "unknown"))
         category = str(record.get("primary_category", "unknown"))
+        inferred_category = infer_category(record, rules)
         doctype = str(record.get("document_type", "unknown"))
         extension = str(record.get("extension", "unknown"))
         topic = primary_topic(record, rules)
@@ -193,12 +216,22 @@ def build_audit(files: List[Dict[str, Any]], rules: List[Dict[str, Any]]) -> Dic
             "title": str(record.get("title", "")),
             "grade": grade,
             "category": category,
+            "inferred_category": str(inferred_category or ""),
             "doctype": doctype,
             "extension": extension,
             "path": str(record.get("path", "")),
         })
         if topic == "unknown":
             unknown_topic_ids.append(str(record.get("id", "")))
+        if category in ("unknown", "uncategorized", "") and inferred_category:
+            category_fix_candidates.append({
+                "id": str(record.get("id", "")),
+                "title": str(record.get("title", "")),
+                "from": category,
+                "to": inferred_category,
+                "topic": topic,
+                "path": str(record.get("path", "")),
+            })
 
     groups = {
         topic: sorted(items, key=lambda x: (x["grade"], x["category"], x["title"], x["path"]))
@@ -213,9 +246,11 @@ def build_audit(files: List[Dict[str, Any]], rules: List[Dict[str, Any]]) -> Dic
             "by_document_type": dict(sorted(by_doctype.items())),
             "by_extension": dict(sorted(by_extension.items())),
             "unknown_topic_count": len(unknown_topic_ids),
+            "category_fix_candidate_count": len(category_fix_candidates),
         },
         "topic_groups": groups,
         "unknown_topic_ids": unknown_topic_ids,
+        "category_fix_candidates": category_fix_candidates,
     }
 
 
@@ -232,6 +267,7 @@ def main() -> int:
         raise SystemExit("metadata/index.json must contain a top-level 'files' list")
 
     changed_topics = 0
+    changed_categories = 0
     for record in files:
         inferred = infer_topics(record, rules)
         new_topics = clean_topics(record.get("topics", []), inferred)
@@ -239,6 +275,13 @@ def main() -> int:
             changed_topics += 1
             if args.apply:
                 record["topics"] = new_topics
+
+        inferred_category = infer_category(record, rules)
+        current_category = record.get("primary_category")
+        if current_category in (None, "", "unknown", "uncategorized") and inferred_category:
+            changed_categories += 1
+            if args.apply:
+                record["primary_category"] = inferred_category
 
     sorted_files = sorted(files, key=lambda r: sort_key(r, rules))
     order_changed = [r.get("id") for r in sorted_files] != [r.get("id") for r in files]
@@ -260,6 +303,7 @@ def main() -> int:
     print(f"Topic map rules: {len(rules)}")
     print(f"Files scanned: {len(files)}")
     print(f"Records with topic improvements: {changed_topics}")
+    print(f"Records with category improvements: {changed_categories}")
     print(f"Order would change: {'yes' if order_changed else 'no'}")
     print(f"Unknown-topic records after inference: {audit['summary']['unknown_topic_count']}")
     print()
