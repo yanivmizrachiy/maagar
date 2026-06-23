@@ -35,6 +35,7 @@ jobs:
           node --check assets/site-share.js
           node --check assets/site-view-share.js
           node --check assets/site-modal-share.js
+          node --check assets/site-help.js
           python3 scripts/validate-site-data-contract.py
           python3 scripts/validate-file-links.py
           bash scripts/validate-all.sh
@@ -62,6 +63,7 @@ jobs:
           node --check assets/site-share.js
           node --check assets/site-view-share.js
           node --check assets/site-modal-share.js
+          node --check assets/site-help.js
           python3 scripts/validate-site-data-contract.py
           python3 scripts/validate-file-links.py
           bash scripts/validate-all.sh
