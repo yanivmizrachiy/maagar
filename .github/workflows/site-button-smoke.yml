@@ -28,9 +28,9 @@ jobs:
           npm install --save-dev @playwright/test
           npx playwright install --with-deps chromium
 
-      - name: Run button and responsive smoke tests
+      - name: Run button, responsive and accessibility smoke tests
         run: |
-          npx playwright test tests/site-buttons.spec.js tests/site-responsive.spec.js --project=chromium
+          npx playwright test tests/site-buttons.spec.js tests/site-responsive.spec.js tests/site-accessibility.spec.js --project=chromium
 
       - name: Upload Playwright diagnostics
         if: always()
