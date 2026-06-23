@@ -1,0 +1,190 @@
+{
+  "schema_version": "2026-06-23.topic-map-v1",
+  "repository": "yanivmizrachiy/maagar",
+  "purpose": "Canonical topic map for grouping similar math files together in metadata and website display.",
+  "rules_source": "RULES.md",
+  "topics": [
+    {
+      "id": "two-variable-equations",
+      "label_he": "משוואות בשני נעלמים",
+      "category": "algebra",
+      "default_grades": ["8", "9"],
+      "keywords": ["שני נעלמים", "שתי נעלמים", "2 נעלמים", "מערכת משוואות", "מערכות משוואות", "שיטת הצבה", "שיטת ההצבה", "השוואת מקדמים", "פתרון גרפי"]
+    },
+    {
+      "id": "linear-equations",
+      "label_he": "משוואות",
+      "category": "algebra",
+      "default_grades": ["7", "8"],
+      "keywords": ["משוואה", "משוואות", "פתרון משוואה", "פתרון משוואות"]
+    },
+    {
+      "id": "algebraic-expressions",
+      "label_he": "ביטויים אלגבריים",
+      "category": "algebra",
+      "default_grades": ["7"],
+      "keywords": ["ביטויים אלגבריים", "ביטוי אלגברי", "הצבה", "כינוס איברים", "פישוט ביטויים"]
+    },
+    {
+      "id": "directed-numbers",
+      "label_he": "מספרים מכוונים",
+      "category": "algebra",
+      "default_grades": ["7"],
+      "keywords": ["מספרים מכוונים", "מכוונים", "מספרים שליליים", "שליליים", "חיוביים ושליליים"]
+    },
+    {
+      "id": "linear-function",
+      "label_he": "פונקציה קווית",
+      "category": "algebra",
+      "default_grades": ["8", "9"],
+      "keywords": ["פונקציה קווית", "פונקציות קוויות", "שיפוע", "משוואת ישר", "y=f(x)", "yfx"]
+    },
+    {
+      "id": "quadratic-function",
+      "label_he": "פונקציה ריבועית",
+      "category": "algebra",
+      "default_grades": ["9"],
+      "keywords": ["פונקציה ריבועית", "פונקציות ריבועיות", "פרבולה", "פרבולות"]
+    },
+    {
+      "id": "quadratic-equations",
+      "label_he": "משוואות ריבועיות",
+      "category": "algebra",
+      "default_grades": ["9"],
+      "keywords": ["משוואה ריבועית", "משוואות ריבועיות", "טרינום", "נוסחת השורשים"]
+    },
+    {
+      "id": "ratio-proportion-scale",
+      "label_he": "יחס ופרופורציה",
+      "category": "algebra",
+      "default_grades": ["8"],
+      "keywords": ["יחס", "פרופורציה", "קנה מידה", "קנמ", "קנ\"מ"]
+    },
+    {
+      "id": "percentages",
+      "label_he": "אחוזים",
+      "category": "algebra",
+      "default_grades": ["8"],
+      "keywords": ["אחוז", "אחוזים", "הנחה", "התייקרות"]
+    },
+    {
+      "id": "patterns-sequences",
+      "label_he": "חוקיות וסדרות",
+      "category": "algebra",
+      "default_grades": ["7", "8"],
+      "keywords": ["חוקיות", "סדרה", "סדרות", "דפוס", "דפוסים"]
+    },
+    {
+      "id": "coordinate-plane",
+      "label_he": "מערכת צירים",
+      "category": "algebra",
+      "default_grades": ["7", "8"],
+      "keywords": ["מערכת צירים", "ציר x", "ציר y", "מישור קרטזי", "נקודות במישור"]
+    },
+    {
+      "id": "angles",
+      "label_he": "זוויות",
+      "category": "geometry",
+      "default_grades": ["7"],
+      "keywords": ["זוויות", "זווית", "זוויות מתאימות", "זוויות מתחלפות", "מקבילים"]
+    },
+    {
+      "id": "triangles",
+      "label_he": "משולשים",
+      "category": "geometry",
+      "default_grades": ["7", "8"],
+      "keywords": ["משולש", "משולשים", "גובה במשולש", "תיכון", "חוצה זווית"]
+    },
+    {
+      "id": "triangle-congruence",
+      "label_he": "חפיפת משולשים",
+      "category": "geometry",
+      "default_grades": ["8"],
+      "keywords": ["חפיפה", "חפיפת משולשים", "משולשים חופפים"]
+    },
+    {
+      "id": "triangle-similarity",
+      "label_he": "דמיון משולשים",
+      "category": "geometry",
+      "default_grades": ["8", "9"],
+      "keywords": ["דמיון", "דמיון משולשים", "משולשים דומים"]
+    },
+    {
+      "id": "kite",
+      "label_he": "דלתון",
+      "category": "geometry",
+      "default_grades": ["9"],
+      "keywords": ["דלתון", "דלתונים"]
+    },
+    {
+      "id": "rectangle-square",
+      "label_he": "מלבן וריבוע",
+      "category": "geometry",
+      "default_grades": ["7", "9"],
+      "keywords": ["מלבן", "ריבוע", "ריבועים"]
+    },
+    {
+      "id": "parallelogram",
+      "label_he": "מקבילית",
+      "category": "geometry",
+      "default_grades": ["9"],
+      "keywords": ["מקבילית", "מקביליות"]
+    },
+    {
+      "id": "rhombus",
+      "label_he": "מעוין",
+      "category": "geometry",
+      "default_grades": ["9"],
+      "keywords": ["מעוין", "מעויין"]
+    },
+    {
+      "id": "trapezoid",
+      "label_he": "טרפז",
+      "category": "geometry",
+      "default_grades": ["9"],
+      "keywords": ["טרפז", "טרפזים"]
+    },
+    {
+      "id": "midsegment",
+      "label_he": "קטע אמצעים",
+      "category": "geometry",
+      "default_grades": ["9"],
+      "keywords": ["קטע אמצעים", "אמצעים במשולש", "אמצעים בטרפז"]
+    },
+    {
+      "id": "pythagoras",
+      "label_he": "משפט פיתגורס",
+      "category": "geometry",
+      "default_grades": ["8", "9"],
+      "keywords": ["פיתגורס", "משפט פיתגורס", "משולש ישר זווית"]
+    },
+    {
+      "id": "placement-tests",
+      "label_he": "מבחני מיון והקבצה",
+      "category": "exams",
+      "default_grades": ["7", "8", "9"],
+      "keywords": ["מבחן מיון", "מיון", "הקבצה", "מדעית"]
+    },
+    {
+      "id": "semester-tests",
+      "label_he": "מבחני מחצית",
+      "category": "exams",
+      "default_grades": ["7", "8", "9"],
+      "keywords": ["מחצית", "מבחן מחצית"]
+    },
+    {
+      "id": "end-year-tests",
+      "label_he": "מבחני סוף שנה",
+      "category": "exams",
+      "default_grades": ["7", "8", "9"],
+      "keywords": ["סוף שנה", "מבחן סוף", "מסכם שנה"]
+    },
+    {
+      "id": "summer-course",
+      "label_he": "קורס קיץ ומכינות",
+      "category": "summaries",
+      "default_grades": ["7", "8", "9"],
+      "keywords": ["קורס קיץ", "מכינה", "הכנה לכיתה"]
+    }
+  ]
+}
