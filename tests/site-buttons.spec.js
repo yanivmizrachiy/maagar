@@ -50,6 +50,7 @@ function expectNoVisibleDemoText(label, text) {
 test('site action buttons are real and stable', async () => {
   const indexHtml = readText('index.html');
   const siteJs = readText('assets/site.js');
+  const siteCss = readText('assets/site.css');
   const helpJs = readText('assets/site-help.js');
   const shareJs = readText('assets/site-share.js');
   const viewShareJs = readText('assets/site-view-share.js');
@@ -78,8 +79,22 @@ test('site action buttons are real and stable', async () => {
   expect(siteJs).toContain('groupLabel(f)');
   expect(siteJs).toContain('compareFiles');
   expect(siteJs).toContain('compareGroups');
+  expect(siteJs).toContain('const SORTS');
+  expect(siteJs).toContain('data-sort');
+  expect(siteJs).toContain('sortbar');
+  expect(siteJs).toContain('renderSoon');
+  expect(siteJs).toContain('prepareFiles');
+  expect(siteJs).toContain('enrichFile');
+  expect(siteJs).toContain('_search');
+  expect(siteJs).toContain('_smartKey');
+  expect(siteJs).toContain('_groupKey');
+  expect(siteJs).toContain('מיון נוח');
   expect(siteJs).toContain('מיון: שכבה › תחום › נושא');
   expect(siteJs).toMatch(/\.\/\$\{f\.path\}/);
+
+  expect(siteCss).toContain('.sortbar');
+  expect(siteCss).toContain('.sort-title');
+  expect(siteCss).toContain('.sort-chip');
 
   const shareBundle = `${shareJs}\n${viewShareJs}\n${modalShareJs}`;
   expect(shareBundle).toMatch(/whatsapp|wa\.me/i);
