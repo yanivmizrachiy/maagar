@@ -1,36 +1,141 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Validate that site action buttons are protected against fake or duplicate actions."""
+"""Validate that the active site has real actions and no visible demo text.
+
+This script checks active website files and active metadata only. It does not scan
+RULES.md or docs, because those files may legitimately mention demo/fake as a
+prohibition.
+"""
 
 from __future__ import annotations
 
+import json
+import re
 import sys
 from pathlib import Path
+from typing import Any
 
 REPO = Path(__file__).resolve().parent.parent
 SITE_JS = REPO / "assets" / "site.js"
 HELP_JS = REPO / "assets" / "site-help.js"
+METADATA = REPO / "metadata" / "index.json"
+
+ACTIVE_SITE_FILES = [
+    REPO / "index.html",
+    REPO / "assets" / "site.js",
+    REPO / "assets" / "site.css",
+    REPO / "assets" / "site-url-state.js",
+    REPO / "assets" / "site-deeplink.js",
+    REPO / "assets" / "site-share.js",
+    REPO / "assets" / "site-view-share.js",
+    REPO / "assets" / "site-modal-share.js",
+    REPO / "assets" / "site-help.js",
+]
 
 REQUIRED_SITE_SNIPPETS = [
     "data-view",
-    "download",
-    "target=\"_blank\"",
-    "href=\"${esc(u)}\"",
+    "downloadable(f)",
+    "downloadUrl(f)",
+    "downloadName(f)",
+    "downloadButton(f)",
+    "fast-download",
+    "data-download",
+    "הורדה מהירה",
+    "צפייה מוטמעת · הורדה ישירה זמינה",
+    "`./${f.path}`",
 ]
 
 REQUIRED_HELP_SNIPPETS = [
     "normalizeActionButtons",
     "setAttribute('type', 'button')",
     "noopener noreferrer",
+    "aria-disabled",
+    "אין קישור פעיל",
     "seen.has(key)",
     "a.remove()",
 ]
 
+FORBIDDEN_VISIBLE_PATTERNS = [
+    re.compile(r"\bdemo\b", re.IGNORECASE),
+    re.compile(r"\bdummy\b", re.IGNORECASE),
+    re.compile(r"\bmock\b", re.IGNORECASE),
+    re.compile(r"\blorem\b", re.IGNORECASE),
+    re.compile(r"\bfake\b", re.IGNORECASE),
+    re.compile(r"דמו"),
+]
+
+
+def read_text(path: Path) -> str:
+    return path.read_text(encoding="utf-8", errors="ignore") if path.exists() else ""
+
+
+def flatten_strings(value: Any) -> list[str]:
+    if isinstance(value, dict):
+        out: list[str] = []
+        for item in value.values():
+            out.extend(flatten_strings(item))
+        return out
+    if isinstance(value, list):
+        out: list[str] = []
+        for item in value:
+            out.extend(flatten_strings(item))
+        return out
+    if isinstance(value, str):
+        return [value.strip()]
+    return []
+
+
+def strip_legitimate_placeholders(text: str) -> str:
+    # HTML input placeholders are real UI, not demo content.
+    text = re.sub(r'placeholder="[^"]*"', "", text)
+    text = re.sub(r"placeholder='[^']*'", "", text)
+    return text
+
+
+def visible_demo_errors(label: str, text: str) -> list[str]:
+    cleaned = strip_legitimate_placeholders(text)
+    errors: list[str] = []
+    for pattern in FORBIDDEN_VISIBLE_PATTERNS:
+        for match in pattern.finditer(cleaned):
+            start = max(0, match.start() - 45)
+            end = min(len(cleaned), match.end() + 45)
+            context = " ".join(cleaned[start:end].split())
+            errors.append(f"{label} contains forbidden visible text '{match.group(0)}' near: {context}")
+    return errors
+
+
+def validate_metadata(errors: list[str]) -> None:
+    if not METADATA.exists():
+        errors.append("metadata/index.json missing")
+        return
+    try:
+        data = json.loads(read_text(METADATA))
+    except Exception as exc:
+        errors.append(f"metadata/index.json invalid JSON: {exc}")
+        return
+
+    files = data.get("files")
+    if not isinstance(files, list) or not files:
+        errors.append("metadata/index.json has no active files")
+        return
+
+    if not any(isinstance(item, dict) and item.get("source_type") == "repo-file" and str(item.get("path", "")).startswith("files/") for item in files):
+        errors.append("metadata/index.json has no repo-file records under files/")
+
+    if not any(isinstance(item, dict) and item.get("source_type") == "repo-file" and item.get("path") and item.get("file_name") and item.get("download_ready") is True for item in files):
+        errors.append("metadata/index.json has no real downloadable repo-file records")
+
+    metadata_text = "\n".join(flatten_strings(data))
+    for value in ("#", "javascript:void(0)", "demo"):
+        if value in metadata_text:
+            errors.append(f"metadata/index.json contains forbidden value: {value}")
+    errors.extend(visible_demo_errors("metadata/index.json", metadata_text))
+
 
 def main() -> int:
     errors: list[str] = []
-    site = SITE_JS.read_text(encoding="utf-8", errors="ignore") if SITE_JS.exists() else ""
-    help_js = HELP_JS.read_text(encoding="utf-8", errors="ignore") if HELP_JS.exists() else ""
+    site = read_text(SITE_JS)
+    help_js = read_text(HELP_JS)
 
     if not site:
         errors.append("assets/site.js missing or empty")
@@ -39,19 +144,27 @@ def main() -> int:
 
     for snippet in REQUIRED_SITE_SNIPPETS:
         if snippet not in site:
-            errors.append(f"assets/site.js missing real-button snippet: {snippet}")
+            errors.append(f"assets/site.js missing real action snippet: {snippet}")
 
     for snippet in REQUIRED_HELP_SNIPPETS:
         if snippet not in help_js:
             errors.append(f"assets/site-help.js missing button guard snippet: {snippet}")
 
-    print("MAAGAR REAL BUTTON VALIDATION")
+    for path in ACTIVE_SITE_FILES:
+        if not path.exists():
+            errors.append(f"{path.relative_to(REPO)} missing")
+            continue
+        errors.extend(visible_demo_errors(str(path.relative_to(REPO)), read_text(path)))
+
+    validate_metadata(errors)
+
+    print("MAAGAR REAL ACTION AND VISIBLE DEMO VALIDATION")
     if errors:
         for err in errors:
             print(f"FAIL  {err}")
         return 1
 
-    print("OK    real action buttons are guarded against missing type, unsafe blank links and duplicate actions")
+    print("OK    active site has real download/view actions and no visible demo/fake/mock/dummy/lorem text")
     return 0
 
 
