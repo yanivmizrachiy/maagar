@@ -2,10 +2,13 @@ $ErrorActionPreference = 'Stop'
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
 $RepoUrl = 'https://github.com/yanivmizrachiy/maagar.git'
-$RepoDir = Join-Path $env:USERPROFILE 'maagar'
+$HomeDir = $env:USERPROFILE
+$PreferredRepoDir = Join-Path $HomeDir 'maagar'
 $Stamp = Get-Date -Format 'yyyyMMdd_HHmmss'
 
 Write-Host '=== Maagar local reset started ===' -ForegroundColor Cyan
+
+Set-Location $HomeDir
 
 $env:Path = [Environment]::GetEnvironmentVariable('Path','Machine') + ';' + [Environment]::GetEnvironmentVariable('Path','User') + ';C:\Program Files\Git\cmd;C:\Program Files\nodejs'
 
@@ -24,33 +27,43 @@ if (-not (Get-Command node -ErrorAction SilentlyContinue)) {
 if (-not (Get-Command git -ErrorAction SilentlyContinue)) { throw 'Git is still unavailable. Restart PowerShell and run this again.' }
 if (-not (Get-Command node -ErrorAction SilentlyContinue)) { throw 'Node.js is still unavailable. Restart PowerShell and run this again.' }
 
-if (Test-Path $RepoDir) {
-  $IsValidRepo = Test-Path (Join-Path $RepoDir '.git')
-  if ($IsValidRepo) {
-    Set-Location $RepoDir
-    $HeadOk = $true
-    git rev-parse --verify HEAD *> $null
-    if ($LASTEXITCODE -ne 0) { $HeadOk = $false }
-    if ($HeadOk) {
-      Write-Host 'Existing repo is valid. Pulling updates...' -ForegroundColor Green
-      git pull --ff-only
-    } else {
-      $BackupDir = Join-Path $env:USERPROFILE "maagar_broken_$Stamp"
-      Rename-Item $RepoDir $BackupDir -Force
-      Write-Host "Backed up broken repo to: $BackupDir" -ForegroundColor Yellow
-      git clone $RepoUrl $RepoDir
-    }
-  } else {
-    $BackupDir = Join-Path $env:USERPROFILE "maagar_broken_$Stamp"
-    Rename-Item $RepoDir $BackupDir -Force
-    Write-Host "Backed up non-git folder to: $BackupDir" -ForegroundColor Yellow
-    git clone $RepoUrl $RepoDir
-  }
+function Test-MaagarRepoOk([string]$Path) {
+  if (-not (Test-Path (Join-Path $Path '.git'))) { return $false }
+  git -C $Path rev-parse --verify HEAD *> $null
+  if ($LASTEXITCODE -ne 0) { return $false }
+  if (-not (Test-Path (Join-Path $Path 'tests\site-buttons.spec.js'))) { return $false }
+  return $true
+}
+
+$RepoDir = $PreferredRepoDir
+
+if (Test-MaagarRepoOk $PreferredRepoDir) {
+  Write-Host 'Existing repo is valid. Pulling updates...' -ForegroundColor Green
+  git -C $PreferredRepoDir pull --ff-only
 } else {
+  if (Test-Path $PreferredRepoDir) {
+    $BackupDir = Join-Path $HomeDir "maagar_broken_$Stamp"
+    try {
+      Set-Location $HomeDir
+      Rename-Item $PreferredRepoDir $BackupDir -Force
+      Write-Host "Backed up broken maagar folder to: $BackupDir" -ForegroundColor Yellow
+      $RepoDir = $PreferredRepoDir
+    } catch {
+      Write-Host 'Could not rename the broken maagar folder because it is in use.' -ForegroundColor Yellow
+      $RepoDir = Join-Path $HomeDir "maagar_clean_$Stamp"
+      Write-Host "Using clean repo folder instead: $RepoDir" -ForegroundColor Yellow
+    }
+  }
   git clone $RepoUrl $RepoDir
 }
 
 Set-Location $RepoDir
+
+if (-not (Test-Path '.git')) { throw 'Clone failed: .git folder is missing.' }
+if (-not (Test-Path 'tests\site-buttons.spec.js')) { throw 'Clone failed: tests/site-buttons.spec.js is missing.' }
+
+git rev-parse --verify HEAD *> $null
+if ($LASTEXITCODE -ne 0) { throw 'Clone failed: HEAD is not valid.' }
 
 if (-not (Test-Path 'package.json')) {
   npm init -y
@@ -73,13 +86,14 @@ if (Test-Path $ProfilePath) {
   Copy-Item $ProfilePath "$ProfilePath.bak_$Stamp" -Force
 }
 
+$SafeRepoDir = $RepoDir.Replace("'", "''")
 $ProfileContent = @"
-`$global:MAAGAR_REPO = '$RepoDir'
+`$global:MAAGAR_REPO = '$SafeRepoDir'
 
 function mgo { Set-Location `$global:MAAGAR_REPO }
 
 function mhelp {
-  Write-Host 'פקודות מאגר: mgo | mstatus | mpull | mserve | msite | mbuttons | mresp | ma11y | mtest | mcheck | mpush "message" | mactions | mrepo | mlive' -ForegroundColor Cyan
+  Write-Host 'Maagar commands: mgo | mstatus | mpull | mserve | msite | mbuttons | mresp | ma11y | mtest | mcheck | mpush "message" | mactions | mrepo | mlive' -ForegroundColor Cyan
 }
 
 function mstatus {
