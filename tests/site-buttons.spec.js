@@ -3,6 +3,17 @@ const fs = require('fs');
 const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
+const ACTIVE_SITE_FILES = [
+  'index.html',
+  'assets/site.js',
+  'assets/site.css',
+  'assets/site-url-state.js',
+  'assets/site-deeplink.js',
+  'assets/site-share.js',
+  'assets/site-view-share.js',
+  'assets/site-modal-share.js',
+  'assets/site-help.js',
+];
 
 function readText(relativePath) {
   return fs.readFileSync(path.join(ROOT, relativePath), 'utf8');
@@ -25,6 +36,17 @@ function collectStrings(value, strings = []) {
   return strings;
 }
 
+function expectNoVisibleDemoText(label, text) {
+  const normalized = String(text || '').replace(/placeholder="[^"]*"/g, '').replace(/placeholder='[^']*'/g, '');
+  const forbidden = [/\bdemo\b/i, /\bdummy\b/i, /\bmock\b/i, /\blorem\b/i, /\bfake\b/i, /דמו/];
+  const hits = [];
+  for (const pattern of forbidden) {
+    const match = normalized.match(pattern);
+    if (match) hits.push(`${label}: ${match[0]}`);
+  }
+  expect(hits).toEqual([]);
+}
+
 test('site action buttons are real and stable', async () => {
   const indexHtml = readText('index.html');
   const siteJs = readText('assets/site.js');
@@ -33,6 +55,10 @@ test('site action buttons are real and stable', async () => {
   const viewShareJs = readText('assets/site-view-share.js');
   const modalShareJs = readText('assets/site-modal-share.js');
   const metadata = readJson('metadata/index.json');
+
+  for (const file of ACTIVE_SITE_FILES) {
+    expectNoVisibleDemoText(file, readText(file));
+  }
 
   expect(indexHtml).toContain('assets/site.js');
   expect(indexHtml).toContain('assets/site-help.js');
@@ -67,6 +93,6 @@ test('site action buttons are real and stable', async () => {
   expect(metadata.files.some(file => file.source_type === 'repo-file' && file.path && file.file_name && file.download_ready === true)).toBeTruthy();
 
   const strings = collectStrings(metadata).filter(Boolean);
-  const badValues = strings.filter(value => value === '#' || value === 'javascript:void(0)' || value.toLowerCase() === 'demo');
+  const badValues = strings.filter(value => value === '#' || value === 'javascript:void(0)' || value.toLowerCase() === 'demo' || /\bdummy\b|\bmock\b|\blorem\b|\bfake\b|דמו/i.test(value));
   expect(badValues).toEqual([]);
 });
