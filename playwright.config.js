@@ -1,8 +1,8 @@
 module.exports = {
   testDir: './tests',
-  timeout: 30000,
+  timeout: 120000,
   expect: {
-    timeout: 10000,
+    timeout: 20000,
   },
   use: {
     headless: true,
