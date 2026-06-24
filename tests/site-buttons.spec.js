@@ -30,21 +30,27 @@ test('site action buttons are real and stable', async () => {
   const indexHtml = readText('index.html');
   const siteJs = readText('assets/site.js');
   const helpJs = readText('assets/site-help.js');
+  const shareJs = readText('assets/site-share.js');
+  const viewShareJs = readText('assets/site-view-share.js');
+  const modalShareJs = readText('assets/site-modal-share.js');
   const metadata = readJson('metadata/index.json');
 
   expect(indexHtml).toContain('assets/site.js');
   expect(indexHtml).toContain('assets/site-help.js');
   expect(indexHtml).toContain('assets/site-share.js');
+  expect(indexHtml).toContain('assets/site-view-share.js');
   expect(indexHtml).toContain('assets/site-modal-share.js');
 
   expect(siteJs).toContain('data-view');
   expect(siteJs).toMatch(/download/);
-  expect(siteJs).toMatch(/whatsapp|wa\.me/i);
-  expect(siteJs).toContain('share-toast');
+
+  const shareBundle = `${shareJs}\n${viewShareJs}\n${modalShareJs}`;
+  expect(shareBundle).toMatch(/whatsapp|wa\.me/i);
+  expect(shareBundle).toContain('share-toast');
 
   expect(helpJs).toContain('aria-disabled');
   expect(helpJs).toContain('אין קישור פעיל');
-  expect(helpJs).toContain('hasAttribute(\'download\')');
+  expect(helpJs).toContain("hasAttribute('download')");
   expect(helpJs).toContain('noopener noreferrer');
 
   const urls = collectUrls(metadata).filter(Boolean);
