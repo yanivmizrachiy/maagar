@@ -3,10 +3,12 @@
 """
 validate-workflow-site-checks.py
 
-בודק שה-workflows המרכזיים מגנים על כל קבצי ה-JS של האתר.
-הבדיקה מגלה אוטומטית כל assets/*.js, ולכן קובץ JS חדש שלא נכנס ל-CI ייתפס.
-בנוסף היא מוודאת שהגנת כפתורים אמיתיים/אין דמו גלוי נשארת מחוברת ל-CI.
-הבדיקה לא משנה קבצים.
+Checks that the main GitHub workflow protects the active browser/site layer:
+- every assets/*.js file gets a syntax check;
+- the site shell, real-button guard, data contract and file links are tested;
+- the premium teacher navigation CSS and exam classifier are protected through validate-all.
+
+The check does not modify files.
 """
 
 from __future__ import annotations
@@ -16,28 +18,39 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
 ASSETS = REPO / "assets"
-
-WORKFLOWS = [
-    ".github/workflows/validate.yml",
+MAIN_WORKFLOW = ".github/workflows/validate.yml"
+OPTIONAL_WORKFLOWS = [
+    ".github/workflows/site-button-smoke.yml",
     ".github/workflows/topic-organizer.yml",
     ".github/workflows/health-check.yml",
     ".github/workflows/auto-metadata-cleanup.yml",
 ]
 
-CORE_SITE_CHECKS = [
+MAIN_REQUIRED_CHECKS = [
     "python3 scripts/validate-site-shell.py",
+    "python3 scripts/validate-real-buttons.py",
     "python3 scripts/validate-site-data-contract.py",
     "python3 scripts/validate-file-links.py",
+    "bash scripts/validate-all.sh",
 ]
 
-SPECIFIC_WORKFLOW_CHECKS = {
-    ".github/workflows/validate.yml": [
-        "python3 scripts/validate-real-buttons.py",
-    ],
-    ".github/workflows/site-button-smoke.yml": [
-        "python3 scripts/validate-real-buttons.py",
-    ],
-}
+VALIDATE_ALL_REQUIRED_SNIPPETS = [
+    "assets/site-premium-nav.css",
+    "scripts/classify-exams.py",
+    "python3 scripts/classify-exams.py",
+    "python3 scripts/validate-site-shell.py",
+    "python3 scripts/validate-real-buttons.py",
+]
+
+SITE_SHELL_REQUIRED_SNIPPETS = [
+    "PREMIUM_CSS",
+    "SITE_STRUCTURE",
+    "TAXONOMY",
+    "EXPECTED_HOME_LABELS",
+    "EXPECTED_EXAM_NAV",
+    "EXPECTED_EXAM_KINDS",
+    "validate_structure",
+]
 
 
 def site_js_checks() -> list[str]:
@@ -45,54 +58,55 @@ def site_js_checks() -> list[str]:
     return [f"node --check assets/{path.name}" for path in files]
 
 
-def workflow_text(rel: str, errors: list[str]) -> str:
+def read(rel: str, errors: list[str], required: bool = True) -> str:
     path = REPO / rel
     if not path.exists():
-        errors.append(f"missing workflow: {rel}")
+        if required:
+            errors.append(f"missing file: {rel}")
         return ""
     return path.read_text(encoding="utf-8", errors="ignore")
+
+
+def require_all(label: str, text: str, needles: list[str], errors: list[str]) -> None:
+    for needle in needles:
+        if needle not in text:
+            errors.append(f"{label}: missing {needle}")
 
 
 def main() -> int:
     errors: list[str] = []
     js_checks = site_js_checks()
-
     if not js_checks:
         errors.append("no assets/*.js files found")
 
-    for rel in WORKFLOWS:
-        text = workflow_text(rel, errors)
-        if not text:
-            continue
-        for needle in js_checks:
-            if needle not in text:
-                errors.append(f"{rel}: missing {needle}")
-        for needle in CORE_SITE_CHECKS:
-            if needle not in text:
-                errors.append(f"{rel}: missing {needle}")
+    main_workflow = read(MAIN_WORKFLOW, errors)
+    validate_all = read("scripts/validate-all.sh", errors)
+    site_shell = read("scripts/validate-site-shell.py", errors)
 
-    for rel, checks in SPECIFIC_WORKFLOW_CHECKS.items():
-        text = workflow_text(rel, errors)
-        if not text:
-            continue
-        for needle in checks:
-            if needle not in text:
-                errors.append(f"{rel}: missing required guard {needle}")
+    require_all(MAIN_WORKFLOW, main_workflow, MAIN_REQUIRED_CHECKS + js_checks, errors)
+    require_all("scripts/validate-all.sh", validate_all, VALIDATE_ALL_REQUIRED_SNIPPETS, errors)
+    require_all("scripts/validate-site-shell.py", site_shell, SITE_SHELL_REQUIRED_SNIPPETS, errors)
+
+    for rel in OPTIONAL_WORKFLOWS:
+        text = read(rel, errors, required=False)
+        if text and "validate-real-buttons.py" in rel:
+            require_all(rel, text, ["python3 scripts/validate-real-buttons.py"], errors)
 
     print("MAAGAR WORKFLOW SITE CHECKS")
-    print(f"Workflows checked: {len(WORKFLOWS)}")
+    print(f"Main workflow checked: {MAIN_WORKFLOW}")
     print(f"Discovered JS checks: {len(js_checks)}")
     for check in js_checks:
         print(f"CHECK {check}")
-    print(f"Required core checks: {len(CORE_SITE_CHECKS)}")
-    print(f"Required workflow-specific guards: {sum(len(v) for v in SPECIFIC_WORKFLOW_CHECKS.values())}")
+    print(f"Main required checks: {len(MAIN_REQUIRED_CHECKS)}")
+    print(f"validate-all required snippets: {len(VALIDATE_ALL_REQUIRED_SNIPPETS)}")
+    print(f"site-shell required snippets: {len(SITE_SHELL_REQUIRED_SNIPPETS)}")
 
     if errors:
         for err in errors:
             print(f"FAIL  {err}")
         return 1
 
-    print("OK    workflows protect browser JS files and keep the real-action/no-demo guard wired into CI")
+    print("OK    workflows protect browser JS files, premium teacher navigation, real actions, metadata navigation and exam classifier")
     return 0
 
 
