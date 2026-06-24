@@ -84,6 +84,12 @@ def unit_level(record: Dict[str, Any]) -> str:
     return value if value in UNIT_LEVELS else "unknown"
 
 
+def ensure_unit_keys(counter: Counter[str]) -> dict[str, int]:
+    for unit in UNIT_LEVELS:
+        counter.setdefault(unit, 0)
+    return dict(sorted(counter.items()))
+
+
 def pick(record: Dict[str, Any]) -> Dict[str, Any]:
     return {
         "id": record.get("id"),
@@ -167,11 +173,12 @@ def main() -> int:
         ext = ext_of(record)
         by_ext[ext] += 1
         by_category[str(record.get("primary_category", "unknown"))] += 1
-        for grade in grade_values(record):
+        grades = grade_values(record)
+        for grade in grades:
             by_grade[grade] += 1
         unit = unit_level(record)
         by_unit_level[unit] += 1
-        if "high-school" in grade_values(record) or str(record.get("grade")) == "high-school" or str(record.get("school_stage")) == "high-school":
+        if "high-school" in grades or str(record.get("grade")) == "high-school" or str(record.get("school_stage")) == "high-school":
             high_school_by_unit_level[unit] += 1
 
         source_type = record.get("source_type")
@@ -223,8 +230,8 @@ def main() -> int:
             "by_extension": dict(sorted(by_ext.items())),
             "by_grade": dict(sorted(by_grade.items())),
             "by_category": dict(sorted(by_category.items())),
-            "by_unit_level": dict(sorted(by_unit_level.items())),
-            "high_school_by_unit_level": dict(sorted(high_school_by_unit_level.items())),
+            "by_unit_level": ensure_unit_keys(by_unit_level),
+            "high_school_by_unit_level": ensure_unit_keys(high_school_by_unit_level),
         },
         "browser_features": browser_features,
         "no_action_cards": no_action,
