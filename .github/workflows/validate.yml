@@ -39,6 +39,7 @@ jobs:
         run: |
           python3 scripts/validate-site-shell.py
           python3 scripts/validate-real-buttons.py
+          python3 scripts/validate-highschool-units.py
           node --check assets/site.js
           node --check assets/site-url-state.js
           node --check assets/site-deeplink.js
@@ -88,9 +89,3 @@ jobs:
         run: |
           python3 scripts/site-action-report.py --report reports/site-action-report.json
           python3 scripts/site-action-report-md.py --json reports/site-action-report.json --md reports/site-action-report.md
-
-      - name: Upload reports
-        uses: actions/upload-artifact@v4
-        with:
-          name: maagar-audit-reports
-          path: reports/*
