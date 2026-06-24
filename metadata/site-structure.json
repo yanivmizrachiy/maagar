@@ -1,5 +1,5 @@
 {
-  "schema_version": "2026-06-24.site-structure-v3",
+  "schema_version": "2026-06-24.site-structure-v4",
   "repository": "yanivmizrachiy/maagar",
   "language": "he",
   "direction": "rtl",
@@ -16,7 +16,8 @@
     "must_be_calm_useful_and_non_generic": true,
     "must_use_short_buttons_inside_grade_hub": true,
     "must_use_large_gateway_cards_on_home": true,
-    "visual_layer": "assets/site-premium-nav.css"
+    "visual_layer": "assets/site-premium-nav.css",
+    "unit_visual_layer": "assets/site-highschool-units.css"
   },
   "home": {
     "title": "מאגר מתמטיקה",
@@ -63,6 +64,7 @@
   "high_school_home": {
     "id": "high-school-home",
     "label": "חטיבה עליונה",
+    "visual_layer": "assets/site-highschool-units.css",
     "buttons": [
       { "id": "bagrut-3-unit", "label": "3 יחידות", "unit_level": "3-unit", "filter": { "school_stage": "high-school", "track": "bagrut", "unit_level": "3-unit" }, "style": { "theme": "three-unit-premium", "accent": "#0F766E" } },
       { "id": "bagrut-4-unit", "label": "4 יחידות", "unit_level": "4-unit", "filter": { "school_stage": "high-school", "track": "bagrut", "unit_level": "4-unit" }, "style": { "theme": "four-unit-premium", "accent": "#1D4ED8" } },
