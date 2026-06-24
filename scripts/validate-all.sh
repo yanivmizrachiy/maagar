@@ -105,6 +105,7 @@ KEY_FILES=(
   "scripts/batch-add.py"
   "scripts/classify-exams.py"
   "scripts/validate-highschool-units.py"
+  "scripts/audit-highschool-units.py"
   "scripts/_ingest.py"
   "scripts/qa-browser.js"
   "docs/ADDING_REAL_FILES.md"
