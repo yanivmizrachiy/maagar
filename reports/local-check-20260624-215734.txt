@@ -1,0 +1,27 @@
+=== MAAGAR LOCAL CHECK 20260624-215734 ===
+Repo: C:\Users\yaniv\Desktop\maagar
+Branch: graphics-repo-polish-20260624-215734
+=== git status ===
+?? STATE/graphics-repo-polish-20260624-215734.md
+?? reports/
+=== python checks ===
+>>> python scripts/validate-highschool-units.py
+MAAGAR HIGH SCHOOL UNIT NAVIGATION VALIDATION
+OK    high school 3/4/5 unit navigation is wired, styled and documented in metadata
+>>> python scripts/audit-highschool-units.py
+MAAGAR HIGH SCHOOL UNIT AUDIT
+high-school records: 3
+>>> python scripts/validate-real-buttons.py
+MAAGAR REAL ACTION, SMART SORTING, PERFORMANCE AND VISIBLE DEMO VALIDATION
+OK    active site has real actions, convenient sorting, precomputed search keys and no visible demo/fake/mock/dummy/lorem text
+>>> python scripts/validate-site-shell.py
+MAAGAR SITE SHELL VALIDATION
+OK    site shell, premium grade gateway, teacher navigation, metadata navigation, exam taxonomy, sharing and help are wired correctly
+=== node checks ===
+>>> node --check assets/site.js
+>>> node --check assets/site-url-state.js
+>>> node --check assets/site-deeplink.js
+>>> node --check assets/site-share.js
+>>> node --check assets/site-view-share.js
+>>> node --check assets/site-modal-share.js
+>>> node --check assets/site-help.js
