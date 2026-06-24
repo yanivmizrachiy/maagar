@@ -69,11 +69,14 @@ run_check "4. Real action buttons and no visible demo text" "python3 scripts/val
 # 5. EXAM CLASSIFIER DRY-RUN
 run_check "5. Safe exam classifier dry-run" "python3 scripts/classify-exams.py"
 
-# 6. NAVIGATION LOGIC TEST
-run_check "6. Navigation logic" "python3 scripts/test-logic.py"
+# 6. HIGH SCHOOL UNIT NAVIGATION
+run_check "6. High school unit navigation" "python3 scripts/validate-highschool-units.py"
 
-# 7. KEY FILES EXIST
-head "7. Key Files Present"
+# 7. NAVIGATION LOGIC TEST
+run_check "7. Navigation logic" "python3 scripts/test-logic.py"
+
+# 8. KEY FILES EXIST
+head "8. Key Files Present"
 KEY_FILES=(
   "RULES.md"
   "AGENTS.md"
@@ -101,6 +104,7 @@ KEY_FILES=(
   "scripts/add-file.py"
   "scripts/batch-add.py"
   "scripts/classify-exams.py"
+  "scripts/validate-highschool-units.py"
   "scripts/_ingest.py"
   "scripts/qa-browser.js"
   "docs/ADDING_REAL_FILES.md"
