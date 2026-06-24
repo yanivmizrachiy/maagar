@@ -1,6 +1,150 @@
 /* Premium teacher navigation layer for Maagar.
    Hebrew RTL, calm, useful and non-generic navigation controls. */
 
+.grade-gateway{
+  position:relative;
+  margin:18px 0 18px;
+  padding:22px;
+  border:1px solid #ffffff2d;
+  border-radius:34px;
+  background:radial-gradient(circle at 92% 0,#38bdf82d,transparent 28%),radial-gradient(circle at 8% 16%,#a78bfa23,transparent 26%),linear-gradient(135deg,#ffffff13,#ffffff08);
+  box-shadow:0 22px 65px #0006,inset 0 1px 0 #ffffff16;
+  overflow:hidden;
+}
+
+.grade-gateway:before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:linear-gradient(90deg,#ffffff05 1px,transparent 1px),linear-gradient(#ffffff04 1px,transparent 1px);
+  background-size:36px 36px;
+  mask-image:linear-gradient(to bottom,#000,transparent 95%);
+}
+
+.grade-gateway>*{position:relative}
+
+.grade-gateway-head{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:18px;
+  margin-bottom:16px;
+}
+
+.grade-gateway-head h2{
+  margin:0;
+  font-size:clamp(26px,4vw,44px);
+  line-height:1.08;
+  letter-spacing:-.04em;
+}
+
+.grade-gateway-head p{
+  margin:0;
+  max-width:58ch;
+  color:#cbd5e1;
+  line-height:1.75;
+}
+
+.grade-entry-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:14px;
+}
+
+.grade-entry{
+  position:relative;
+  min-height:190px;
+  padding:18px;
+  border:1px solid #ffffff28;
+  border-radius:28px;
+  color:white;
+  text-align:right;
+  cursor:pointer;
+  background:linear-gradient(145deg,#0f172acc,#111827cc);
+  box-shadow:0 18px 44px #0007,inset 0 1px 0 #ffffff18;
+  overflow:hidden;
+  transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease,background .18s ease;
+}
+
+.grade-entry:before{
+  content:"∑";
+  position:absolute;
+  left:14px;
+  top:12px;
+  width:46px;
+  height:46px;
+  border-radius:18px;
+  display:grid;
+  place-items:center;
+  background:#ffffff17;
+  color:#bfdbfe;
+  font-size:22px;
+  font-weight:900;
+}
+
+.grade-entry:after{
+  content:"";
+  position:absolute;
+  inset:auto -20% -35% -20%;
+  height:90px;
+  background:radial-gradient(circle,#38bdf838,transparent 64%);
+  pointer-events:none;
+}
+
+.grade-entry:nth-child(1){background:linear-gradient(145deg,#064e3bcc,#0f172acc)}
+.grade-entry:nth-child(2){background:linear-gradient(145deg,#1e3a8acc,#0f172acc)}
+.grade-entry:nth-child(3){background:linear-gradient(145deg,#581c87cc,#0f172acc)}
+.grade-entry:nth-child(4){background:linear-gradient(145deg,#78350fcc,#0f172acc)}
+
+.grade-entry:hover{
+  transform:translateY(-4px);
+  border-color:#ffffff55;
+  box-shadow:0 28px 68px #000a,0 0 52px #38bdf822;
+}
+
+.grade-entry:focus-visible{
+  outline:3px solid #93c5fd;
+  outline-offset:3px;
+}
+
+.grade-entry-kicker{
+  display:inline-flex;
+  margin-bottom:12px;
+  padding:6px 10px;
+  border:1px solid #ffffff24;
+  border-radius:999px;
+  color:#dbeafe;
+  background:#ffffff10;
+  font-size:12px;
+  font-weight:900;
+}
+
+.grade-entry strong{
+  display:block;
+  margin:0 0 10px;
+  font-size:clamp(22px,2.8vw,31px);
+  line-height:1.12;
+  letter-spacing:-.035em;
+}
+
+.grade-entry span:not(.grade-entry-kicker){
+  display:block;
+  color:#d7e3f5;
+  line-height:1.55;
+  max-width:25ch;
+}
+
+.grade-entry em{
+  position:absolute;
+  right:18px;
+  bottom:16px;
+  font-style:normal;
+  color:#bae6fd;
+  font-weight:900;
+  font-size:13px;
+}
+
 .gradebar{
   padding:14px;
   border:1px solid #ffffff28;
@@ -51,27 +195,11 @@
   opacity:.35;
 }
 
-.grade-hub>*{
-  position:relative;
-}
+.grade-hub>*{position:relative}
+.grade-hub h2{margin:0 0 6px;font-size:clamp(24px,4vw,38px);letter-spacing:-.035em;line-height:1.1}
+.grade-hub p{margin:0 0 14px;color:#cbd5e1;line-height:1.75;max-width:70ch}
 
-.grade-hub h2{
-  margin:0 0 6px;
-  font-size:clamp(24px,4vw,38px);
-  letter-spacing:-.035em;
-  line-height:1.1;
-}
-
-.grade-hub p{
-  margin:0 0 14px;
-  color:#cbd5e1;
-  line-height:1.75;
-  max-width:70ch;
-}
-
-.domainbar,
-.exambar,
-.sortbar{
+.domainbar,.exambar,.sortbar{
   margin-top:12px;
   padding:12px;
   border:1px solid var(--line2);
@@ -79,31 +207,11 @@
   background:linear-gradient(90deg,#ffffff12,#ffffff08);
   box-shadow:inset 0 1px 0 #ffffff10;
 }
-
-.sort-title{
-  color:#e0f2fe;
-  font-weight:900;
-}
-
-.domain-chip{
-  border-color:#a78bfa66;
-  background:linear-gradient(180deg,#8b5cf633,#4f46e520);
-}
-
-.domain-chip.on{
-  background:linear-gradient(135deg,#7c3aed,#2563eb);
-  box-shadow:0 16px 38px #7c3aed44;
-}
-
-.exam-chip{
-  border-color:#f59e0b66;
-  background:linear-gradient(180deg,#f59e0b30,#0ea5e91c);
-}
-
-.exam-chip.on{
-  background:linear-gradient(135deg,#f59e0b,#ef4444);
-  box-shadow:0 16px 38px #f59e0b3d;
-}
+.sort-title{color:#e0f2fe;font-weight:900}
+.domain-chip{border-color:#a78bfa66;background:linear-gradient(180deg,#8b5cf633,#4f46e520)}
+.domain-chip.on{background:linear-gradient(135deg,#7c3aed,#2563eb);box-shadow:0 16px 38px #7c3aed44}
+.exam-chip{border-color:#f59e0b66;background:linear-gradient(180deg,#f59e0b30,#0ea5e91c)}
+.exam-chip.on{background:linear-gradient(135deg,#f59e0b,#ef4444);box-shadow:0 16px 38px #f59e0b3d}
 
 .file-details{
   display:grid;
@@ -117,21 +225,14 @@
   font-size:12px;
   line-height:1.45;
 }
+.file-details span{display:flex;align-items:center;gap:6px;overflow-wrap:anywhere}
+.file-details span:before{content:"•";color:#67e8f9;font-weight:900}
 
-.file-details span{
-  display:flex;
-  align-items:center;
-  gap:6px;
-  overflow-wrap:anywhere;
-}
-
-.file-details span:before{
-  content:"•";
-  color:#67e8f9;
-  font-weight:900;
-}
-
+@media(max-width:1100px){.grade-entry-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.grade-gateway-head{display:block}.grade-gateway-head p{margin-top:8px}}
 @media(max-width:760px){
+  .grade-gateway{border-radius:24px;padding:15px;margin-top:12px}
+  .grade-entry-grid{grid-template-columns:1fr;gap:10px}
+  .grade-entry{min-height:150px;border-radius:22px}
   .gradebar,.domainbar,.exambar,.sortbar{border-radius:20px;padding:10px}
   .grade-go,.domain-chip,.exam-chip,.sort-chip{flex:1 1 100%;justify-content:center}
   .grade-hub{border-radius:24px;padding:16px}
