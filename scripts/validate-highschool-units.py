@@ -10,7 +10,7 @@ CHECKS = {
     "assets/site-url-state.js": ["u: 'unit'", "cleanUnit", "activeUnit", "clickUnit", "data-unit"],
     "assets/site-highschool-units.css": ["High school unit navigation", ".unit-hub", ".unitbar", ".unit-chip"],
     "metadata/taxonomy.json": ["3-unit", "4-unit", "5-unit"],
-    "metadata/site-structure.json": ["high_school_home", "3-unit", "4-unit", "5-unit"],
+    "metadata/site-structure.json": ["high_school_home", "3-unit", "4-unit", "5-unit", "unit_visual_layer", "assets/site-highschool-units.css"],
 }
 
 errors = []
@@ -29,4 +29,4 @@ if errors:
     for err in errors:
         print("FAIL ", err)
     sys.exit(1)
-print("OK    high school 3/4/5 unit navigation is wired and documented in metadata")
+print("OK    high school 3/4/5 unit navigation is wired, styled and documented in metadata")
