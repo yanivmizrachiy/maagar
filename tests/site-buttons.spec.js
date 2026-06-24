@@ -12,18 +12,17 @@ function readJson(relativePath) {
   return JSON.parse(readText(relativePath));
 }
 
-function collectUrls(value, urls = []) {
+function collectStrings(value, strings = []) {
   if (Array.isArray(value)) {
-    for (const item of value) collectUrls(item, urls);
-    return urls;
+    for (const item of value) collectStrings(item, strings);
+    return strings;
   }
   if (value && typeof value === 'object') {
-    for (const [key, item] of Object.entries(value)) {
-      if (/url|href|download|preview|embed|link/i.test(key) && typeof item === 'string') urls.push(item.trim());
-      collectUrls(item, urls);
-    }
+    for (const item of Object.values(value)) collectStrings(item, strings);
+    return strings;
   }
-  return urls;
+  if (typeof value === 'string') strings.push(value.trim());
+  return strings;
 }
 
 test('site action buttons are real and stable', async () => {
@@ -53,13 +52,12 @@ test('site action buttons are real and stable', async () => {
   expect(helpJs).toContain("hasAttribute('download')");
   expect(helpJs).toContain('noopener noreferrer');
 
-  const urls = collectUrls(metadata).filter(Boolean);
-  expect(urls.length).toBeGreaterThan(0);
-  expect(urls.some(url => /^https?:\/\//.test(url))).toBeTruthy();
+  expect(Array.isArray(metadata.files)).toBeTruthy();
+  expect(metadata.files.length).toBeGreaterThan(0);
+  expect(metadata.files.some(file => file.path && /^files\//.test(file.path))).toBeTruthy();
+  expect(metadata.files.some(file => file.download_ready === true)).toBeTruthy();
 
-  const badUrls = urls.filter(url => url === '#' || url === 'javascript:void(0)' || url.toLowerCase() === 'demo');
-  expect(badUrls).toEqual([]);
-
-  const hasDownloadCandidate = urls.some(url => /export=download|download|uc\?export=download|\.pdf(\?|$)/i.test(url));
-  expect(hasDownloadCandidate).toBeTruthy();
+  const strings = collectStrings(metadata).filter(Boolean);
+  const badValues = strings.filter(value => value === '#' || value === 'javascript:void(0)' || value.toLowerCase() === 'demo');
+  expect(badValues).toEqual([]);
 });
