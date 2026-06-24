@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Validate that the active site has real actions and no visible demo text.
+"""Validate that the active site has real actions, smart organization and no visible demo text.
 
 This script checks active website files and active metadata only. It does not scan
 RULES.md or docs, because those files may legitimately mention demo/fake as a
@@ -41,8 +41,21 @@ REQUIRED_SITE_SNIPPETS = [
     "fast-download",
     "data-download",
     "הורדה מהירה",
-    "צפייה מוטמעת · הורדה ישירה זמינה",
+    "הורדה ישירה זמינה",
     "`./${f.path}`",
+]
+
+REQUIRED_SMART_ORGANIZATION_SNIPPETS = [
+    "const GO",
+    "const CO",
+    "const TO",
+    "groupLabel(f)",
+    "compareFiles",
+    "compareGroups",
+    "gradeLabel(f)",
+    "categoryLabel(f)",
+    "typeLabel(f)",
+    "מיון: שכבה › תחום › נושא",
 ]
 
 REQUIRED_HELP_SNIPPETS = [
@@ -125,6 +138,12 @@ def validate_metadata(errors: list[str]) -> None:
     if not any(isinstance(item, dict) and item.get("source_type") == "repo-file" and item.get("path") and item.get("file_name") and item.get("download_ready") is True for item in files):
         errors.append("metadata/index.json has no real downloadable repo-file records")
 
+    if not any(isinstance(item, dict) and item.get("grade") in {"7", "8", "9", "high-school"} and item.get("primary_category") for item in files):
+        errors.append("metadata/index.json does not contain grade/category data needed for smart organization")
+
+    if not any(isinstance(item, dict) and isinstance(item.get("topics"), list) and [topic for topic in item.get("topics", []) if topic and topic != "unknown"] for item in files):
+        errors.append("metadata/index.json does not contain usable topics needed for smart organization")
+
     metadata_text = "\n".join(flatten_strings(data))
     for value in ("#", "javascript:void(0)", "demo"):
         if value in metadata_text:
@@ -146,6 +165,10 @@ def main() -> int:
         if snippet not in site:
             errors.append(f"assets/site.js missing real action snippet: {snippet}")
 
+    for snippet in REQUIRED_SMART_ORGANIZATION_SNIPPETS:
+        if snippet not in site:
+            errors.append(f"assets/site.js missing smart organization snippet: {snippet}")
+
     for snippet in REQUIRED_HELP_SNIPPETS:
         if snippet not in help_js:
             errors.append(f"assets/site-help.js missing button guard snippet: {snippet}")
@@ -158,13 +181,13 @@ def main() -> int:
 
     validate_metadata(errors)
 
-    print("MAAGAR REAL ACTION AND VISIBLE DEMO VALIDATION")
+    print("MAAGAR REAL ACTION, SMART ORGANIZATION AND VISIBLE DEMO VALIDATION")
     if errors:
         for err in errors:
             print(f"FAIL  {err}")
         return 1
 
-    print("OK    active site has real download/view actions and no visible demo/fake/mock/dummy/lorem text")
+    print("OK    active site has real download/view actions, smart grouping/sorting and no visible demo/fake/mock/dummy/lorem text")
     return 0
 
 
