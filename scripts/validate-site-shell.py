@@ -3,24 +3,20 @@
 """
 validate-site-shell.py
 
-בדיקת מעטפת לאתר החדש:
-- index.html טוען assets/site.css, assets/site-premium-nav.css ואת כל קבצי ה-JS של האתר.
-- קבצי CSS/JS קיימים.
+בדיקת מעטפת לאתר:
+- index.html טוען את שכבות ה-CSS ואת כל קבצי ה-JS.
 - קיימים ה-IDs שה-JS משתמש בהם.
 - קיימת טעינת metadata/index.json.
 - קיימת שמירת מצב סינון, מיון וניווט מבחנים ב-URL.
-- קיימת שכבת קישור עומק: ?file=ID.
-- קיימת שכבת שיתוף קובץ מכרטיס.
-- קיימת שכבת שיתוף תצוגה נוכחית.
-- קיימת שכבת שיתוף קובץ מתוך חלון הצפייה.
-- קיימת שכבת עזרה מהירה למורים.
-- קיימות הגדרות התאמה מתקדמות למובייל.
+- קיימים קישור עומק, שיתוף, עזרה מהירה והתאמות מובייל.
+- מבנה האתר והטקסונומיה מיושרים עם ניווט שכבה יוקרתי ותפריט מבחנים.
 
 הבדיקה לא משנה קבצים.
 """
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
@@ -34,6 +30,8 @@ SHARE_JS = REPO / "assets" / "site-share.js"
 VIEW_SHARE_JS = REPO / "assets" / "site-view-share.js"
 MODAL_SHARE_JS = REPO / "assets" / "site-modal-share.js"
 HELP_JS = REPO / "assets" / "site-help.js"
+SITE_STRUCTURE = REPO / "metadata" / "site-structure.json"
+TAXONOMY = REPO / "metadata" / "taxonomy.json"
 
 REQUIRED_IDS = [
     "q", "clear", "stats", "filters", "ttl", "meta", "app",
@@ -64,6 +62,7 @@ REQUIRED_JS_SNIPPETS = [
     "data-exam",
     "data-sort",
     "infoLine",
+    "file-details",
     "renderSoon",
     "prepareFiles",
 ]
@@ -158,11 +157,70 @@ REQUIRED_PREMIUM_CSS_SNIPPETS = [
     "Premium teacher navigation",
 ]
 
+EXPECTED_HOME_LABELS = ["מתמטיקה לכיתה ז׳", "מתמטיקה לכיתה ח׳", "מתמטיקה לכיתה ט׳", "חטיבה עליונה"]
+EXPECTED_GRADE_HUBS = ["middle-school-grade-7", "middle-school-grade-8", "middle-school-grade-9"]
+EXPECTED_GRADE_BUTTONS = ["all", "algebra", "geometry", "summaries", "exams", "uncategorized_when_needed"]
+EXPECTED_EXAM_NAV = ["all", "end", "mid", "start", "skill"]
+EXPECTED_EXAM_KINDS = ["start", "mid", "end", "skill", "unknown"]
+EXPECTED_FILE_FIELDS = ["author", "year", "grades", "primary_category", "topics", "tags", "document_type", "exam_kind", "source_type"]
+
 
 def require_snippets(text: str, snippets: list[str], label: str, errors: list[str]) -> None:
     for snippet in snippets:
         if snippet not in text:
             errors.append(f"{label} missing snippet: {snippet}")
+
+
+def load_json(path: Path, label: str, errors: list[str]) -> dict:
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except Exception as exc:
+        errors.append(f"{label} invalid JSON: {exc}")
+        return {}
+
+
+def validate_structure(structure: dict, taxonomy: dict, errors: list[str]) -> None:
+    home_labels = [button.get("label") for button in structure.get("home", {}).get("buttons", [])]
+    for label in EXPECTED_HOME_LABELS:
+        if label not in home_labels:
+            errors.append(f"site-structure home label missing: {label}")
+
+    design = structure.get("design_policy", {})
+    if design.get("navigation_style") != "premium-teacher-navigation":
+        errors.append("site-structure design_policy.navigation_style is not premium-teacher-navigation")
+    if design.get("visual_layer") != "assets/site-premium-nav.css":
+        errors.append("site-structure design_policy.visual_layer is not assets/site-premium-nav.css")
+
+    hubs = {screen.get("id"): screen for screen in structure.get("middle_school_screens", [])}
+    for hub_id in EXPECTED_GRADE_HUBS:
+        screen = hubs.get(hub_id)
+        if not screen:
+            errors.append(f"site-structure missing grade hub: {hub_id}")
+            continue
+        buttons = screen.get("buttons", [])
+        for button in EXPECTED_GRADE_BUTTONS:
+            if button not in buttons:
+                errors.append(f"site-structure {hub_id} missing button: {button}")
+
+    exam_nav = structure.get("exam_navigation", {})
+    for key in EXPECTED_EXAM_NAV:
+        if key not in exam_nav:
+            errors.append(f"site-structure exam_navigation missing: {key}")
+
+    file_fields = set(structure.get("file_card_fields", []))
+    for field in EXPECTED_FILE_FIELDS:
+        if field not in file_fields:
+            errors.append(f"site-structure file_card_fields missing: {field}")
+
+    exam_kinds = set(taxonomy.get("exam_kinds", []))
+    for key in EXPECTED_EXAM_KINDS:
+        if key not in exam_kinds:
+            errors.append(f"taxonomy exam_kinds missing: {key}")
+
+    required_nav = taxonomy.get("site_navigation_required", {})
+    for key in EXPECTED_EXAM_NAV:
+        if key not in required_nav.get("exam_navigation", []):
+            errors.append(f"taxonomy site_navigation_required.exam_navigation missing: {key}")
 
 
 def main() -> int:
@@ -179,6 +237,8 @@ def main() -> int:
         (VIEW_SHARE_JS, "assets/site-view-share.js"),
         (MODAL_SHARE_JS, "assets/site-modal-share.js"),
         (HELP_JS, "assets/site-help.js"),
+        (SITE_STRUCTURE, "metadata/site-structure.json"),
+        (TAXONOMY, "metadata/taxonomy.json"),
     ]:
         if not path.exists():
             errors.append(f"{label} missing")
@@ -198,6 +258,8 @@ def main() -> int:
     view_share_js = VIEW_SHARE_JS.read_text(encoding="utf-8", errors="ignore")
     modal_share_js = MODAL_SHARE_JS.read_text(encoding="utf-8", errors="ignore")
     help_js = HELP_JS.read_text(encoding="utf-8", errors="ignore")
+    structure = load_json(SITE_STRUCTURE, "metadata/site-structure.json", errors)
+    taxonomy = load_json(TAXONOMY, "metadata/taxonomy.json", errors)
 
     script_order = [
         "site.js",
@@ -245,13 +307,14 @@ def main() -> int:
 
     require_snippets(css, REQUIRED_RESPONSIVE_CSS_SNIPPETS, "assets/site.css", errors)
     require_snippets(premium_css, REQUIRED_PREMIUM_CSS_SNIPPETS, "assets/site-premium-nav.css", errors)
+    validate_structure(structure, taxonomy, errors)
 
     if errors:
         for err in errors:
             print(f"FAIL  {err}")
         return 1
 
-    print("OK    standalone site shell, premium teacher navigation, URL filter/sort/exam state, deep links, sharing and help are wired correctly")
+    print("OK    standalone site shell, premium teacher navigation, URL filter/sort/exam state, metadata navigation, deep links, sharing and help are wired correctly")
     return 0
 
 
