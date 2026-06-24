@@ -38,6 +38,7 @@ jobs:
       - name: Validate site shell
         run: |
           python3 scripts/validate-site-shell.py
+          python3 scripts/validate-real-buttons.py
           node --check assets/site.js
           node --check assets/site-url-state.js
           node --check assets/site-deeplink.js
