@@ -5,7 +5,7 @@ validate-workflow-site-checks.py
 
 Checks that the main GitHub workflow protects the active browser/site layer:
 - every assets/*.js file gets a syntax check;
-- the site shell, real-button guard, data contract and file links are tested;
+- the site shell, real-button guard, high-school unit guard, data contract and file links are tested;
 - premium teacher navigation, high-school unit navigation and exam classifier are protected through validate-all.
 
 The check does not modify files.
@@ -29,6 +29,7 @@ OPTIONAL_WORKFLOWS = [
 MAIN_REQUIRED_CHECKS = [
     "python3 scripts/validate-site-shell.py",
     "python3 scripts/validate-real-buttons.py",
+    "python3 scripts/validate-highschool-units.py",
     "python3 scripts/validate-site-data-contract.py",
     "python3 scripts/validate-file-links.py",
     "bash scripts/validate-all.sh",
