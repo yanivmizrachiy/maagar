@@ -125,7 +125,6 @@ function enrichFile(file, index) {
 }
 function prepareFiles(files) { S.files = files.map(enrichFile); S.byId = new Map(S.files.map(f => [f.id, f])); }
 function renderSoon(delay = 80) { clearTimeout(renderTimer); renderTimer = setTimeout(render, delay); }
-
 async function init() {
   try {
     const r = await fetch('metadata/index.json', { cache: 'no-store' });
@@ -153,7 +152,6 @@ function stats() {
   const tops = new Set(S.files.flatMap(topics)).size;
   $('stats').innerHTML = [[total, 'קבצים'], [rep, 'לצפייה'], [downloads, 'להורדה'], [tops, 'נושאים']].map(x => `<div class="stat box"><b>${x[0]}</b><div class="sub">${x[1]}</div></div>`).join('');
 }
-
 function vals(field) { return [...new Set(S.files.map(f => f[field]).filter(Boolean))]; }
 function chip(key, val, label, on) { return `<button class="chip ${on ? 'on' : ''}" data-k="${key}" data-v="${esc(val)}">${esc(label)}</button>`; }
 function gradeButton(grade) { return `<button class="chip grade-go ${S.g === grade ? 'on' : ''}" data-grade-go="${grade}">מתמטיקה ל${esc(G[grade] || grade)}</button>`; }
@@ -166,7 +164,8 @@ function gradeGatewayCard(grade) {
 function gradeGateway(grades) {
   if (S.g !== 'all' || S.q.trim()) return '';
   return `<section class="grade-gateway"><div class="grade-gateway-head"><h2>בחר שכבה להתחלה מהירה</h2><p>שער כניסה יוקרתי ונוח למורים. אחרי בחירת שכבה תראה כפתורים קצרים לפי תחום ומבחנים.</p></div><div class="grade-entry-grid">${grades.map(gradeGatewayCard).join('')}</div></section>`;
-}\nfunction domainButton(value, label) { return `<button class="chip domain-chip ${S.c === value || (value === 'all' && S.c === 'all') ? 'on' : ''}" data-domain="${esc(value)}">${esc(label)}</button>`; }
+}
+function domainButton(value, label) { return `<button class="chip domain-chip ${S.c === value || (value === 'all' && S.c === 'all') ? 'on' : ''}" data-domain="${esc(value)}">${esc(label)}</button>`; }
 function unitButton(value, label) { return `<button class="chip unit-chip ${S.u === value ? 'on' : ''}" data-unit="${esc(value)}">${esc(label)}</button>`; }
 function examButton(value, label) { return `<button class="chip exam-chip ${S.exam === value ? 'on' : ''}" data-exam="${esc(value)}">${esc(label)}</button>`; }
 function sortChip(value, label) { return `<button class="chip sort-chip ${S.sort === value ? 'on' : ''}" data-sort="${esc(value)}">${esc(label)}</button>`; }
