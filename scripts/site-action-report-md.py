@@ -27,6 +27,19 @@ def pct(value: Any) -> str:
     return str(value)
 
 
+def add_distribution(lines: list[str], title: str, key_label: str, data: dict[str, Any]) -> None:
+    lines.append(f"## {title}")
+    lines.append("")
+    lines.append(f"| {key_label} | כמות |")
+    lines.append("|---|---:|")
+    if data:
+        for key, value in sorted(data.items()):
+            lines.append(f"| {key} | {value} |")
+    else:
+        lines.append("| אין נתונים | 0 |")
+    lines.append("")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Create Markdown summary for site action report.")
     parser.add_argument("--json", default="reports/site-action-report.json")
@@ -56,6 +69,8 @@ def main() -> int:
     lines.append(f"- כרטיסים עם הורדה: **{s.get('download_action_cards', 0)}** ({pct(s.get('download_coverage_percent', 0))})")
     lines.append(f"- כרטיסים עם צפייה מוטמעת: **{s.get('embedded_view_total', 0)}** ({pct(s.get('embed_coverage_percent', 0))})")
     lines.append(f"- כרטיסים ללא פעולה שימושית: **{s.get('no_action_cards', 0)}**")
+    lines.append(f"- ניווט יוקרתי למורים: **{yes_no(s.get('premium_teacher_navigation_available'))}**")
+    lines.append(f"- ניווט חטיבה עליונה לפי 3/4/5 יחידות: **{yes_no(s.get('high_school_unit_navigation_available'))}**")
     lines.append("")
 
     lines.append("## יכולות אתר")
@@ -64,46 +79,35 @@ def main() -> int:
     lines.append("|---|---:|---|---:|")
     labels = {
         "core_browser": "דפדפן מאגר בסיסי",
-        "url_state_filters": "שמירת חיפוש/סינון בכתובת",
+        "url_state_filters": "שמירת חיפוש/סינון/יחידות בכתובת",
         "file_deep_links": "קישור עומק לקובץ",
         "file_share_buttons": "שיתוף קובץ מכרטיס",
         "current_view_share_buttons": "שיתוף תצוגה נוכחית",
+        "modal_file_share_buttons": "שיתוף קובץ מתוך חלון צפייה",
+        "teacher_help_panel": "עזרה מהירה למורים",
+        "premium_teacher_navigation_css": "CSS ניווט יוקרתי למורים",
+        "high_school_unit_navigation_css": "CSS ניווט 3/4/5 יחידות",
     }
     for key, item in features.items():
         if not isinstance(item, dict):
             continue
         active = item.get("exists") and item.get("loaded_in_index") and item.get("required_snippets_present")
-        lines.append(
-            f"| {labels.get(key, key)} | {yes_no(active)} | `{item.get('file', '')}` | {yes_no(item.get('loaded_in_index'))} |"
-        )
+        lines.append(f"| {labels.get(key, key)} | {yes_no(active)} | `{item.get('file', '')}` | {yes_no(item.get('loaded_in_index'))} |")
     lines.append("")
 
-    lines.append("## התפלגות לפי שכבה")
-    lines.append("")
-    lines.append("| שכבה | כמות |")
-    lines.append("|---|---:|")
-    for key, value in sorted((s.get("by_grade") or {}).items()):
-        lines.append(f"| {key} | {value} |")
-    lines.append("")
-
-    lines.append("## התפלגות לפי תחום")
-    lines.append("")
-    lines.append("| תחום | כמות |")
-    lines.append("|---|---:|")
-    for key, value in sorted((s.get("by_category") or {}).items()):
-        lines.append(f"| {key} | {value} |")
-    lines.append("")
+    add_distribution(lines, "התפלגות לפי שכבה", "שכבה", s.get("by_grade") or {})
+    add_distribution(lines, "התפלגות לפי תחום", "תחום", s.get("by_category") or {})
+    add_distribution(lines, "התפלגות לפי יחידות", "unit_level", s.get("by_unit_level") or {})
+    add_distribution(lines, "חטיבה עליונה לפי יחידות", "unit_level", s.get("high_school_by_unit_level") or {})
 
     lines.append("## קבצים ללא פעולה")
     lines.append("")
     no_action = data.get("no_action_cards") or []
     if no_action:
-        lines.append("| id | כותרת | שכבה | סוג |")
-        lines.append("|---|---|---|---|")
+        lines.append("| id | כותרת | שכבה | רמה | סוג |")
+        lines.append("|---|---|---|---|---|")
         for item in no_action[:50]:
-            lines.append(
-                f"| {item.get('id', '')} | {item.get('title', '')} | {item.get('grade', '')} | {item.get('document_type', '')} |"
-            )
+            lines.append(f"| {item.get('id', '')} | {item.get('title', '')} | {item.get('grade', '')} | {item.get('unit_level', '')} | {item.get('document_type', '')} |")
         if len(no_action) > 50:
             lines.append(f"\n> מוצגים 50 ראשונים מתוך {len(no_action)}.")
     else:
