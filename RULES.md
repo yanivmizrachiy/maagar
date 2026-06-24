@@ -215,6 +215,8 @@ docs/
 
 `document_type`: `worksheet`, `summary-work`, `exam`, `link`, `digital-task`, `printable-task`, `embedded-resource`, `mixed`, `unknown`.
 
+`exam_kind`: `start`, `mid`, `end`, `skill`, `bagrut`, `quiz`, `practice-test`, `unknown`.
+
 `source_type`: `repo-file`, `external-link`, `embed`, `mixed`, `unknown`.
 
 `can_embed`, `print_ready`, `download_ready`: `true`, `false`, או `unknown`.
