@@ -82,6 +82,7 @@ KEY_FILES=(
   ".gitattributes"
   "assets/site.css"
   "assets/site-premium-nav.css"
+  "assets/site-highschool-units.css"
   "assets/site.js"
   "assets/site-url-state.js"
   "assets/site-deeplink.js"
