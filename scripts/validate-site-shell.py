@@ -4,11 +4,11 @@
 validate-site-shell.py
 
 בדיקת מעטפת לאתר החדש:
-- index.html טוען assets/site.css ואת כל קבצי ה-JS של האתר.
+- index.html טוען assets/site.css, assets/site-premium-nav.css ואת כל קבצי ה-JS של האתר.
 - קבצי CSS/JS קיימים.
 - קיימים ה-IDs שה-JS משתמש בהם.
 - קיימת טעינת metadata/index.json.
-- קיימת שמירת מצב סינון ומיון ב-URL.
+- קיימת שמירת מצב סינון, מיון וניווט מבחנים ב-URL.
 - קיימת שכבת קישור עומק: ?file=ID.
 - קיימת שכבת שיתוף קובץ מכרטיס.
 - קיימת שכבת שיתוף תצוגה נוכחית.
@@ -21,12 +21,12 @@ validate-site-shell.py
 
 from __future__ import annotations
 
-import sys
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
 INDEX = REPO / "index.html"
 CSS = REPO / "assets" / "site.css"
+PREMIUM_CSS = REPO / "assets" / "site-premium-nav.css"
 JS = REPO / "assets" / "site.js"
 URL_STATE_JS = REPO / "assets" / "site-url-state.js"
 DEEPLINK_JS = REPO / "assets" / "site-deeplink.js"
@@ -36,20 +36,8 @@ MODAL_SHARE_JS = REPO / "assets" / "site-modal-share.js"
 HELP_JS = REPO / "assets" / "site-help.js"
 
 REQUIRED_IDS = [
-    "q",
-    "clear",
-    "stats",
-    "filters",
-    "ttl",
-    "meta",
-    "app",
-    "modal",
-    "mt",
-    "ms",
-    "mo",
-    "md",
-    "x",
-    "viewer",
+    "q", "clear", "stats", "filters", "ttl", "meta", "app",
+    "modal", "mt", "ms", "mo", "md", "x", "viewer",
 ]
 
 REQUIRED_HTML_SNIPPETS = [
@@ -67,7 +55,15 @@ REQUIRED_JS_SNIPPETS = [
     "download",
     "view.officeapps.live.com",
     "const SORTS",
+    "const GRADE_BUTTONS",
+    "const DOMAIN_BUTTONS",
+    "const EXAM_BUCKETS",
+    "gradeHub",
+    "data-grade-go",
+    "data-domain",
+    "data-exam",
     "data-sort",
+    "infoLine",
     "renderSoon",
     "prepareFiles",
 ]
@@ -77,12 +73,21 @@ REQUIRED_URL_STATE_SNIPPETS = [
     "grade",
     "category",
     "type",
+    "exam",
     "sort",
     "cleanSort",
+    "cleanExam",
+    "activeGrade",
+    "activeExam",
     "activeSort",
+    "clickGrade",
+    "clickExam",
     "clickSort",
     "history.replaceState",
     "data-k",
+    "data-grade-go",
+    "data-domain",
+    "data-exam",
     "data-sort",
 ]
 
@@ -141,6 +146,24 @@ REQUIRED_RESPONSIVE_CSS_SNIPPETS = [
     ".sort-chip",
 ]
 
+REQUIRED_PREMIUM_CSS_SNIPPETS = [
+    ".gradebar",
+    ".grade-go",
+    ".grade-hub",
+    ".domainbar",
+    ".exambar",
+    ".domain-chip",
+    ".exam-chip",
+    ".file-details",
+    "Premium teacher navigation",
+]
+
+
+def require_snippets(text: str, snippets: list[str], label: str, errors: list[str]) -> None:
+    for snippet in snippets:
+        if snippet not in text:
+            errors.append(f"{label} missing snippet: {snippet}")
+
 
 def main() -> int:
     errors: list[str] = []
@@ -148,6 +171,7 @@ def main() -> int:
     for path, label in [
         (INDEX, "index.html"),
         (CSS, "assets/site.css"),
+        (PREMIUM_CSS, "assets/site-premium-nav.css"),
         (JS, "assets/site.js"),
         (URL_STATE_JS, "assets/site-url-state.js"),
         (DEEPLINK_JS, "assets/site-deeplink.js"),
@@ -165,6 +189,8 @@ def main() -> int:
         return 1
 
     html = INDEX.read_text(encoding="utf-8", errors="ignore")
+    css = CSS.read_text(encoding="utf-8", errors="ignore")
+    premium_css = PREMIUM_CSS.read_text(encoding="utf-8", errors="ignore")
     js = JS.read_text(encoding="utf-8", errors="ignore")
     url_state_js = URL_STATE_JS.read_text(encoding="utf-8", errors="ignore")
     deeplink_js = DEEPLINK_JS.read_text(encoding="utf-8", errors="ignore")
@@ -172,7 +198,6 @@ def main() -> int:
     view_share_js = VIEW_SHARE_JS.read_text(encoding="utf-8", errors="ignore")
     modal_share_js = MODAL_SHARE_JS.read_text(encoding="utf-8", errors="ignore")
     help_js = HELP_JS.read_text(encoding="utf-8", errors="ignore")
-    css = CSS.read_text(encoding="utf-8", errors="ignore")
 
     script_order = [
         "site.js",
@@ -186,10 +211,10 @@ def main() -> int:
 
     if 'href="assets/site.css"' not in html:
         errors.append("index.html does not load assets/site.css")
+    if 'href="assets/site-premium-nav.css"' not in html:
+        errors.append("index.html does not load assets/site-premium-nav.css")
 
-    for snippet in REQUIRED_HTML_SNIPPETS:
-        if snippet not in html:
-            errors.append(f"index.html missing responsive/mobile snippet: {snippet}")
+    require_snippets(html, REQUIRED_HTML_SNIPPETS, "index.html", errors)
 
     last_pos = -1
     for script in script_order:
@@ -206,48 +231,27 @@ def main() -> int:
         if f'id="{item_id}"' not in html:
             errors.append(f"index.html missing id={item_id}")
 
-    for snippet in REQUIRED_JS_SNIPPETS:
-        if snippet not in js:
-            errors.append(f"assets/site.js missing snippet: {snippet}")
-
-    for snippet in REQUIRED_URL_STATE_SNIPPETS:
-        if snippet not in url_state_js:
-            errors.append(f"assets/site-url-state.js missing snippet: {snippet}")
-
-    for snippet in REQUIRED_DEEPLINK_SNIPPETS:
-        if snippet not in deeplink_js:
-            errors.append(f"assets/site-deeplink.js missing snippet: {snippet}")
-
-    for snippet in REQUIRED_SHARE_SNIPPETS:
-        if snippet not in share_js:
-            errors.append(f"assets/site-share.js missing snippet: {snippet}")
-
-    for snippet in REQUIRED_VIEW_SHARE_SNIPPETS:
-        if snippet not in view_share_js:
-            errors.append(f"assets/site-view-share.js missing snippet: {snippet}")
-
-    for snippet in REQUIRED_MODAL_SHARE_SNIPPETS:
-        if snippet not in modal_share_js:
-            errors.append(f"assets/site-modal-share.js missing snippet: {snippet}")
-
-    for snippet in REQUIRED_HELP_SNIPPETS:
-        if snippet not in help_js:
-            errors.append(f"assets/site-help.js missing snippet: {snippet}")
+    require_snippets(js, REQUIRED_JS_SNIPPETS, "assets/site.js", errors)
+    require_snippets(url_state_js, REQUIRED_URL_STATE_SNIPPETS, "assets/site-url-state.js", errors)
+    require_snippets(deeplink_js, REQUIRED_DEEPLINK_SNIPPETS, "assets/site-deeplink.js", errors)
+    require_snippets(share_js, REQUIRED_SHARE_SNIPPETS, "assets/site-share.js", errors)
+    require_snippets(view_share_js, REQUIRED_VIEW_SHARE_SNIPPETS, "assets/site-view-share.js", errors)
+    require_snippets(modal_share_js, REQUIRED_MODAL_SHARE_SNIPPETS, "assets/site-modal-share.js", errors)
+    require_snippets(help_js, REQUIRED_HELP_SNIPPETS, "assets/site-help.js", errors)
 
     for css_class in [".file", ".act", ".modal", ".viewer", ".chip"]:
         if css_class not in css:
             errors.append(f"assets/site.css missing class: {css_class}")
 
-    for snippet in REQUIRED_RESPONSIVE_CSS_SNIPPETS:
-        if snippet not in css:
-            errors.append(f"assets/site.css missing responsive snippet: {snippet}")
+    require_snippets(css, REQUIRED_RESPONSIVE_CSS_SNIPPETS, "assets/site.css", errors)
+    require_snippets(premium_css, REQUIRED_PREMIUM_CSS_SNIPPETS, "assets/site-premium-nav.css", errors)
 
     if errors:
         for err in errors:
             print(f"FAIL  {err}")
         return 1
 
-    print("OK    standalone site shell, responsive adaptation, URL filter/sort state, deep links, sharing and teacher help are wired correctly")
+    print("OK    standalone site shell, premium teacher navigation, URL filter/sort/exam state, deep links, sharing and help are wired correctly")
     return 0
 
 
