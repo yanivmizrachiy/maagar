@@ -10,6 +10,7 @@
 - אין backend.
 - הקבצים עצמם נשמרים תחת `files/`.
 - הסינון והחיפוש מבוססים על `metadata/index.json`.
+- האתר ממיין ומארגן את הקבצים לפי שכבה › תחום › נושא › סוג קובץ › שנה › כותרת.
 - קבצי `repo-file` מקבלים הורדה ישירה אמיתית רק כאשר יש `path`, `file_name`, ו־`download_ready=true`.
 
 ## כלל עבודה מרכזי
@@ -32,6 +33,7 @@ python3 scripts/validate-real-buttons.py
 - אין ערכי `#`, `javascript:void(0)` או `demo` ב־metadata הפעיל.
 - כפתורי צפייה והורדה נשענים על קבצים אמיתיים תחת `files/`.
 - כפתור `הורדה מהירה` מופיע רק כשיש הורדה ישירה אמיתית.
+- ארגון הקבצים באתר נשמר לפי שכבה › תחום › נושא.
 - ההגנה מחוברת גם ל־`.github/workflows/validate.yml` וגם ל־`.github/workflows/site-button-smoke.yml`.
 
 ## מבנה עיקרי
