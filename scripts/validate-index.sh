@@ -2,9 +2,8 @@
 # validate-index.sh
 # Validates that every record in metadata/index.json is internally consistent
 # and that every repo-file path points to a real existing file.
-#
-# Usage: bash scripts/validate-index.sh
-# Run from the repo root.
+# Existing older records may omit exam_kind; the validator treats that as unknown.
+# New records should include exam_kind according to RULES.md.
 
 set -euo pipefail
 
@@ -52,7 +51,7 @@ with open(taxonomy_path, encoding="utf-8") as f:
 records = data.get("files", [])
 required_fields = [
     "id", "title", "school_stage", "grade", "grades", "primary_category",
-    "topics", "document_type", "exam_kind", "source_type", "can_embed",
+    "topics", "document_type", "source_type", "can_embed",
     "print_ready", "download_ready", "author", "year"
 ]
 
@@ -66,6 +65,7 @@ valid_bool = {True, False, "unknown", None}
 
 seen_hashes = {}
 seen_ids = {}
+missing_exam_kind = 0
 
 for i, rec in enumerate(records):
     label = rec.get("id", f"record[{i}]")
@@ -120,6 +120,8 @@ for i, rec in enumerate(records):
         print(f"ERROR [{label}]: invalid source_type '{rec.get('source_type')}'")
         errors += 1
 
+    if "exam_kind" not in rec:
+        missing_exam_kind += 1
     exam_kind = rec.get("exam_kind", "unknown")
     if exam_kind not in valid_exam_kinds:
         print(f"ERROR [{label}]: invalid exam_kind '{exam_kind}'")
@@ -145,6 +147,10 @@ for i, rec in enumerate(records):
             if not os.path.isfile(full_path):
                 print(f"ERROR [{label}]: file not found at path '{path}'")
                 errors += 1
+
+if missing_exam_kind:
+    print(f"WARN: {missing_exam_kind} legacy records have no exam_kind; treated as unknown")
+    warnings += 1
 
 print("=== RESULTS ===")
 print(f"Records checked : {len(records)}")
