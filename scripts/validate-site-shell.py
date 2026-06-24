@@ -8,7 +8,7 @@ validate-site-shell.py
 - קבצי CSS/JS קיימים.
 - קיימים ה-IDs שה-JS משתמש בהם.
 - קיימת טעינת metadata/index.json.
-- קיימת שמירת מצב סינון ב-URL.
+- קיימת שמירת מצב סינון ומיון ב-URL.
 - קיימת שכבת קישור עומק: ?file=ID.
 - קיימת שכבת שיתוף קובץ מכרטיס.
 - קיימת שכבת שיתוף תצוגה נוכחית.
@@ -66,6 +66,10 @@ REQUIRED_JS_SNIPPETS = [
     "function open(",
     "download",
     "view.officeapps.live.com",
+    "const SORTS",
+    "data-sort",
+    "renderSoon",
+    "prepareFiles",
 ]
 
 REQUIRED_URL_STATE_SNIPPETS = [
@@ -73,8 +77,13 @@ REQUIRED_URL_STATE_SNIPPETS = [
     "grade",
     "category",
     "type",
+    "sort",
+    "cleanSort",
+    "activeSort",
+    "clickSort",
     "history.replaceState",
     "data-k",
+    "data-sort",
 ]
 
 REQUIRED_DEEPLINK_SNIPPETS = [
@@ -128,6 +137,8 @@ REQUIRED_RESPONSIVE_CSS_SNIPPETS = [
     "@media(max-width:390px)",
     "@media(max-height:620px)",
     "minmax(min(285px,100%),1fr)",
+    ".sortbar",
+    ".sort-chip",
 ]
 
 
@@ -236,9 +247,9 @@ def main() -> int:
             print(f"FAIL  {err}")
         return 1
 
-    print("OK    standalone site shell, responsive adaptation, URL state, deep links, sharing and teacher help are wired correctly")
+    print("OK    standalone site shell, responsive adaptation, URL filter/sort state, deep links, sharing and teacher help are wired correctly")
     return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    raise SystemExit(main())
