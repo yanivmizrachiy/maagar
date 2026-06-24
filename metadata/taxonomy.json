@@ -1,5 +1,5 @@
 {
-  "schema_version": "2026-06-02.website-ready-v1",
+  "schema_version": "2026-06-24.website-ready-v2",
   "repository": "yanivmizrachiy/maagar",
   "language": "he",
   "direction": "rtl",
@@ -48,7 +48,7 @@
   "primary_category_labels_he": {
     "algebra": "אלגברה",
     "geometry": "גיאומטריה",
-    "summaries": "משימות מסכמות",
+    "summaries": "עבודות סיכום",
     "exams": "מבחנים",
     "uncategorized": "לא מסווג",
     "unknown": "לא ידוע"
@@ -88,14 +88,25 @@
     "download_ready"
   ],
   "exam_kinds": [
-    "start-of-year",
-    "midyear",
-    "end-of-year",
+    "start",
+    "mid",
+    "end",
+    "skill",
     "bagrut",
     "quiz",
     "practice-test",
     "unknown"
   ],
+  "exam_kind_labels_he": {
+    "start": "מבחני תחילת שנה",
+    "mid": "מבחני אמצע שנה",
+    "end": "מבחני סוף שנה",
+    "skill": "מבחני מיומנות",
+    "bagrut": "בגרות",
+    "quiz": "בוחן",
+    "practice-test": "מבחן תרגול",
+    "unknown": "לא ידוע"
+  },
   "bagrut_questionnaires": [
     "381",
     "382",
@@ -114,10 +125,18 @@
       "high-school"
     ],
     "middle_school_categories": [
+      "all",
       "algebra",
       "geometry",
       "summaries",
       "exams"
+    ],
+    "exam_navigation": [
+      "all",
+      "end",
+      "mid",
+      "start",
+      "skill"
     ],
     "high_school_buttons": [
       "3-unit",
