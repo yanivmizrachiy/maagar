@@ -5,6 +5,7 @@ validate-workflow-site-checks.py
 
 בודק שה-workflows המרכזיים מגנים על כל קבצי ה-JS של האתר.
 הבדיקה מגלה אוטומטית כל assets/*.js, ולכן קובץ JS חדש שלא נכנס ל-CI ייתפס.
+בנוסף היא מוודאת שהגנת כפתורים אמיתיים/אין דמו גלוי נשארת מחוברת ל-CI.
 הבדיקה לא משנה קבצים.
 """
 
@@ -29,10 +30,27 @@ CORE_SITE_CHECKS = [
     "python3 scripts/validate-file-links.py",
 ]
 
+SPECIFIC_WORKFLOW_CHECKS = {
+    ".github/workflows/validate.yml": [
+        "python3 scripts/validate-real-buttons.py",
+    ],
+    ".github/workflows/site-button-smoke.yml": [
+        "python3 scripts/validate-real-buttons.py",
+    ],
+}
+
 
 def site_js_checks() -> list[str]:
     files = sorted(ASSETS.glob("*.js"))
     return [f"node --check assets/{path.name}" for path in files]
+
+
+def workflow_text(rel: str, errors: list[str]) -> str:
+    path = REPO / rel
+    if not path.exists():
+        errors.append(f"missing workflow: {rel}")
+        return ""
+    return path.read_text(encoding="utf-8", errors="ignore")
 
 
 def main() -> int:
@@ -43,11 +61,9 @@ def main() -> int:
         errors.append("no assets/*.js files found")
 
     for rel in WORKFLOWS:
-        path = REPO / rel
-        if not path.exists():
-            errors.append(f"missing workflow: {rel}")
+        text = workflow_text(rel, errors)
+        if not text:
             continue
-        text = path.read_text(encoding="utf-8", errors="ignore")
         for needle in js_checks:
             if needle not in text:
                 errors.append(f"{rel}: missing {needle}")
@@ -55,19 +71,28 @@ def main() -> int:
             if needle not in text:
                 errors.append(f"{rel}: missing {needle}")
 
+    for rel, checks in SPECIFIC_WORKFLOW_CHECKS.items():
+        text = workflow_text(rel, errors)
+        if not text:
+            continue
+        for needle in checks:
+            if needle not in text:
+                errors.append(f"{rel}: missing required guard {needle}")
+
     print("MAAGAR WORKFLOW SITE CHECKS")
     print(f"Workflows checked: {len(WORKFLOWS)}")
     print(f"Discovered JS checks: {len(js_checks)}")
     for check in js_checks:
         print(f"CHECK {check}")
     print(f"Required core checks: {len(CORE_SITE_CHECKS)}")
+    print(f"Required workflow-specific guards: {sum(len(v) for v in SPECIFIC_WORKFLOW_CHECKS.values())}")
 
     if errors:
         for err in errors:
             print(f"FAIL  {err}")
         return 1
 
-    print("OK    all workflows protect every browser site JS file")
+    print("OK    workflows protect browser JS files and keep the real-action/no-demo guard wired into CI")
     return 0
 
 
