@@ -41,7 +41,15 @@ test('site action buttons are real and stable', async () => {
   expect(indexHtml).toContain('assets/site-modal-share.js');
 
   expect(siteJs).toContain('data-view');
-  expect(siteJs).toMatch(/download/);
+  expect(siteJs).toContain('downloadable(f)');
+  expect(siteJs).toContain('downloadUrl(f)');
+  expect(siteJs).toContain('downloadName(f)');
+  expect(siteJs).toContain('downloadButton(f)');
+  expect(siteJs).toContain('fast-download');
+  expect(siteJs).toContain('הורדה מהירה');
+  expect(siteJs).toContain('צפייה מוטמעת · הורדה ישירה זמינה');
+  expect(siteJs).toContain('data-download');
+  expect(siteJs).toMatch(/\.\/\$\{f\.path\}/);
 
   const shareBundle = `${shareJs}\n${viewShareJs}\n${modalShareJs}`;
   expect(shareBundle).toMatch(/whatsapp|wa\.me/i);
@@ -56,6 +64,7 @@ test('site action buttons are real and stable', async () => {
   expect(metadata.files.length).toBeGreaterThan(0);
   expect(metadata.files.some(file => file.path && /^files\//.test(file.path))).toBeTruthy();
   expect(metadata.files.some(file => file.download_ready === true)).toBeTruthy();
+  expect(metadata.files.some(file => file.source_type === 'repo-file' && file.path && file.file_name && file.download_ready === true)).toBeTruthy();
 
   const strings = collectStrings(metadata).filter(Boolean);
   const badValues = strings.filter(value => value === '#' || value === 'javascript:void(0)' || value.toLowerCase() === 'demo');
