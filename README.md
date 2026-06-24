@@ -18,6 +18,7 @@
 - החיפוש והסידור משתמשים במפתחות מחושבים מראש לשיפור ביצועים.
 - קבצי `repo-file` מקבלים הורדה ישירה אמיתית רק כאשר יש `path`, `file_name`, ו־`download_ready=true`.
 - שכבת הניווט היוקרתי למורים נמצאת ב־`assets/site-premium-nav.css`.
+- סיווג מבחנים בטוח מתבצע באמצעות `scripts/classify-exams.py` במצב dry-run כברירת מחדל.
 
 ## כלל עבודה מרכזי
 
@@ -60,6 +61,7 @@ scripts/
   validate-all.sh
   test-logic.py
   topic-organizer.py
+  classify-exams.py
   validate-real-buttons.py
 STATE/
 docs/
@@ -76,3 +78,14 @@ bash scripts/validate-all.sh && python3 scripts/test-logic.py
 ```
 
 המטרה: קבצים באותו נושא, למשל `משוואות בשני נעלמים`, יקבלו topic אחיד ויופיעו יחד באתר וב־metadata.
+
+## סיווג מבחנים
+
+המאגר כולל כלי בטוח לסיווג מבחנים לפי המידע שכבר קיים בכותרת, בשם הקובץ, בתגיות ובנושאים:
+
+```bash
+python3 scripts/classify-exams.py
+python3 scripts/classify-exams.py --apply
+```
+
+ברירת המחדל היא dry-run בלבד. מצב apply מעדכן רק כאשר יש סימן ברור לסוג המבחן, ואינו ממציא מחבר, שנה, נושא או מקור.
