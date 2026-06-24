@@ -6,7 +6,7 @@ validate-workflow-site-checks.py
 Checks that the main GitHub workflow protects the active browser/site layer:
 - every assets/*.js file gets a syntax check;
 - the site shell, real-button guard, data contract and file links are tested;
-- the premium teacher navigation CSS and exam classifier are protected through validate-all.
+- premium teacher navigation, high-school unit navigation and exam classifier are protected through validate-all.
 
 The check does not modify files.
 """
@@ -36,8 +36,11 @@ MAIN_REQUIRED_CHECKS = [
 
 VALIDATE_ALL_REQUIRED_SNIPPETS = [
     "assets/site-premium-nav.css",
+    "assets/site-highschool-units.css",
     "scripts/classify-exams.py",
+    "scripts/validate-highschool-units.py",
     "python3 scripts/classify-exams.py",
+    "python3 scripts/validate-highschool-units.py",
     "python3 scripts/validate-site-shell.py",
     "python3 scripts/validate-real-buttons.py",
 ]
@@ -89,7 +92,7 @@ def main() -> int:
 
     for rel in OPTIONAL_WORKFLOWS:
         text = read(rel, errors, required=False)
-        if text and "validate-real-buttons.py" in rel:
+        if text and "site-button-smoke" in rel:
             require_all(rel, text, ["python3 scripts/validate-real-buttons.py"], errors)
 
     print("MAAGAR WORKFLOW SITE CHECKS")
@@ -106,7 +109,7 @@ def main() -> int:
             print(f"FAIL  {err}")
         return 1
 
-    print("OK    workflows protect browser JS files, premium teacher navigation, real actions, metadata navigation and exam classifier")
+    print("OK    workflows protect browser JS files, premium teacher navigation, high-school unit navigation, real actions, metadata navigation and exam classifier")
     return 0
 
 
