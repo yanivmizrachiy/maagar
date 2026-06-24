@@ -49,13 +49,28 @@ REQUIRED_SMART_ORGANIZATION_SNIPPETS = [
     "const GO",
     "const CO",
     "const TO",
+    "const SORTS",
     "groupLabel(f)",
     "compareFiles",
     "compareGroups",
     "gradeLabel(f)",
     "categoryLabel(f)",
     "typeLabel(f)",
+    "data-sort",
+    "sortbar",
+    "sort-chip",
+    "מיון נוח",
     "מיון: שכבה › תחום › נושא",
+]
+
+REQUIRED_PERFORMANCE_SNIPPETS = [
+    "prepareFiles",
+    "enrichFile",
+    "renderSoon",
+    "S.byId",
+    "_search",
+    "_smartKey",
+    "_groupKey",
 ]
 
 REQUIRED_HELP_SNIPPETS = [
@@ -99,7 +114,6 @@ def flatten_strings(value: Any) -> list[str]:
 
 
 def strip_legitimate_placeholders(text: str) -> str:
-    # HTML input placeholders are real UI, not demo content.
     text = re.sub(r'placeholder="[^"]*"', "", text)
     text = re.sub(r"placeholder='[^']*'", "", text)
     return text
@@ -169,6 +183,10 @@ def main() -> int:
         if snippet not in site:
             errors.append(f"assets/site.js missing smart organization snippet: {snippet}")
 
+    for snippet in REQUIRED_PERFORMANCE_SNIPPETS:
+        if snippet not in site:
+            errors.append(f"assets/site.js missing performance snippet: {snippet}")
+
     for snippet in REQUIRED_HELP_SNIPPETS:
         if snippet not in help_js:
             errors.append(f"assets/site-help.js missing button guard snippet: {snippet}")
@@ -181,13 +199,13 @@ def main() -> int:
 
     validate_metadata(errors)
 
-    print("MAAGAR REAL ACTION, SMART ORGANIZATION AND VISIBLE DEMO VALIDATION")
+    print("MAAGAR REAL ACTION, SMART SORTING, PERFORMANCE AND VISIBLE DEMO VALIDATION")
     if errors:
         for err in errors:
             print(f"FAIL  {err}")
         return 1
 
-    print("OK    active site has real download/view actions, smart grouping/sorting and no visible demo/fake/mock/dummy/lorem text")
+    print("OK    active site has real actions, convenient sorting, precomputed search keys and no visible demo/fake/mock/dummy/lorem text")
     return 0
 
 
