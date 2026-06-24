@@ -48,6 +48,10 @@ jobs:
           node --check assets/site-modal-share.js
           node --check assets/site-help.js
 
+      - name: Audit high school units non blocking
+        run: |
+          python3 scripts/audit-highschool-units.py || true
+
       - name: Validate browser metadata contract
         run: |
           python3 scripts/validate-site-data-contract.py
