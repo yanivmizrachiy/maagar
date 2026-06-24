@@ -1,0 +1,140 @@
+/* Premium teacher navigation layer for Maagar.
+   Hebrew RTL, calm, useful and non-generic navigation controls. */
+
+.gradebar{
+  padding:14px;
+  border:1px solid #ffffff28;
+  border-radius:28px;
+  background:linear-gradient(135deg,#ffffff14,#0ea5e916 45%,#4f46e512);
+  box-shadow:inset 0 1px 0 #ffffff14,0 18px 48px #0005;
+}
+
+.grade-go{
+  min-height:52px;
+  padding-inline:22px;
+  font-size:15px;
+  letter-spacing:-.01em;
+  border-color:#93c5fd55;
+  background:linear-gradient(180deg,#ffffff1f,#ffffff0d);
+}
+
+.grade-go:before{
+  content:"∑";
+  display:inline-grid;
+  place-items:center;
+  width:24px;
+  height:24px;
+  border-radius:10px;
+  background:#ffffff1a;
+  color:#bfdbfe;
+  margin-inline-end:2px;
+}
+
+.grade-hub{
+  position:relative;
+  margin:16px 0;
+  padding:20px;
+  border:1px solid #ffffff2d;
+  border-radius:30px;
+  background:radial-gradient(circle at 96% 0,#38bdf82e,transparent 31%),radial-gradient(circle at 12% 20%,#a78bfa20,transparent 30%),linear-gradient(135deg,#ffffff13,#ffffff08);
+  box-shadow:0 20px 58px #0006,inset 0 1px 0 #ffffff14;
+  overflow:hidden;
+}
+
+.grade-hub:before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:linear-gradient(90deg,#ffffff06 1px,transparent 1px);
+  background-size:34px 34px;
+  opacity:.35;
+}
+
+.grade-hub>*{
+  position:relative;
+}
+
+.grade-hub h2{
+  margin:0 0 6px;
+  font-size:clamp(24px,4vw,38px);
+  letter-spacing:-.035em;
+  line-height:1.1;
+}
+
+.grade-hub p{
+  margin:0 0 14px;
+  color:#cbd5e1;
+  line-height:1.75;
+  max-width:70ch;
+}
+
+.domainbar,
+.exambar,
+.sortbar{
+  margin-top:12px;
+  padding:12px;
+  border:1px solid var(--line2);
+  border-radius:24px;
+  background:linear-gradient(90deg,#ffffff12,#ffffff08);
+  box-shadow:inset 0 1px 0 #ffffff10;
+}
+
+.sort-title{
+  color:#e0f2fe;
+  font-weight:900;
+}
+
+.domain-chip{
+  border-color:#a78bfa66;
+  background:linear-gradient(180deg,#8b5cf633,#4f46e520);
+}
+
+.domain-chip.on{
+  background:linear-gradient(135deg,#7c3aed,#2563eb);
+  box-shadow:0 16px 38px #7c3aed44;
+}
+
+.exam-chip{
+  border-color:#f59e0b66;
+  background:linear-gradient(180deg,#f59e0b30,#0ea5e91c);
+}
+
+.exam-chip.on{
+  background:linear-gradient(135deg,#f59e0b,#ef4444);
+  box-shadow:0 16px 38px #f59e0b3d;
+}
+
+.file-details{
+  display:grid;
+  gap:6px;
+  margin-top:12px;
+  padding:10px;
+  border:1px solid #ffffff1c;
+  border-radius:16px;
+  background:#02061742;
+  color:#dbeafe;
+  font-size:12px;
+  line-height:1.45;
+}
+
+.file-details span{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  overflow-wrap:anywhere;
+}
+
+.file-details span:before{
+  content:"•";
+  color:#67e8f9;
+  font-weight:900;
+}
+
+@media(max-width:760px){
+  .gradebar,.domainbar,.exambar,.sortbar{border-radius:20px;padding:10px}
+  .grade-go,.domain-chip,.exam-chip,.sort-chip{flex:1 1 100%;justify-content:center}
+  .grade-hub{border-radius:24px;padding:16px}
+  .grade-hub p{text-align:right}
+  .file-details{font-size:12px}
+}
