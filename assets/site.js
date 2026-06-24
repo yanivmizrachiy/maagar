@@ -15,12 +15,12 @@ const DOMAIN_BUTTONS = [
   ['summaries', 'עבודות סיכום'],
   ['exams', 'מבחנים'],
 ];
-const EXAM_BUCKETS = {
-  all: 'כל המבחנים',
-  end: 'מבחני סוף שנה',
-  mid: 'מבחני אמצע שנה',
-  start: 'מבחני תחילת שנה',
-  skill: 'מבחני מיומנות',
+const EXAM_BUCKETS = { all: 'כל המבחנים', end: 'מבחני סוף שנה', mid: 'מבחני אמצע שנה', start: 'מבחני תחילת שנה', skill: 'מבחני מיומנות' };
+const GATEWAY_HINTS = {
+  '7': 'אלגברה, גיאומטריה, עבודות סיכום ומבחנים לכיתה ז׳',
+  '8': 'חומרים מסודרים לפי תחום ונושא לכיתה ח׳',
+  '9': 'הכנה מסודרת, מבחנים וחומרי עומק לכיתה ט׳',
+  'high-school': 'כניסה לפי יחידות לימוד וחומרים לחטיבה עליונה',
 };
 
 let S = { files: [], byId: new Map(), q: '', g: 'all', c: 'all', t: 'all', exam: 'all', sort: 'smart' };
@@ -55,9 +55,7 @@ function abs(u) { try { return new URL(u, location.href).href; } catch { return 
 function viewUrl(f) {
   const u = url(f);
   const e = ext(f);
-  if (['doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx'].includes(e) && location.protocol.startsWith('http')) {
-    return 'https://view.officeapps.live.com/op/embed.aspx?src=' + encodeURIComponent(abs(u));
-  }
+  if (['doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx'].includes(e) && location.protocol.startsWith('http')) return 'https://view.officeapps.live.com/op/embed.aspx?src=' + encodeURIComponent(abs(u));
   return u;
 }
 function count(n) { return n === 1 ? 'קובץ אחד' : n + ' קבצים'; }
@@ -80,13 +78,8 @@ function groupLabel(f) { return `${activeGradeLabel(f)} · ${categoryLabel(f)} �
 function groupKey(f) { return [rank(GO, activeGradeKey(f)), rank(CO, categoryKey(f)), mainTopic(f)]; }
 function compareKey(a, b) {
   for (let i = 0; i < Math.min(a.length, b.length); i++) {
-    if (typeof a[i] === 'number' && typeof b[i] === 'number') {
-      const n = a[i] - b[i];
-      if (n) return n;
-    } else {
-      const n = he(a[i], b[i]);
-      if (n) return n;
-    }
+    if (typeof a[i] === 'number' && typeof b[i] === 'number') { const n = a[i] - b[i]; if (n) return n; }
+    else { const n = he(a[i], b[i]); if (n) return n; }
   }
   return a.length - b.length;
 }
@@ -131,14 +124,8 @@ function enrichFile(file, index) {
   enriched._search = searchableText(enriched);
   return enriched;
 }
-function prepareFiles(files) {
-  S.files = files.map(enrichFile);
-  S.byId = new Map(S.files.map(f => [f.id, f]));
-}
-function renderSoon(delay = 80) {
-  clearTimeout(renderTimer);
-  renderTimer = setTimeout(render, delay);
-}
+function prepareFiles(files) { S.files = files.map(enrichFile); S.byId = new Map(S.files.map(f => [f.id, f])); }
+function renderSoon(delay = 80) { clearTimeout(renderTimer); renderTimer = setTimeout(render, delay); }
 
 async function init() {
   try {
@@ -162,19 +149,27 @@ function bind() {
 }
 
 function render() { stats(); filters(); files(); }
-
 function stats() {
   const total = S.files.length;
   const rep = S.files.filter(repo).length;
   const downloads = S.files.filter(downloadable).length;
   const tops = new Set(S.files.flatMap(topics)).size;
-  $('stats').innerHTML = [[total, 'קבצים'], [rep, 'לצפייה'], [downloads, 'להורדה'], [tops, 'נושאים']]
-    .map(x => `<div class="stat box"><b>${x[0]}</b><div class="sub">${x[1]}</div></div>`).join('');
+  $('stats').innerHTML = [[total, 'קבצים'], [rep, 'לצפייה'], [downloads, 'להורדה'], [tops, 'נושאים']].map(x => `<div class="stat box"><b>${x[0]}</b><div class="sub">${x[1]}</div></div>`).join('');
 }
 
 function vals(field) { return [...new Set(S.files.map(f => f[field]).filter(Boolean))]; }
 function chip(key, val, label, on) { return `<button class="chip ${on ? 'on' : ''}" data-k="${key}" data-v="${esc(val)}">${esc(label)}</button>`; }
 function gradeButton(grade) { return `<button class="chip grade-go ${S.g === grade ? 'on' : ''}" data-grade-go="${grade}">מתמטיקה ל${esc(G[grade] || grade)}</button>`; }
+function gradeGatewayCard(grade) {
+  const total = S.files.filter(f => hasGrade(f, grade)).length;
+  const exams = S.files.filter(f => hasGrade(f, grade) && isExam(f)).length;
+  const label = grade === 'high-school' ? 'חטיבה עליונה' : `מתמטיקה ל${G[grade] || grade}`;
+  return `<button class="grade-entry" data-grade-go="${esc(grade)}"><span class="grade-entry-kicker">כניסה לשכבה</span><strong>${esc(label)}</strong><span>${esc(GATEWAY_HINTS[grade] || 'חומרים מסודרים למורים')}</span><em>${count(total)} · ${exams ? exams + ' מבחנים' : 'מבחנים לפי סינון'}</em></button>`;
+}
+function gradeGateway(grades) {
+  if (S.g !== 'all' || S.q.trim()) return '';
+  return `<section class="grade-gateway"><div class="grade-gateway-head"><h2>בחר שכבה להתחלה מהירה</h2><p>שער כניסה יוקרתי ונוח למורים. אחרי בחירת שכבה תראה כפתורים קצרים לפי תחום ומבחנים.</p></div><div class="grade-entry-grid">${grades.map(gradeGatewayCard).join('')}</div></section>`;
+}
 function domainButton(value, label) { return `<button class="chip domain-chip ${S.c === value || (value === 'all' && S.c === 'all') ? 'on' : ''}" data-domain="${esc(value)}">${esc(label)}</button>`; }
 function examButton(value, label) { return `<button class="chip exam-chip ${S.exam === value ? 'on' : ''}" data-exam="${esc(value)}">${esc(label)}</button>`; }
 function sortChip(value, label) { return `<button class="chip sort-chip ${S.sort === value ? 'on' : ''}" data-sort="${esc(value)}">${esc(label)}</button>`; }
@@ -188,11 +183,7 @@ function filters() {
   const g = GRADE_BUTTONS.filter(grade => S.files.some(f => hasGrade(f, grade)));
   const c = ['all', ...vals('primary_category')].sort((a, b) => (a === 'all' ? -1 : b === 'all' ? 1 : rank(CO, a) - rank(CO, b) || he(a, b)));
   const t = ['all', ...vals('document_type')].sort((a, b) => (a === 'all' ? -1 : b === 'all' ? 1 : rank(TO, a) - rank(TO, b) || he(a, b)));
-  $('filters').innerHTML = '<div class="chips gradebar"><button class="chip ' + (S.g === 'all' ? 'on' : '') + '" data-grade-go="all">כל המאגר</button>' + g.map(gradeButton).join('') + '</div>' +
-    gradeHub() +
-    '<div class="chips">' + c.map(v => chip('c', v, v === 'all' ? 'כל התחומים' : C[v] || v, S.c === v)).join('') + '</div>' +
-    '<div class="chips">' + t.map(v => chip('t', v, v === 'all' ? 'כל הסוגים' : T[v] || v, S.t === v)).join('') + '</div>' +
-    '<div class="chips sortbar"><span class="sort-title">מיון נוח:</span>' + Object.entries(SORTS).map(([value, label]) => sortChip(value, label)).join('') + '</div>';
+  $('filters').innerHTML = gradeGateway(g) + '<div class="chips gradebar"><button class="chip ' + (S.g === 'all' ? 'on' : '') + '" data-grade-go="all">כל המאגר</button>' + g.map(gradeButton).join('') + '</div>' + gradeHub() + '<div class="chips">' + c.map(v => chip('c', v, v === 'all' ? 'כל התחומים' : C[v] || v, S.c === v)).join('') + '</div>' + '<div class="chips">' + t.map(v => chip('t', v, v === 'all' ? 'כל הסוגים' : T[v] || v, S.t === v)).join('') + '</div>' + '<div class="chips sortbar"><span class="sort-title">מיון נוח:</span>' + Object.entries(SORTS).map(([value, label]) => sortChip(value, label)).join('') + '</div>';
   document.querySelectorAll('[data-grade-go]').forEach(b => b.onclick = () => { S.g = b.dataset.gradeGo || 'all'; S.c = 'all'; S.t = 'all'; S.exam = 'all'; render(); });
   document.querySelectorAll('[data-domain]').forEach(b => b.onclick = () => { S.c = b.dataset.domain || 'all'; S.t = S.c === 'exams' ? 'exam' : 'all'; S.exam = 'all'; render(); });
   document.querySelectorAll('[data-exam]').forEach(b => b.onclick = () => { S.exam = b.dataset.exam || 'all'; render(); });
@@ -204,37 +195,24 @@ function filtered() {
   const q = S.q.trim().toLowerCase();
   return S.files.filter(f => {
     if (!hasGrade(f, S.g)) return false;
-    if (S.c !== 'all') {
-      if (S.c === 'exams') { if (!isExam(f)) return false; }
-      else if (categoryKey(f) !== S.c) return false;
-    }
+    if (S.c !== 'all') { if (S.c === 'exams') { if (!isExam(f)) return false; } else if (categoryKey(f) !== S.c) return false; }
     if (S.t !== 'all' && typeKey(f) !== S.t && !(S.t === 'exam' && isExam(f))) return false;
     if (S.exam !== 'all' && examBucket(f) !== S.exam) return false;
     return !q || f._search.includes(q);
   });
 }
-
 function files() {
   const arr = filtered().sort(compareFiles);
   const gradeTitle = S.g === 'all' ? 'קבצים במאגר' : `מתמטיקה ל${G[S.g] || S.g}`;
   $('ttl').textContent = S.q ? 'תוצאות חיפוש מסודרות' : gradeTitle;
   $('meta').textContent = `${count(arr.length)} · מיון: שכבה › תחום › נושא · ${SORTS[S.sort] || SORTS.smart}`;
-  if (!arr.length) {
-    $('app').className = '';
-    $('app').innerHTML = '<div class="empty">לא נמצאו קבצים</div>';
-    return;
-  }
+  if (!arr.length) { $('app').className = ''; $('app').innerHTML = '<div class="empty">לא נמצאו קבצים</div>'; return; }
   const groups = new Map();
-  for (const f of arr) {
-    const k = groupLabel(f);
-    if (!groups.has(k)) groups.set(k, { label: k, sortKey: groupKey(f), items: [] });
-    groups.get(k).items.push(f);
-  }
+  for (const f of arr) { const k = groupLabel(f); if (!groups.has(k)) groups.set(k, { label: k, sortKey: groupKey(f), items: [] }); groups.get(k).items.push(f); }
   $('app').className = 'groups';
   $('app').innerHTML = [...groups.values()].sort(compareGroups).map(g => `<section class="group"><div class="ghead"><span>${esc(g.label)}</span><span>${count(g.items.length)}</span></div><div class="grid">${g.items.map(card).join('')}</div></section>`).join('');
   document.querySelectorAll('[data-view]').forEach(b => b.onclick = () => open(b.dataset.view));
 }
-
 function infoLine(f) {
   const bits = [];
   if (f.author && f.author !== 'unknown') bits.push(`מחבר: ${esc(f.author)}`);
@@ -253,14 +231,11 @@ function card(f) {
   const labels = [activeGradeLabel(f), categoryLabel(f), typeLabel(f), e ? '.' + e : ''].filter(Boolean);
   const ts = topics(f).slice(0, 4);
   const isRepo = repo(f);
-  const viewAction = isRepo
-    ? `<button class="act view" data-view="${esc(f.id)}">👁 צפייה מוטמעת</button>`
-    : (u ? `<a class="act view" href="${esc(u)}" target="_blank">↗ פתח קישור</a>` : '<button class="act view disabled" aria-disabled="true">אין קישור פעיל</button>');
+  const viewAction = isRepo ? `<button class="act view" data-view="${esc(f.id)}">👁 צפייה מוטמעת</button>` : (u ? `<a class="act view" href="${esc(u)}" target="_blank">↗ פתח קישור</a>` : '<button class="act view disabled" aria-disabled="true">אין קישור פעיל</button>');
   const openAction = u ? `<a class="act" href="${esc(u)}" target="_blank">↗ פתח</a>` : '';
   const dlAction = downloadButton(f);
   return `<article class="file"><div class="body"><div class="ft"><div class="ico">${I[e] || '📄'}</div><div class="title">${esc(title(f))}</div></div><div class="tags">${labels.map(x => `<span class="tag">${esc(x)}</span>`).join('')}</div>${ts.length ? `<div class="tags">${ts.map(x => `<span class="tag topic">${esc(x)}</span>`).join('')}</div>` : ''}${infoLine(f)}<div class="meta">${isRepo ? '📁 קובץ פנימי · הורדה ישירה' : '🔗 קישור חיצוני'} ${f.year && f.year !== 'unknown' ? ' · ' + esc(f.year) : ''}</div></div><div class="acts">${viewAction}${openAction}${dlAction}</div></article>`;
 }
-
 function open(id) {
   const f = S.byId.get(id);
   if (!f) return;
@@ -271,21 +246,8 @@ function open(id) {
   $('mo').href = u;
   $('mo').target = '_blank';
   $('mo').rel = 'noopener noreferrer';
-  if (canDownload) {
-    $('md').href = downloadUrl(f);
-    $('md').download = downloadName(f);
-    $('md').textContent = '⬇ הורדה מהירה';
-    $('md').title = 'הורדה ישירה ומהירה של הקובץ';
-    $('md').classList.remove('disabled');
-    $('md').removeAttribute('aria-disabled');
-  } else {
-    $('md').removeAttribute('href');
-    $('md').removeAttribute('download');
-    $('md').textContent = 'אין הורדה ישירה';
-    $('md').title = 'אין קישור הורדה ישיר לקובץ זה';
-    $('md').classList.add('disabled');
-    $('md').setAttribute('aria-disabled', 'true');
-  }
+  if (canDownload) { $('md').href = downloadUrl(f); $('md').download = downloadName(f); $('md').textContent = '⬇ הורדה מהירה'; $('md').title = 'הורדה ישירה ומהירה של הקובץ'; $('md').classList.remove('disabled'); $('md').removeAttribute('aria-disabled'); }
+  else { $('md').removeAttribute('href'); $('md').removeAttribute('download'); $('md').textContent = 'אין הורדה ישירה'; $('md').title = 'אין קישור הורדה ישיר לקובץ זה'; $('md').classList.add('disabled'); $('md').setAttribute('aria-disabled', 'true'); }
   $('viewer').src = 'about:blank';
   $('viewer').title = 'תצוגה מוטמעת: ' + title(f);
   $('viewer').setAttribute('loading', 'eager');
@@ -293,11 +255,5 @@ function open(id) {
   document.body.style.overflow = 'hidden';
   setTimeout(() => { $('viewer').src = viewUrl(f); }, 50);
 }
-
-function close() {
-  $('modal').style.display = 'none';
-  $('viewer').src = 'about:blank';
-  document.body.style.overflow = '';
-}
-
+function close() { $('modal').style.display = 'none'; $('viewer').src = 'about:blank'; document.body.style.overflow = ''; }
 init();
