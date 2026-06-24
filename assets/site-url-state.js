@@ -1,10 +1,15 @@
 (() => {
-  const PARAMS = { q: 'q', g: 'grade', c: 'category', t: 'type', s: 'sort' };
+  const PARAMS = { q: 'q', g: 'grade', c: 'category', t: 'type', e: 'exam', s: 'sort' };
   const SORT_VALUES = new Set(['smart', 'recent', 'title', 'type']);
+  const EXAM_VALUES = new Set(['all', 'end', 'mid', 'start', 'skill']);
   let applying = false;
 
   function cleanSort(value) {
     return SORT_VALUES.has(value) ? value : 'smart';
+  }
+
+  function cleanExam(value) {
+    return EXAM_VALUES.has(value) ? value : 'all';
   }
 
   function readParams() {
@@ -15,16 +20,27 @@
         g: p.get(PARAMS.g) || 'all',
         c: p.get(PARAMS.c) || 'all',
         t: p.get(PARAMS.t) || 'all',
+        e: cleanExam(p.get(PARAMS.e) || 'all'),
         s: cleanSort(p.get(PARAMS.s) || 'smart'),
       };
     } catch {
-      return { q: '', g: 'all', c: 'all', t: 'all', s: 'smart' };
+      return { q: '', g: 'all', c: 'all', t: 'all', e: 'all', s: 'smart' };
     }
   }
 
   function activeValue(key) {
     const btn = document.querySelector(`[data-k="${key}"].on`);
     return btn?.dataset?.v || 'all';
+  }
+
+  function activeGrade() {
+    const btn = document.querySelector('[data-grade-go].on');
+    return btn?.dataset?.gradeGo || 'all';
+  }
+
+  function activeExam() {
+    const btn = document.querySelector('[data-exam].on');
+    return cleanExam(btn?.dataset?.exam || 'all');
   }
 
   function activeSort() {
@@ -37,15 +53,17 @@
     try {
       const url = new URL(location.href);
       const q = document.getElementById('q')?.value || '';
-      const g = activeValue('g');
+      const g = activeGrade();
       const c = activeValue('c');
       const t = activeValue('t');
+      const e = activeExam();
       const s = activeSort();
 
       q ? url.searchParams.set(PARAMS.q, q) : url.searchParams.delete(PARAMS.q);
       g !== 'all' ? url.searchParams.set(PARAMS.g, g) : url.searchParams.delete(PARAMS.g);
       c !== 'all' ? url.searchParams.set(PARAMS.c, c) : url.searchParams.delete(PARAMS.c);
       t !== 'all' ? url.searchParams.set(PARAMS.t, t) : url.searchParams.delete(PARAMS.t);
+      e !== 'all' ? url.searchParams.set(PARAMS.e, e) : url.searchParams.delete(PARAMS.e);
       s !== 'smart' ? url.searchParams.set(PARAMS.s, s) : url.searchParams.delete(PARAMS.s);
       history.replaceState(null, '', url.toString());
     } catch {}
@@ -58,12 +76,23 @@
     if (chip && !chip.classList.contains('on')) chip.click();
   }
 
-  function clickSort(value) {
-    const sort = cleanSort(value);
-    if (sort === 'smart') return;
-    const chips = [...document.querySelectorAll('[data-sort]')];
-    const chip = chips.find(btn => (btn.dataset.sort || '') === sort);
+  function clickData(selector, attr, value, skipValue) {
+    if (!value || value === skipValue) return;
+    const chips = [...document.querySelectorAll(selector)];
+    const chip = chips.find(btn => (btn.dataset[attr] || '') === value);
     if (chip && !chip.classList.contains('on')) chip.click();
+  }
+
+  function clickGrade(value) {
+    clickData('[data-grade-go]', 'gradeGo', value, 'all');
+  }
+
+  function clickExam(value) {
+    clickData('[data-exam]', 'exam', cleanExam(value), 'all');
+  }
+
+  function clickSort(value) {
+    clickData('[data-sort]', 'sort', cleanSort(value), 'smart');
   }
 
   function applyParams() {
@@ -75,13 +104,16 @@
       input.dispatchEvent(new Event('input', { bubbles: true }));
     }
     setTimeout(() => {
-      clickChip('g', params.g);
-      clickChip('c', params.c);
-      clickChip('t', params.t);
-      clickSort(params.s);
-      applying = false;
-      writeParams();
-    }, 250);
+      clickGrade(params.g);
+      setTimeout(() => {
+        clickChip('c', params.c);
+        clickChip('t', params.t);
+        clickExam(params.e);
+        clickSort(params.s);
+        applying = false;
+        writeParams();
+      }, 80);
+    }, 220);
   }
 
   function bind() {
@@ -90,12 +122,7 @@
       input.dataset.urlStateReady = '1';
       input.addEventListener('input', writeParams);
     }
-    document.querySelectorAll('[data-k]').forEach(btn => {
-      if (btn.dataset.urlStateReady === '1') return;
-      btn.dataset.urlStateReady = '1';
-      btn.addEventListener('click', () => setTimeout(writeParams, 0));
-    });
-    document.querySelectorAll('[data-sort]').forEach(btn => {
+    document.querySelectorAll('[data-k], [data-grade-go], [data-domain], [data-exam], [data-sort]').forEach(btn => {
       if (btn.dataset.urlStateReady === '1') return;
       btn.dataset.urlStateReady = '1';
       btn.addEventListener('click', () => setTimeout(writeParams, 0));
