@@ -9,7 +9,7 @@ validate-site-shell.py
 - קיימת טעינת metadata/index.json.
 - קיימת שמירת מצב סינון, מיון וניווט מבחנים ב-URL.
 - קיימים קישור עומק, שיתוף, עזרה מהירה והתאמות מובייל.
-- מבנה האתר והטקסונומיה מיושרים עם ניווט שכבה יוקרתי ותפריט מבחנים.
+- מבנה האתר והטקסונומיה מיושרים עם ניווט שכבה יוקרתי, שער שכבות ותפריט מבחנים.
 
 הבדיקה לא משנה קבצים.
 """
@@ -56,6 +56,11 @@ REQUIRED_JS_SNIPPETS = [
     "const GRADE_BUTTONS",
     "const DOMAIN_BUTTONS",
     "const EXAM_BUCKETS",
+    "const GATEWAY_HINTS",
+    "gradeGateway",
+    "gradeGatewayCard",
+    "grade-entry",
+    "grade-entry-grid",
     "gradeHub",
     "data-grade-go",
     "data-domain",
@@ -146,6 +151,11 @@ REQUIRED_RESPONSIVE_CSS_SNIPPETS = [
 ]
 
 REQUIRED_PREMIUM_CSS_SNIPPETS = [
+    ".grade-gateway",
+    ".grade-gateway-head",
+    ".grade-entry-grid",
+    ".grade-entry",
+    ".grade-entry-kicker",
     ".gradebar",
     ".grade-go",
     ".grade-hub",
@@ -261,15 +271,7 @@ def main() -> int:
     structure = load_json(SITE_STRUCTURE, "metadata/site-structure.json", errors)
     taxonomy = load_json(TAXONOMY, "metadata/taxonomy.json", errors)
 
-    script_order = [
-        "site.js",
-        "site-url-state.js",
-        "site-deeplink.js",
-        "site-share.js",
-        "site-view-share.js",
-        "site-modal-share.js",
-        "site-help.js",
-    ]
+    script_order = ["site.js", "site-url-state.js", "site-deeplink.js", "site-share.js", "site-view-share.js", "site-modal-share.js", "site-help.js"]
 
     if 'href="assets/site.css"' not in html:
         errors.append("index.html does not load assets/site.css")
@@ -314,7 +316,7 @@ def main() -> int:
             print(f"FAIL  {err}")
         return 1
 
-    print("OK    standalone site shell, premium teacher navigation, URL filter/sort/exam state, metadata navigation, deep links, sharing and help are wired correctly")
+    print("OK    standalone site shell, premium grade gateway, premium teacher navigation, URL filter/sort/exam state, metadata navigation, deep links, sharing and help are wired correctly")
     return 0
 
 
