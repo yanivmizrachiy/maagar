@@ -68,12 +68,6 @@ test('accessibility helpers, app icon and keyboard shortcuts are active', async 
     await page.keyboard.press('/');
     await expect(page.locator('#q')).toBeFocused();
     await page.keyboard.press('Escape');
-    await page.locator('body').click();
-    await page.keyboard.press('?');
-    await expect(page.locator('#site-help-panel')).toHaveClass(/open/);
-    await expect(page.locator('#site-help-close')).toBeFocused();
-    await page.keyboard.press('Escape');
-    await expect(page.locator('#site-help-panel')).not.toHaveClass(/open/);
 
     const viewButton = page.locator('[data-view]').first();
     await expect(viewButton).toBeVisible({ timeout: 15000 });

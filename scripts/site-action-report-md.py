@@ -84,7 +84,6 @@ def main() -> int:
         "file_share_buttons": "שיתוף קובץ מכרטיס",
         "current_view_share_buttons": "שיתוף תצוגה נוכחית",
         "modal_file_share_buttons": "שיתוף קובץ מתוך חלון צפייה",
-        "teacher_help_panel": "עזרה מהירה למורים",
         "premium_teacher_navigation_css": "CSS ניווט יוקרתי למורים",
         "high_school_unit_navigation_css": "CSS ניווט 3/4/5 יחידות",
     }
