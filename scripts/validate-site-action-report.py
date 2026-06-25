@@ -23,7 +23,6 @@ REQUIRED_FEATURES = [
     "file_share_buttons",
     "current_view_share_buttons",
     "modal_file_share_buttons",
-    "teacher_help_panel",
     "premium_teacher_navigation_css",
     "high_school_unit_navigation_css",
 ]
@@ -31,7 +30,6 @@ REQUIRED_FEATURES = [
 REQUIRED_SUMMARY_FLAGS = [
     "current_view_share_available",
     "modal_file_share_available",
-    "teacher_help_available",
     "url_state_share_available",
     "deep_link_share_available",
     "premium_teacher_navigation_available",

@@ -38,7 +38,6 @@ FEATURE_FILES = {
     "file_share_buttons": "site-share.js",
     "current_view_share_buttons": "site-view-share.js",
     "modal_file_share_buttons": "site-modal-share.js",
-    "teacher_help_panel": "site-help.js",
 }
 
 FEATURE_SNIPPETS = {
@@ -48,7 +47,6 @@ FEATURE_SNIPPETS = {
     "file_share_buttons": ["maagarFileLink", "https://wa.me/", "העתק קישור"],
     "current_view_share_buttons": ["copy-view-link", "share-view-whatsapp", "העתק תצוגה", "שתף תצוגה"],
     "modal_file_share_buttons": ["copy-modal-file-link", "share-modal-file-whatsapp", "currentFileLink", "currentFileTitle"],
-    "teacher_help_panel": ["site-help-open", "site-help-panel", "עזרה מהירה", "help-card"],
 }
 
 STYLE_FILES = {
@@ -218,7 +216,6 @@ def main() -> int:
             "file_share_cards": len(open_ready),
             "current_view_share_available": bool(browser_features.get("current_view_share_buttons", {}).get("loaded_in_index")),
             "modal_file_share_available": bool(browser_features.get("modal_file_share_buttons", {}).get("loaded_in_index")),
-            "teacher_help_available": bool(browser_features.get("teacher_help_panel", {}).get("loaded_in_index")),
             "url_state_share_available": bool(browser_features.get("url_state_filters", {}).get("loaded_in_index")),
             "deep_link_share_available": bool(browser_features.get("file_deep_links", {}).get("loaded_in_index")),
             "premium_teacher_navigation_available": bool(browser_features.get("premium_teacher_navigation_css", {}).get("loaded_in_index")),
