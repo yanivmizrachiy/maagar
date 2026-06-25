@@ -163,7 +163,7 @@ function gradeGatewayCard(grade) {
 }
 function gradeGateway(grades) {
   if (S.g !== 'all' || S.q.trim()) return '';
-  return `<section class="grade-gateway"><div class="grade-gateway-head"><h2>בחר שכבה להתחלה מהירה</h2><p>שער כניסה יוקרתי ונוח למורים. אחרי בחירת שכבה תראה כפתורים קצרים לפי תחום ומבחנים.</p></div><div class="grade-entry-grid">${grades.map(gradeGatewayCard).join('')}</div></section>`;
+  return `<section class="grade-gateway"><div class="grade-gateway-head"><h2>בחר שכבה</h2></div><div class="grade-entry-grid">${grades.map(gradeGatewayCard).join('')}</div></section>`;
 }
 function domainButton(value, label) { return `<button class="chip domain-chip ${S.c === value || (value === 'all' && S.c === 'all') ? 'on' : ''}" data-domain="${esc(value)}">${esc(label)}</button>`; }
 function unitButton(value, label) { return `<button class="chip unit-chip ${S.u === value ? 'on' : ''}" data-unit="${esc(value)}">${esc(label)}</button>`; }
@@ -172,13 +172,13 @@ function sortChip(value, label) { return `<button class="chip sort-chip ${S.sort
 function highSchoolHub() {
   if (S.g !== 'high-school') return '';
   const units = UNIT_BUTTONS.filter(([value]) => value === 'all' || S.files.some(f => hasGrade(f, 'high-school') && unitKey(f) === value));
-  return `<section class="unit-hub"><h2>חטיבה עליונה לפי יחידות</h2><p>בחר רמת לימוד. הסינון נעשה לפי unit_level ב־metadata, בלי לשכפל קבצים.</p><div class="chips unitbar"><span class="sort-title">יחידות:</span>${units.map(([v, label]) => unitButton(v, label)).join('')}</div></section>`;
+  return `<section class="unit-hub"><h2>חטיבה עליונה לפי יחידות</h2><div class="chips unitbar"><span class="sort-title">יחידות:</span>${units.map(([v, label]) => unitButton(v, label)).join('')}</div></section>`;
 }
 function gradeHub() {
   if (S.g === 'all') return '';
   const domain = '<div class="chips domainbar"><span class="sort-title">' + esc(G[S.g] || 'שכבה') + ':</span>' + DOMAIN_BUTTONS.map(([v, label]) => domainButton(v, label)).join('') + '</div>';
   const exams = (S.c === 'exams' || S.t === 'exam') ? '<div class="chips exambar"><span class="sort-title">מבחנים:</span>' + Object.entries(EXAM_BUCKETS).map(([v, label]) => examButton(v, label)).join('') + '</div>' : '';
-  return `<section class="grade-hub"><h2>מתמטיקה ל${esc(G[S.g] || S.g)}</h2><p>בחר תחום. הכפתורים כאן קצרים כי הכותרת כבר מציינת את השכבה.</p>${domain}${exams}</section>`;
+  return `<section class="grade-hub"><h2>מתמטיקה ל${esc(G[S.g] || S.g)}</h2>${domain}${exams}</section>`;
 }
 function filters() {
   const g = GRADE_BUTTONS.filter(grade => S.files.some(f => hasGrade(f, grade)));
