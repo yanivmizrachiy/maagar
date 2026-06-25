@@ -102,13 +102,6 @@ for (const vp of viewports) {
 
       await expectVisibleAndTouchable(page.locator('#copy-view-link'), vp.minButton);
       await expectVisibleAndTouchable(page.locator('#share-view-whatsapp'), vp.minButton);
-      await expectVisibleAndTouchable(page.locator('#site-help-open'), vp.minButton);
-
-      await page.locator('#site-help-open').click();
-      await expect(page.locator('#site-help-panel')).toHaveClass(/open/);
-      await noHorizontalOverflow(page);
-      await page.locator('#site-help-close').click();
-      await expect(page.locator('#site-help-panel')).not.toHaveClass(/open/);
 
       const viewButton = page.locator('[data-view]').first();
       await expectVisibleAndTouchable(viewButton, vp.minButton);

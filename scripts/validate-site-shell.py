@@ -24,7 +24,7 @@ HELP_JS = REPO / "assets" / "site-help.js"
 SITE_STRUCTURE = REPO / "metadata" / "site-structure.json"
 TAXONOMY = REPO / "metadata" / "taxonomy.json"
 
-REQUIRED_IDS = ["q", "clear", "stats", "filters", "ttl", "meta", "app", "modal", "mt", "ms", "mo", "md", "x", "viewer"]
+REQUIRED_IDS = ["q", "clear", "filters", "ttl", "meta", "app", "modal", "mt", "ms", "mo", "md", "x", "viewer"]
 REQUIRED_HTML_SNIPPETS = ["viewport-fit=cover", 'name="theme-color"', 'name="color-scheme"', "apple-mobile-web-app-capable", "black-translucent", 'href="assets/site.css"', 'href="assets/site-premium-nav.css"']
 REQUIRED_JS_SNIPPETS = [
     "metadata/index.json", "function card(", "function open(", "download", "view.officeapps.live.com",
@@ -41,7 +41,7 @@ REQUIRED_DEEPLINK_SNIPPETS = ["searchParams.get('file')", "window.maagarFileLink
 REQUIRED_SHARE_SNIPPETS = ["navigator.clipboard", "WhatsApp", "https://wa.me/", "MutationObserver", "העתק קישור", "maagarFileLink"]
 REQUIRED_VIEW_SHARE_SNIPPETS = ["currentViewLink", "copy-view-link", "share-view-whatsapp", "העתק תצוגה", "שתף תצוגה", "searchParams.delete('file')"]
 REQUIRED_MODAL_SHARE_SNIPPETS = ["currentFileLink", "currentFileTitle", "copy-modal-file-link", "share-modal-file-whatsapp", "קישור לקובץ הועתק", "https://wa.me/"]
-REQUIRED_HELP_SNIPPETS = ["site-help-open", "site-help-panel", "עזרה מהירה", "צפייה מוטמעת", "שיתוף תצוגה", "help-card"]
+REQUIRED_HELP_SNIPPETS = ["skip-to-maagar", "ensureAccessibilityBasics", "normalizeActionButtons", "assets/icon.svg"]
 REQUIRED_RESPONSIVE_CSS_SNIPPETS = ["safe-area-inset-top", "overflow-x:hidden", "@media(max-width:920px)", "@media(max-width:760px)", "@media(max-width:390px)", "@media(max-height:620px)", "minmax(min(285px,100%),1fr)", ".sortbar", ".sort-chip"]
 REQUIRED_PREMIUM_CSS_SNIPPETS = [
     ".grade-gateway", ".grade-gateway-head", ".grade-entry-grid", ".grade-entry", ".grade-entry-kicker",

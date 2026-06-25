@@ -144,14 +144,7 @@ function bind() {
   $('modal').onclick = e => { if (e.target.id === 'modal') close(); };
   document.onkeydown = e => { if (e.key === 'Escape') close(); };
 }
-function render() { stats(); filters(); files(); }
-function stats() {
-  const total = S.files.length;
-  const rep = S.files.filter(repo).length;
-  const downloads = S.files.filter(downloadable).length;
-  const tops = new Set(S.files.flatMap(topics)).size;
-  $('stats').innerHTML = [[total, 'קבצים'], [rep, 'לצפייה'], [downloads, 'להורדה'], [tops, 'נושאים']].map(x => `<div class="stat box"><b>${x[0]}</b><div class="sub">${x[1]}</div></div>`).join('');
-}
+function render() { filters(); files(); }
 function vals(field) { return [...new Set(S.files.map(f => f[field]).filter(Boolean))]; }
 function chip(key, val, label, on) { return `<button class="chip ${on ? 'on' : ''}" data-k="${key}" data-v="${esc(val)}">${esc(label)}</button>`; }
 function gradeButton(grade) { return `<button class="chip grade-go ${S.g === grade ? 'on' : ''}" data-grade-go="${grade}">מתמטיקה ל${esc(G[grade] || grade)}</button>`; }
