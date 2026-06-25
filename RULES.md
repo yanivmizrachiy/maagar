@@ -355,3 +355,33 @@ node scripts/qa-browser.js
 8. ניווט חטיבה עליונה לפי 3/4/5 יחידות דרך `unit_level` הוא דרישה קבועה.
 9. כל שינוי חייב לעבור validation.
 10. לא להשאיר סתירות תיעודיות שמטעות סוכני AI.
+
+## 17. תיקונים אחרונים
+
+### 2026-06-25 — תיקון תקיעת טעינת האתר (CI אדום) ותאימות בדיקות ל־Windows
+
+1. **באג קריטי: לולאת `MutationObserver` אינסופית שהקפיאה את האתר.**
+   - הקבצים `assets/site-view-share.js` ו־`assets/site-modal-share.js` הריצו
+     `observer.observe(document.documentElement, { childList, subtree, attributes: true })`,
+     וה־callback שלהם הציב `wa.href = ...` (שינוי attribute). הצבת ה־href הפעילה שוב
+     את ה־observer → לולאה אינסופית שחסמה את ה־main thread, ולכן `load`/`DOMContentLoaded`
+     לא נורו ו־`metadata/index.json` לא הסתיים להיטען.
+   - תוצאה: בדיקת **Site Button Smoke Test** ב־GitHub Actions נכשלה (כל הבדיקות
+     נתקעו ב־`Test timeout 120000ms`), והאתר עלול היה להיתקע גם אצל משתמשים.
+   - תיקון: ה־observer צופה רק ב־`{ childList: true, subtree: true }` (בלי `attributes`).
+     שינוי href אינו צריך להאזין לו. אומת בדפדפן אמיתי: `load` ב־251ms, 321 כרטיסים,
+     כל הכפתורים והמודאל עובדים, 0 שגיאות.
+   - כלל קבוע: אסור ש־callback של `MutationObserver` ישנה attribute שנמצא בתוך ה־subtree
+     הנצפה כאשר `attributes: true` — זו לולאה אינסופית.
+
+2. **תאימות סקריפטי בדיקה ל־Windows (`scripts/validate-all.sh`, `scripts/validate-index.sh`).**
+   - הסקריפטים העבירו ל־Python נתיב בסגנון MSYS (`/c/Users/...`) ש־Python של Windows
+     לא יכול לפתוח (FileNotFoundError), ובנוסף קראו JSON עברי בלי `encoding='utf-8'`
+     (cp1252). ב־Linux/CI עברו; ב־Windows מקומי נכשלו.
+   - תיקון: `cygpath -m` לנרמול הנתיב כשזמין, `encoding='utf-8'` בקריאות ה־JSON,
+     וייצוא `PYTHONUTF8=1` / `PYTHONIOENCODING=utf-8`. אין השפעה על Linux/CI.
+   - תוצאה: `bash scripts/validate-all.sh` עובר זהה ב־Windows וב־CI (47/0).
+
+3. **הערה: `service-worker.js` אינו נרשם בשום מקום** (אין `navigator.serviceWorker.register`).
+   זהו קוד מת ואינו משפיע על האתר. כל "כפתור ישן" שנראה באתר נובע מ־cache רגיל של הדפדפן,
+   לא מ־service worker. לא להוסיף רישום SW בלי החלטה מפורשת (מחזיר בעיות cache).

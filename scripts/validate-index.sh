@@ -11,6 +11,19 @@ REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 INDEX="$REPO_ROOT/metadata/index.json"
 TAXONOMY="$REPO_ROOT/metadata/taxonomy.json"
 
+# Force UTF-8 and a native-OS path for Python so this behaves identically on
+# Windows (Git-bash + Windows Python) and Linux/CI. cygpath -m turns /c/... into
+# C:/...; on Linux cygpath is absent and the MSYS paths are already native.
+export PYTHONUTF8=1
+export PYTHONIOENCODING=utf-8
+if command -v cygpath >/dev/null 2>&1; then
+  PYROOT="$(cygpath -m "$REPO_ROOT")"
+else
+  PYROOT="$REPO_ROOT"
+fi
+PYINDEX="$PYROOT/metadata/index.json"
+PYTAXONOMY="$PYROOT/metadata/taxonomy.json"
+
 if [ ! -f "$INDEX" ]; then
   echo "ERROR: metadata/index.json not found."
   exit 1
@@ -20,11 +33,11 @@ if [ ! -f "$TAXONOMY" ]; then
   exit 1
 fi
 
-if ! python3 -c "import json; json.load(open('$INDEX'))" 2>/dev/null; then
+if ! python3 -c "import json; json.load(open('$PYINDEX', encoding='utf-8'))" 2>/dev/null; then
   echo "ERROR: metadata/index.json is not valid JSON."
   exit 1
 fi
-if ! python3 -c "import json; json.load(open('$TAXONOMY'))" 2>/dev/null; then
+if ! python3 -c "import json; json.load(open('$PYTAXONOMY', encoding='utf-8'))" 2>/dev/null; then
   echo "ERROR: metadata/taxonomy.json is not valid JSON."
   exit 1
 fi
@@ -37,9 +50,9 @@ echo ""
 python3 << PYEOF
 import json, os, sys
 
-repo_root = "$REPO_ROOT"
-index_path = "$INDEX"
-taxonomy_path = "$TAXONOMY"
+repo_root = "$PYROOT"
+index_path = "$PYINDEX"
+taxonomy_path = "$PYTAXONOMY"
 errors = 0
 warnings = 0
 

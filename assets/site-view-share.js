@@ -87,7 +87,11 @@
     ensureButtons();
     updateWhatsApp();
   });
-  observer.observe(document.documentElement, { childList: true, subtree: true, attributes: true });
+  // Watch only structural changes (re-renders). Do NOT watch attributes:
+  // updateWhatsApp() sets the WhatsApp link's href, which is itself an attribute
+  // mutation — observing attributes here would retrigger the callback in an
+  // infinite loop and freeze the page's main thread.
+  observer.observe(document.documentElement, { childList: true, subtree: true });
   setTimeout(() => {
     ensureButtons();
     updateWhatsApp();
