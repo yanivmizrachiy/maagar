@@ -32,6 +32,8 @@ const UI = {
   searchResultsTitle: 'תוצאות חיפוש',
   sortPath: 'מיון: שכבה › תחום › נושא',
   noResults: 'לא נמצאו קבצים',
+  backHome: '← חזרה לשכבות',
+  homeHint: 'בחרו שכבה למעלה כדי לראות את הקבצים',
   loadError: 'שגיאה בטעינת metadata/index.json',
   authorPrefix: 'מחבר: ',
   yearPrefix: 'שנה: ',
@@ -147,8 +149,21 @@ function enrichFile(file, index) {
 }
 function prepareFiles(files) { S.files = files.map(enrichFile); S.byId = new Map(S.files.map(f => [f.id, f])); }
 function renderSoon(delay = 80) { clearTimeout(renderTimer); renderTimer = setTimeout(render, delay); }
+function initPalette() {
+  const saved = (() => { try { return localStorage.getItem('maagar-palette'); } catch { return null; } })();
+  document.body.dataset.palette = saved || 'a';
+  document.querySelectorAll('#palette [data-palette]').forEach(b => {
+    b.classList.toggle('on', b.dataset.palette === document.body.dataset.palette);
+    b.onclick = () => {
+      document.body.dataset.palette = b.dataset.palette;
+      try { localStorage.setItem('maagar-palette', b.dataset.palette); } catch {}
+      document.querySelectorAll('#palette [data-palette]').forEach(x => x.classList.toggle('on', x === b));
+    };
+  });
+}
 async function init() {
   try {
+    initPalette();
     const r = await fetch('metadata/index.json', { cache: 'no-store' });
     if (!r.ok) throw new Error('metadata ' + r.status);
     const d = await r.json();
@@ -197,14 +212,20 @@ function gradeHub() {
 }
 function filters() {
   const g = GRADE_BUTTONS.filter(grade => S.files.some(f => hasGrade(f, grade)));
-  const c = ['all', ...vals('primary_category')].sort((a, b) => (a === 'all' ? -1 : b === 'all' ? 1 : rank(CO, a) - rank(CO, b) || he(a, b)));
-  const t = ['all', ...vals('document_type')].sort((a, b) => (a === 'all' ? -1 : b === 'all' ? 1 : rank(TO, a) - rank(TO, b) || he(a, b)));
-  $('filters').innerHTML = gradeGateway(g) + '<div class="chips gradebar"><button class="chip ' + (S.g === 'all' ? 'on' : '') + '" data-grade-go="all">' + UI.allRepo + '</button>' + g.map(gradeButton).join('') + '</div>' + gradeHub() + highSchoolHub() + '<div class="chips">' + c.map(v => chip('c', v, v === 'all' ? UI.allDomains : C[v] || v, S.c === v)).join('') + '</div>' + '<div class="chips">' + t.map(v => chip('t', v, v === 'all' ? UI.allTypes : T[v] || v, S.t === v)).join('') + '</div>' + '<div class="chips sortbar"><span class="sort-title">' + UI.sortTitle + '</span>' + Object.entries(SORTS).map(([value, label]) => sortChip(value, label)).join('') + '</div>';
-  document.querySelectorAll('[data-grade-go]').forEach(b => b.onclick = () => { S.g = b.dataset.gradeGo || 'all'; S.u = 'all'; S.c = 'all'; S.t = 'all'; S.exam = 'all'; render(); });
+  const onHome = S.g === 'all' && !S.q.trim();
+  if (onHome) {
+    // עמוד הבית: רק 4 כפתורי השכבות הראשיים. בלי כפל, בלי קטגוריות.
+    $('filters').innerHTML = gradeGateway(g);
+  } else {
+    // בתוך שכבה / חיפוש: חזרה + כפתורי נושאים (תחומים) + מיון. בלי כפל כפתורי שכבה.
+    const back = '<div class="chips gradebar"><button class="chip back-home" data-grade-go="all">' + UI.backHome + '</button></div>';
+    const sort = '<div class="chips sortbar"><span class="sort-title">' + UI.sortTitle + '</span>' + Object.entries(SORTS).map(([value, label]) => sortChip(value, label)).join('') + '</div>';
+    $('filters').innerHTML = back + gradeHub() + highSchoolHub() + sort;
+  }
+  document.querySelectorAll('[data-grade-go]').forEach(b => b.onclick = () => { S.g = b.dataset.gradeGo || 'all'; S.u = 'all'; S.c = 'all'; S.t = 'all'; S.exam = 'all'; S.q = ''; $('q').value = ''; render(); });
   document.querySelectorAll('[data-unit]').forEach(b => b.onclick = () => { S.u = b.dataset.unit || 'all'; render(); });
   document.querySelectorAll('[data-domain]').forEach(b => b.onclick = () => { S.c = b.dataset.domain || 'all'; S.t = S.c === 'exams' ? 'exam' : 'all'; S.exam = 'all'; render(); });
   document.querySelectorAll('[data-exam]').forEach(b => b.onclick = () => { S.exam = b.dataset.exam || 'all'; render(); });
-  document.querySelectorAll('[data-k]').forEach(b => b.onclick = () => { S[b.dataset.k] = b.dataset.v; if (b.dataset.k === 'c' && S.c !== 'exams') S.exam = 'all'; render(); });
   document.querySelectorAll('[data-sort]').forEach(b => b.onclick = () => { S.sort = b.dataset.sort || 'smart'; render(); });
 }
 function filtered() {
@@ -219,8 +240,16 @@ function filtered() {
   });
 }
 function files() {
+  if (S.g === 'all' && !S.q.trim()) {
+    // עמוד הבית: בלי רשימת קבצים — רק בחירת שכבה.
+    $('ttl').textContent = '';
+    $('meta').textContent = '';
+    $('app').className = '';
+    $('app').innerHTML = `<div class="empty">${UI.homeHint}</div>`;
+    return;
+  }
   const arr = filtered().sort(compareFiles);
-  const gradeTitle = S.g === 'all' ? UI.repoFilesTitle : `${UI.gradeTitlePrefix}${G[S.g] || S.g}`;
+  const gradeTitle = S.g === 'all' ? UI.searchResultsTitle : `${UI.gradeTitlePrefix}${G[S.g] || S.g}`;
   $('ttl').textContent = S.q ? UI.searchResultsTitle : gradeTitle;
   $('meta').textContent = `${count(arr.length)} · ${UI.sortPath} · ${SORTS[S.sort] || SORTS.smart}`;
   if (!arr.length) { $('app').className = ''; $('app').innerHTML = `<div class="empty">${UI.noResults}</div>`; return; }
@@ -246,13 +275,13 @@ function infoLine(f) {
 function card(f) {
   const u = url(f);
   const e = ext(f);
-  const labels = [activeGradeLabel(f), activeGradeKey(f) === 'high-school' ? unitLabel(f) : '', categoryLabel(f), typeLabel(f), e ? '.' + e : ''].filter(Boolean);
-  const ts = topics(f).slice(0, 4);
+  const ts = topics(f).slice(0, 3);
   const isRepo = repo(f);
   const viewAction = isRepo ? `<button class="act view" data-view="${esc(f.id)}">👁 צפייה מוטמעת</button>` : (u ? `<a class="act view" href="${esc(u)}" target="_blank">↗ פתח קישור</a>` : '<button class="act view disabled" aria-disabled="true">אין קישור פעיל</button>');
   const openAction = u ? `<a class="act" href="${esc(u)}" target="_blank">↗ פתח</a>` : '';
   const dlAction = downloadButton(f);
-  return `<article class="file"><div class="body"><div class="ft"><div class="ico">${I[e] || '📄'}</div><div class="title">${esc(title(f))}</div></div><div class="tags">${labels.map(x => `<span class="tag">${esc(x)}</span>`).join('')}</div>${ts.length ? `<div class="tags">${ts.map(x => `<span class="tag topic">${esc(x)}</span>`).join('')}</div>` : ''}${infoLine(f)}<div class="meta">${isRepo ? '📁 קובץ פנימי · הורדה ישירה' : '🔗 קישור חיצוני'} ${f.year && f.year !== 'unknown' ? ' · ' + esc(f.year) : ''}</div></div><div class="acts">${viewAction}${openAction}${dlAction}</div></article>`;
+  // כרטיס נקי: רק כותרת + נושאים (אם יש) + כפתורי פעולה. בלי כיתובים מיותרים.
+  return `<article class="file"><div class="body"><div class="ft"><div class="ico">${I[e] || '📄'}</div><div class="title">${esc(title(f))}</div></div>${ts.length ? `<div class="tags">${ts.map(x => `<span class="tag topic">${esc(x)}</span>`).join('')}</div>` : ''}</div><div class="acts">${viewAction}${openAction}${dlAction}</div></article>`;
 }
 function open(id) {
   const f = S.byId.get(id);
@@ -260,7 +289,7 @@ function open(id) {
   const u = url(f);
   const canDownload = downloadable(f);
   $('mt').textContent = title(f);
-  $('ms').textContent = canDownload ? `${groupLabel(f)} · הורדה ישירה זמינה` : groupLabel(f);
+  $('ms').textContent = groupLabel(f);
   $('mo').href = u;
   $('mo').target = '_blank';
   $('mo').rel = 'noopener noreferrer';

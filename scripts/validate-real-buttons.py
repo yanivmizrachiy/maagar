@@ -41,7 +41,6 @@ REQUIRED_SITE_SNIPPETS = [
     "fast-download",
     "data-download",
     "הורדה מהירה",
-    "הורדה ישירה זמינה",
     "`./${f.path}`",
 ]
 

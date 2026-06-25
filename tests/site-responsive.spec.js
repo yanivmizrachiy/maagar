@@ -87,11 +87,19 @@ for (const vp of viewports) {
     try {
       await page.goto(url);
       await expect(page.locator('.brand')).toContainText('מאגר מתמטיקה');
-      await expect(page.locator('.file').first()).toBeVisible({ timeout: 15000 });
+      // Home shows only the grade gateway cards (no file list, no duplicate chips).
+      await expect(page.locator('.grade-entry').first()).toBeVisible({ timeout: 15000 });
       await noHorizontalOverflow(page);
 
       await expectVisibleAndTouchable(page.locator('#q'), vp.minButton);
       await expectVisibleAndTouchable(page.locator('#clear'), vp.minButton);
+      await expectVisibleAndTouchable(page.locator('.grade-entry').first(), vp.minButton);
+      await expect(page.locator('#palette .sw').first()).toBeVisible();
+
+      // Drill into a grade -> topic (domain) buttons + files appear.
+      await page.locator('.grade-entry').first().click();
+      await expect(page.locator('.file').first()).toBeVisible({ timeout: 15000 });
+      await noHorizontalOverflow(page);
       await expectVisibleAndTouchable(page.locator('.chip').first(), vp.minButton);
       await expectVisibleAndTouchable(page.locator('.act').first(), vp.minButton);
 
@@ -103,6 +111,8 @@ for (const vp of viewports) {
       await expectVisibleAndTouchable(page.locator('#copy-view-link'), vp.minButton);
       await expectVisibleAndTouchable(page.locator('#share-view-whatsapp'), vp.minButton);
 
+      // Back home after clear -> drill into a grade again to open a file viewer.
+      await page.locator('.grade-entry').first().click();
       const viewButton = page.locator('[data-view]').first();
       await expectVisibleAndTouchable(viewButton, vp.minButton);
       await viewButton.click();
