@@ -1,3 +1,8 @@
+// ============================================================================
+// כל הטקסטים, התוויות והכיתובים של האתר מרוכזים בבלוק הזה (עד "let S").
+// כדי לשנות טקסט שמופיע באתר — ערוך כאן בלבד; אין צורך לגעת בלוגיקה שלמטה.
+// צבעים: assets/site.css · מבנה HTML: index.html · מדריך מלא: docs/EDITING_GUIDE.md
+// ============================================================================
 const G = { '7': 'כיתה ז׳', '8': 'כיתה ח׳', '9': 'כיתה ט׳', 'high-school': 'חטיבה עליונה', unknown: 'לא ידוע' };
 const C = { algebra: 'אלגברה', geometry: 'גיאומטריה', summaries: 'עבודות סיכום', exams: 'מבחנים', uncategorized: 'שונות', unknown: 'לא מסווג' };
 const T = { worksheet: 'דף עבודה', 'summary-work': 'סיכום/עבודה', exam: 'מבחן', link: 'קישור', 'digital-task': 'דיגיטלי', 'printable-task': 'להדפסה', 'embedded-resource': 'מוטמע', mixed: 'מעורב', unknown: 'לא ידוע' };
@@ -14,6 +19,27 @@ const UNIT_BUTTONS = [['all', 'כל הרמות'], ['3-unit', '3 יחידות'], 
 const DOMAIN_BUTTONS = [['all', 'כל הקבצים'], ['algebra', 'אלגברה'], ['geometry', 'גיאומטריה'], ['summaries', 'עבודות סיכום'], ['exams', 'מבחנים']];
 const EXAM_BUCKETS = { all: 'כל המבחנים', end: 'מבחני סוף שנה', mid: 'מבחני אמצע שנה', start: 'מבחני תחילת שנה', skill: 'מבחני מיומנות' };
 const GATEWAY_HINTS = { '7': 'אלגברה, גיאומטריה, עבודות סיכום ומבחנים לכיתה ז׳', '8': 'חומרים מסודרים לפי תחום ונושא לכיתה ח׳', '9': 'הכנה מסודרת, מבחנים וחומרי עומק לכיתה ט׳', 'high-school': 'כניסה לפי יחידות לימוד וחומרים לחטיבה עליונה' };
+// כיתובים בודדים (כותרות, תוויות, מצבים ריקים והודעות) — ערוך כאן:
+const UI = {
+  allRepo: 'כל המאגר',
+  allDomains: 'כל התחומים',
+  allTypes: 'כל הסוגים',
+  sortTitle: 'מיון נוח:',
+  unitsTitle: 'יחידות:',
+  examsTitle: 'מבחנים:',
+  gatewayKicker: 'כניסה לשכבה',
+  gatewayHintFallback: 'חומרים מסודרים למורים',
+  examsByFilter: 'מבחנים לפי סינון',
+  examsWord: 'מבחנים',
+  repoFilesTitle: 'קבצים במאגר',
+  gradeTitlePrefix: 'מתמטיקה ל',
+  searchResultsTitle: 'תוצאות חיפוש מסודרות',
+  sortPath: 'מיון: שכבה › תחום › נושא',
+  noResults: 'לא נמצאו קבצים',
+  loadError: 'שגיאה בטעינת metadata/index.json',
+  authorPrefix: 'מחבר: ',
+  yearPrefix: 'שנה: ',
+};
 
 let S = { files: [], byId: new Map(), q: '', g: 'all', u: 'all', c: 'all', t: 'all', exam: 'all', sort: 'smart' };
 let renderTimer = 0;
@@ -134,7 +160,7 @@ async function init() {
     bind();
     render();
   } catch (e) {
-    $('app').innerHTML = '<div class="empty">שגיאה בטעינת metadata/index.json<br>' + esc(e.message) + '</div>';
+    $('app').innerHTML = '<div class="empty">' + UI.loadError + '<br>' + esc(e.message) + '</div>';
   }
 }
 function bind() {
@@ -152,7 +178,7 @@ function gradeGatewayCard(grade) {
   const total = S.files.filter(f => hasGrade(f, grade)).length;
   const exams = S.files.filter(f => hasGrade(f, grade) && isExam(f)).length;
   const label = grade === 'high-school' ? 'חטיבה עליונה' : `מתמטיקה ל${G[grade] || grade}`;
-  return `<button class="grade-entry" data-grade-go="${esc(grade)}"><span class="grade-entry-kicker">כניסה לשכבה</span><strong>${esc(label)}</strong><span>${esc(GATEWAY_HINTS[grade] || 'חומרים מסודרים למורים')}</span><em>${count(total)} · ${exams ? exams + ' מבחנים' : 'מבחנים לפי סינון'}</em></button>`;
+  return `<button class="grade-entry" data-grade-go="${esc(grade)}"><span class="grade-entry-kicker">${esc(UI.gatewayKicker)}</span><strong>${esc(label)}</strong><span>${esc(GATEWAY_HINTS[grade] || UI.gatewayHintFallback)}</span><em>${count(total)} · ${exams ? exams + ' ' + UI.examsWord : UI.examsByFilter}</em></button>`;
 }
 function gradeGateway(grades) {
   if (S.g !== 'all' || S.q.trim()) return '';
@@ -165,19 +191,19 @@ function sortChip(value, label) { return `<button class="chip sort-chip ${S.sort
 function highSchoolHub() {
   if (S.g !== 'high-school') return '';
   const units = UNIT_BUTTONS.filter(([value]) => value === 'all' || S.files.some(f => hasGrade(f, 'high-school') && unitKey(f) === value));
-  return `<section class="unit-hub"><div class="chips unitbar"><span class="sort-title">יחידות:</span>${units.map(([v, label]) => unitButton(v, label)).join('')}</div></section>`;
+  return `<section class="unit-hub"><div class="chips unitbar"><span class="sort-title">${UI.unitsTitle}</span>${units.map(([v, label]) => unitButton(v, label)).join('')}</div></section>`;
 }
 function gradeHub() {
   if (S.g === 'all') return '';
   const domain = '<div class="chips domainbar"><span class="sort-title">' + esc(G[S.g] || 'שכבה') + ':</span>' + DOMAIN_BUTTONS.map(([v, label]) => domainButton(v, label)).join('') + '</div>';
-  const exams = (S.c === 'exams' || S.t === 'exam') ? '<div class="chips exambar"><span class="sort-title">מבחנים:</span>' + Object.entries(EXAM_BUCKETS).map(([v, label]) => examButton(v, label)).join('') + '</div>' : '';
+  const exams = (S.c === 'exams' || S.t === 'exam') ? '<div class="chips exambar"><span class="sort-title">' + UI.examsTitle + '</span>' + Object.entries(EXAM_BUCKETS).map(([v, label]) => examButton(v, label)).join('') + '</div>' : '';
   return `<section class="grade-hub">${domain}${exams}</section>`;
 }
 function filters() {
   const g = GRADE_BUTTONS.filter(grade => S.files.some(f => hasGrade(f, grade)));
   const c = ['all', ...vals('primary_category')].sort((a, b) => (a === 'all' ? -1 : b === 'all' ? 1 : rank(CO, a) - rank(CO, b) || he(a, b)));
   const t = ['all', ...vals('document_type')].sort((a, b) => (a === 'all' ? -1 : b === 'all' ? 1 : rank(TO, a) - rank(TO, b) || he(a, b)));
-  $('filters').innerHTML = gradeGateway(g) + '<div class="chips gradebar"><button class="chip ' + (S.g === 'all' ? 'on' : '') + '" data-grade-go="all">כל המאגר</button>' + g.map(gradeButton).join('') + '</div>' + gradeHub() + highSchoolHub() + '<div class="chips">' + c.map(v => chip('c', v, v === 'all' ? 'כל התחומים' : C[v] || v, S.c === v)).join('') + '</div>' + '<div class="chips">' + t.map(v => chip('t', v, v === 'all' ? 'כל הסוגים' : T[v] || v, S.t === v)).join('') + '</div>' + '<div class="chips sortbar"><span class="sort-title">מיון נוח:</span>' + Object.entries(SORTS).map(([value, label]) => sortChip(value, label)).join('') + '</div>';
+  $('filters').innerHTML = gradeGateway(g) + '<div class="chips gradebar"><button class="chip ' + (S.g === 'all' ? 'on' : '') + '" data-grade-go="all">' + UI.allRepo + '</button>' + g.map(gradeButton).join('') + '</div>' + gradeHub() + highSchoolHub() + '<div class="chips">' + c.map(v => chip('c', v, v === 'all' ? UI.allDomains : C[v] || v, S.c === v)).join('') + '</div>' + '<div class="chips">' + t.map(v => chip('t', v, v === 'all' ? UI.allTypes : T[v] || v, S.t === v)).join('') + '</div>' + '<div class="chips sortbar"><span class="sort-title">' + UI.sortTitle + '</span>' + Object.entries(SORTS).map(([value, label]) => sortChip(value, label)).join('') + '</div>';
   document.querySelectorAll('[data-grade-go]').forEach(b => b.onclick = () => { S.g = b.dataset.gradeGo || 'all'; S.u = 'all'; S.c = 'all'; S.t = 'all'; S.exam = 'all'; render(); });
   document.querySelectorAll('[data-unit]').forEach(b => b.onclick = () => { S.u = b.dataset.unit || 'all'; render(); });
   document.querySelectorAll('[data-domain]').forEach(b => b.onclick = () => { S.c = b.dataset.domain || 'all'; S.t = S.c === 'exams' ? 'exam' : 'all'; S.exam = 'all'; render(); });
@@ -198,10 +224,10 @@ function filtered() {
 }
 function files() {
   const arr = filtered().sort(compareFiles);
-  const gradeTitle = S.g === 'all' ? 'קבצים במאגר' : `מתמטיקה ל${G[S.g] || S.g}`;
-  $('ttl').textContent = S.q ? 'תוצאות חיפוש מסודרות' : gradeTitle;
-  $('meta').textContent = `${count(arr.length)} · מיון: שכבה › תחום › נושא · ${SORTS[S.sort] || SORTS.smart}`;
-  if (!arr.length) { $('app').className = ''; $('app').innerHTML = '<div class="empty">לא נמצאו קבצים</div>'; return; }
+  const gradeTitle = S.g === 'all' ? UI.repoFilesTitle : `${UI.gradeTitlePrefix}${G[S.g] || S.g}`;
+  $('ttl').textContent = S.q ? UI.searchResultsTitle : gradeTitle;
+  $('meta').textContent = `${count(arr.length)} · ${UI.sortPath} · ${SORTS[S.sort] || SORTS.smart}`;
+  if (!arr.length) { $('app').className = ''; $('app').innerHTML = `<div class="empty">${UI.noResults}</div>`; return; }
   const groups = new Map();
   for (const f of arr) { const k = groupLabel(f); if (!groups.has(k)) groups.set(k, { label: k, sortKey: groupKey(f), items: [] }); groups.get(k).items.push(f); }
   $('app').className = 'groups';
@@ -210,8 +236,8 @@ function files() {
 }
 function infoLine(f) {
   const bits = [];
-  if (f.author && f.author !== 'unknown') bits.push(`מחבר: ${esc(f.author)}`);
-  if (f.year && f.year !== 'unknown') bits.push(`שנה: ${esc(f.year)}`);
+  if (f.author && f.author !== 'unknown') bits.push(`${UI.authorPrefix}${esc(f.author)}`);
+  if (f.year && f.year !== 'unknown') bits.push(`${UI.yearPrefix}${esc(f.year)}`);
   const gs = safeList(f.grades).length ? safeList(f.grades).map(x => G[x] || x).join(', ') : gradeLabel(f);
   if (gs && gs !== 'לא ידוע') bits.push(`שכבות: ${esc(gs)}`);
   if (unitKey(f) !== 'unknown') bits.push(`רמה: ${esc(unitLabel(f))}`);

@@ -1,265 +1,105 @@
-# מדריך עריכה — maagar
+# מדריך עריכה — מאגר מתמטיקה
 
-**ריפו:** `yanivmizrachiy/maagar`
-**עודכן:** 2026-06-03
+**ריפו:** `yanivmizrachiy/maagar` · **אתר חי:** https://yanivmizrachiy.github.io/maagar/
+**עודכן:** 2026-06-25
 
-מדריך פשוט לשינוי עיצוב, טקסטים, צבעים, כרטיסים ולוגיקת ניווט — בלי לשבור את האתר.
+מדריך מעשי: איפה לערוך כל דבר באתר, בלי לשבור אותו.
 
-> אחרי כל שינוי: הרץ `bash scripts/validate-all.sh && python3 scripts/test-logic.py`
+> ✅ **אחרי כל שינוי הרץ:** `bash scripts/validate-all.sh`
+> (ב-Windows זה עובד דרך Git-bash; הסקריפט מטפל אוטומטית בנתיבים ובעברית.)
+> דחיפה ל-`main` מעדכנת את האתר החי — עבוד דרך branch + PR.
 
 ---
 
-## 1. איך לשנות צבעים
+## מפת קבצים — מה נמצא איפה
 
-### צבעי ממשק כללי (רקע, borders, טקסט)
+| רוצה לשנות... | קובץ | איפה בקובץ |
+|---|---|---|
+| **טקסטים, תוויות, כיתובים** | `assets/site.js` | הבלוק העליון (מההתחלה עד `let S`) |
+| **צבעים** | `assets/site.css` | בלוק `:root { ... }` בראש הקובץ |
+| **עיצוב ניווט יוקרתי** (כרטיסי שכבה) | `assets/site-premium-nav.css` | — |
+| **עיצוב ניווט יחידות חט"ע** | `assets/site-highschool-units.css` | — |
+| **מבנה הדף** (כותרת, חיפוש, מודאל) | `index.html` | — |
+| **רשימת הקבצים והסיווגים** | `metadata/index.json` | מקור האמת לקבצים |
+| **ערכים חוקיים** (כיתות, תחומים, סוגים) | `metadata/taxonomy.json` | — |
 
-נמצאים ב-`index.html` בתוך `<style>`, בלוק `:root {`:
+> ההפרדה כבר קיימת: HTML ב-`index.html`, כל ה-CSS ב-`assets/*.css`, הלוגיקה ב-`assets/*.js`.
+> אין CSS או JS בתוך `index.html`.
+
+---
+
+## 1. שינוי טקסטים וכיתובים
+
+**הכל מרוכז בראש `assets/site.js`** — יש שם באנר שמסמן את האזור. אין צורך לגעת בלוגיקה שמתחת.
+
+| מה | משתנה | דוגמה |
+|---|---|---|
+| שמות כיתות | `G` | `'7': 'כיתה ז׳'` |
+| שמות תחומים | `C` | `algebra: 'אלגברה'` |
+| סוגי מסמך | `T` | `worksheet: 'דף עבודה'` |
+| יחידות לימוד | `U` | `'4-unit': '4 יחידות'` |
+| אפשרויות מיון | `SORTS` | `smart: 'מיון חכם'` |
+| כפתורי תחום | `DOMAIN_BUTTONS` | `['algebra', 'אלגברה']` |
+| קבוצות מבחנים | `EXAM_BUCKETS` | `end: 'מבחני סוף שנה'` |
+| תיאור מתחת לכרטיס שכבה | `GATEWAY_HINTS` | טקסט תיאור לכל שכבה |
+| כל שאר הכיתובים (כותרות, "כל המאגר", מצב ריק, הודעות, "מחבר:"/"שנה:") | `UI` | `noResults: 'לא נמצאו קבצים'` |
+
+**דוגמה:** לשנות את "לא נמצאו קבצים" → ערוך ב-`UI` את `noResults`.
+**דוגמה:** לשנות את שם כיתה ז׳ → ערוך ב-`G` את `'7'`.
+
+---
+
+## 2. שינוי צבעים
+
+ב-`assets/site.css`, בלוק `:root` בראש הקובץ — שנה את ערך ה-hex:
 
 ```css
-:root {
-  --bg:        #070B14;   /* רקע ראשי */
-  --bg2:       #0C1120;   /* רקע משני */
-  --surface:   #111827;   /* פנל / קלף */
-  --surface2:  #1A2236;   /* פנל כהה יותר */
-  --text:      #F0F4FC;   /* טקסט ראשי */
-  --text-muted:#8A9BC0;   /* טקסט משני */
-  --text-dim:  #4A5878;   /* טקסט עמום */
+:root{
+  --bg:#07111f;      /* רקע ראשי */
+  --text:#f8fafc;    /* טקסט ראשי */
+  --muted:#a7b3c7;   /* טקסט משני */
+  --brand1:#4f46e5;  /* מותג 1 (סגול) */
+  --brand3:#06b6d4;  /* מותג 3 (תכלת) */
   /* ... */
 }
 ```
 
-**כדי לשנות:** מצא את המשתנה הרצוי וערוך את הערך הhex.
+עיצוב כרטיסי השכבה היוקרתיים: `assets/site-premium-nav.css`.
 
 ---
 
-### צבעי שכבות (ז׳ / ח׳ / ט׳ / חטיבה עליונה)
+## 3. שינוי מבנה הדף
 
-נמצאים ב-`index.html`, בחלק `// GRADE_IDENTITY` בתוך `<script>`:
-
-```javascript
-const GRADE_IDENTITY = {
-  '7':           { bg: 'linear-gradient(135deg,#4338CA,#6D28D9)', accent: '#6366F1', ... },
-  '8':           { bg: 'linear-gradient(135deg,#0369A1,#0891B2)', accent: '#22D3EE', ... },
-  '9':           { bg: 'linear-gradient(135deg,#1D4ED8,#4F46E5)', accent: '#60A5FA', ... },
-  'high-school': { bg: 'linear-gradient(135deg,#92400E,#B45309)', accent: '#F59E0B', ... }
-};
-```
-
-**כדי לשנות צבע של שכבת ח׳:** ערוך את שורת `'8'`.
+`index.html` קצר ופשוט: כותרת (`.brand`, חיפוש `#q`, כפתור `#clear`), אזור סינון `#filters`,
+רשימת קבצים `#app`, וחלון צפייה `#modal`.
+**אל תמחק `id`-ים** — הלוגיקה והבדיקות מסתמכות עליהם (`q`, `clear`, `filters`, `app`, `modal`, `viewer` וכו').
 
 ---
 
-### צבעי קטגוריות (אלגברה / גיאומטריה / מסכמות / מבחנים)
+## 4. הוספה / הסרה / סיווג של קבצים
 
-נמצאים ב-`index.html`, בחלק `// CAT_IDENTITY`:
-
-```javascript
-const CAT_IDENTITY = {
-  algebra:       { bg: 'linear-gradient(135deg,#3730A3,#5B21B6)', accent: '#818CF8', icon: '✕' },
-  geometry:      { bg: 'linear-gradient(135deg,#065F46,#047857)', accent: '#34D399', icon: '△' },
-  summaries:     { bg: 'linear-gradient(135deg,#78350F,#92400E)', accent: '#FBBF24', icon: '◎' },
-  exams:         { bg: 'linear-gradient(135deg,#881337,#9F1239)', accent: '#FB7185', icon: '≡' },
-  uncategorized: { bg: 'linear-gradient(135deg,#1E293B,#334155)', accent: '#94A3B8', icon: '◫' }
-};
-```
+מקור האמת הוא `metadata/index.json`. **אל תמציא** metadata — רק לפי שם הקובץ, הנתיב ומידע אמיתי.
+- להוספה מסודרת: `scripts/add-file.py` / `scripts/batch-add.py`.
+- כל קובץ מקבל `id` יציב; שיוך לכמה כיתות/נושאים דרך המערכים `grades` ו-`topics` (בלי לשכפל קובץ פיזית).
+- אם חסר מידע (שנה/מחבר/נושא) — לא מציגים אותו, לא ממציאים.
 
 ---
 
-### צבעי רמות חטיבה עליונה (3/4/5 יחידות)
-
-נמצאים ב-`index.html`, בחלק `// UNIT_IDENTITY`:
-
-```javascript
-const UNIT_IDENTITY = {
-  '3-unit': { bg: 'linear-gradient(135deg,#1E3A5F,#1D4ED8)', accent: '#60A5FA', ... },
-  '4-unit': { bg: 'linear-gradient(135deg,#3730A3,#5B21B6)', accent: '#A78BFA', ... },
-  '5-unit': { bg: 'linear-gradient(135deg,#78350F,#B45309)', accent: '#FCD34D', ... }
-};
-```
-
-### צבעי רצועת סוג מסמך (על כרטיס הקובץ)
-
-נמצאים ב-`index.html`, בחלק `// DOCTYPE_STRIP`:
-
-```javascript
-const DOCTYPE_STRIP = {
-  'worksheet':    'linear-gradient(90deg,#4338CA,#6D28D9)',
-  'exam':         'linear-gradient(90deg,#881337,#9F1239)',
-  'summary-work': 'linear-gradient(90deg,#065F46,#047857)',
-  // ...
-};
-```
-
----
-
-## 2. איך לשנות טקסטים וכותרות
-
-### כותרת האתר
-
-ב-`index.html`, בתוך `<header>`:
-
-```html
-<div class="header-logo-text">מאגר מתמטיקה <span>| math repo</span></div>
-```
-
-### תיאורי שכבות (ב-GRADE_IDENTITY)
-
-שנה את `desc`:
-```javascript
-'7': { ..., desc: 'אלגברה · גיאומטריה · מבחנים · סיכומים', ... },
-```
-
-### תוויות Hebrew לקטגוריות / doctypes
-
-```javascript
-const CATEGORY_HE = {
-  algebra: 'אלגברה',
-  geometry: 'גיאומטריה',
-  // ...
-};
-
-const DOCTYPE_HE = {
-  'worksheet': 'עבודה',
-  'exam': 'מבחן',
-  // ...
-};
-```
-
-### כותרת Hero (הדף הראשי)
-
-ב-function `renderHome(app)` — מצא `hero-title` ו-`hero-sub`:
-```javascript
-hero.innerHTML = `
-  <div class="hero-eyebrow">...</div>
-  <h1 class="hero-title">מאגר חומרי לימוד<br>במתמטיקה</h1>
-  <p class="hero-sub">...</p>
-`;
-```
-
----
-
-## 3. איך להוסיף כיתה / קטגוריה / רמה חדשה
-
-### הוספת כיתה חדשה (למשל כיתה ו׳)
-
-1. **`metadata/taxonomy.json`** — הוסף ל-`grades`
-2. **`metadata/site-structure.json`** — הוסף ל-`nav`
-3. **`index.html` JS** — הוסף ל-`GRADE_IDENTITY` ו-`GRADE_HE`
-4. **`scripts/_ingest.py`** — הוסף `'6': 'middle-school'` ל-`GRADE_TO_STAGE`
-5. **תיקיות:** `mkdir -p files/middle-school/grade-6/{algebra,geometry,summaries,exams,uncategorized}`
-6. הרץ `bash scripts/validate-all.sh` לאחר השינוי
-
-### הוספת קטגוריה חדשה
-
-1. **`metadata/taxonomy.json`** — הוסף לרשימת הקטגוריות
-2. **`RULES.md`** סעיף 19 — הוסף לרשימת ערכים חוקיים
-3. **`index.html`** — הוסף ל-`CAT_IDENTITY`, `CATEGORY_HE`
-4. **`scripts/_ingest.py`** — הוסף ל-`VALID_CATEGORIES`
-5. הרץ `bash scripts/validate-all.sh`
-
----
-
-## 4. איך לשנות עיצוב כרטיס קובץ
-
-### מיקום:
-- **CSS:** חפש `/* ── FILE CARD ──` ב-`index.html`
-- **JS render:** חפש `function renderFileCard(f)` ב-`index.html`
-
-### שינויים נפוצים:
-- גובה רצועת הצבע: `.fc-type-strip { height: 3px; }` — שנה ל-`4px` או יותר
-- ריווח: `.fc-body { padding: 1.25rem 1.25rem 0; }`
-- גודל כפתורים: `.act-btn { padding: 0.52rem 0.7rem; }`
-
----
-
-## 5. איך לשנות עיצוב מציג PDF
-
-### CSS:
-- חפש `/* ── PDF MODAL ──` ב-`index.html`
-- רוחב מקסימלי: `.modal { max-width: 940px; }`
-- גובה: `.modal { height: 88vh; }`
-
-### טקסטים:
-- כותרת: `<div class="modal-label">צפייה בקובץ</div>`
-- כפתור סגירה: `onclick="closeModal()"` — הטקסט הוא `✕`
-- כפתור טאב חדש: `↗ כרטיסייה`
-- כפתור הורדה: `⬇ הורדה`
-
----
-
-## 6. איך לשנות עיצוב חיפוש
-
-### CSS:
-- חפש `/* ── SEARCH SCREEN ──` ב-`index.html`
-
-### JS:
-- חפש `function renderSearch(app, bcs, sc)` ב-`index.html`
-- הודעת אין תוצאות: `"לא נמצאו קבצים"`
-- placeholder: `"חיפוש לפי כותרת, נושא או קטגוריה..."`
-
----
-
-## 7. איפה קבצים נשמרים
-
-| קובץ | מיקום |
-|------|-------|
-| PDF ז׳ | `files/middle-school/grade-7/` |
-| PDF ח׳ | `files/middle-school/grade-8/` |
-| PDF ט׳ | `files/middle-school/grade-9/` |
-| בגרויות | `files/high-school/3-unit/` וכו׳ |
-| אינדקס | `metadata/index.json` |
-| טקסונומיה | `metadata/taxonomy.json` |
-| מבנה ניווט | `metadata/site-structure.json` |
-
----
-
-## 8. מה לא לערוך ידנית
-
-| קובץ | סיבה |
-|------|------|
-| `metadata/index.json` | ערוך רק דרך `scripts/add-file.py` |
-| `files/` | העתק קבצים רק דרך `scripts/add-file.py` |
-| `metadata/taxonomy.json` | ערוך יחד עם `RULES.md` |
-| `scripts/_ingest.py` | שינוי ישיר עלול לשבור batch imports |
-
----
-
-## 9. בדיקות לאחר כל עריכה
+## 5. בדיקה לפני דחיפה
 
 ```bash
-# חובה לפני כל commit:
-bash scripts/validate-all.sh
-python3 scripts/test-logic.py
-
-# לבדיקת UI מלאה (דורש Node.js + Playwright):
-node scripts/qa-browser.js
+bash scripts/validate-all.sh     # JSON, מבנה, כפתורים אמיתיים, אין דמו
+node --check assets/site.js      # תקינות JS
 ```
+
+האתר נבדק אוטומטית ב-GitHub Actions: **Validate · Site Action Report · Site Button Smoke Test**.
+כל השלושה חייבים להיות ירוקים לפני מיזוג ל-`main`.
 
 ---
 
-## 10. מתי לפצל את index.html לקבצים נפרדים
+## כללי ברזל
 
-### כרגע: לא נדרש.
-הקובץ נקרא ומתוחזק בקלות. כל החלקים מוגדרים בהערות ברורות.
-
-### פצל כש:
-- `index.html` עולה על 3,000 שורות
-- מפתחים מרובים עורכים בו-זמנית
-- נדרש build tool (Vite, Webpack)
-
-### מבנה עתידי אפשרי:
-```
-assets/
-  css/
-    tokens.css      ← CSS variables בלבד
-    layout.css      ← header, main, grid
-    components.css  ← cards, modal, search
-  js/
-    config.js       ← GRADE_IDENTITY, CAT_IDENTITY וכו׳
-    nav.js          ← ניווט וhistory
-    render.js       ← render functions
-    search.js       ← חיפוש
-    pdf.js          ← PDF viewer
-```
-
-**עד 3,000 שורות — `index.html` אחד עדיף.** פשוט יותר לפרוס ב-GitHub Pages.
+- `RULES.md` הוא **דף הכללים היחיד**. כל שינוי מתועד שם.
+- אין כיתובי דמו, אין placeholder גלוי, אין כפתור שלא עובד באמת.
+- כל נתון מוצג פעם אחת בלבד (אין כפילויות).
+- אין להמציא שנה / מחבר / נושא — אם חסר מידע, פשוט לא מציגים.
