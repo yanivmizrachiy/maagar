@@ -93,6 +93,9 @@
 
   document.addEventListener('DOMContentLoaded', ensureButtons);
   const observer = new MutationObserver(ensureButtons);
-  observer.observe(document.documentElement, { childList: true, subtree: true, attributes: true });
+  // Watch only structural changes. Observing attributes would loop forever,
+  // because ensureButtons() sets the WhatsApp href (an attribute mutation),
+  // which would retrigger the observer and freeze the main thread.
+  observer.observe(document.documentElement, { childList: true, subtree: true });
   setTimeout(ensureButtons, 500);
 })();

@@ -10,7 +10,21 @@
 
 set -uo pipefail
 
+# Force UTF-8 for all child Python processes so the suite behaves identically on
+# Windows (default cp1252) and Linux/CI (UTF-8). Without this, reading UTF-8
+# Hebrew JSON or printing box-drawing characters crashes on Windows only.
+export PYTHONUTF8=1
+export PYTHONIOENCODING=utf-8
+
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+# Native-OS path for Python. Git-bash/MSYS reports /c/... which Windows-native
+# Python cannot open; cygpath -m converts it to C:/... On Linux/CI cygpath is
+# absent and REPO_ROOT is already a native path.
+if command -v cygpath >/dev/null 2>&1; then
+  PYROOT="$(cygpath -m "$REPO_ROOT")"
+else
+  PYROOT="$REPO_ROOT"
+fi
 PASS=0
 FAIL=0
 WARN=0
@@ -50,7 +64,7 @@ for f in metadata/index.json metadata/taxonomy.json metadata/site-structure.json
   full="$REPO_ROOT/$f"
   if [ ! -f "$full" ]; then
     fail "File not found: $f"
-  elif python3 -c "import json; json.load(open('$full'))" 2>/dev/null; then
+  elif python3 -c "import json; json.load(open('$PYROOT/$f', encoding='utf-8'))" 2>/dev/null; then
     ok "$f — valid JSON"
   else
     fail "$f — INVALID JSON"
