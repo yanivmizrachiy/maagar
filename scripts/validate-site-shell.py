@@ -28,7 +28,7 @@ REQUIRED_IDS = ["q", "clear", "filters", "ttl", "meta", "app", "modal", "mt", "m
 REQUIRED_HTML_SNIPPETS = ["viewport-fit=cover", 'name="theme-color"', 'name="color-scheme"', "apple-mobile-web-app-capable", "black-translucent", 'href="assets/site.css"', 'href="assets/site-premium-nav.css"']
 REQUIRED_JS_SNIPPETS = [
     "metadata/index.json", "function card(", "function open(", "download", "view.officeapps.live.com",
-    "const SORTS", "const GRADE_BUTTONS", "const DOMAIN_BUTTONS", "const EXAM_BUCKETS", "const GATEWAY_HINTS",
+    "const SORTS", "const GRADE_BUTTONS", "const DOMAIN_BUTTONS", "const EXAM_BUCKETS",
     "gradeGateway", "gradeGatewayCard", "grade-entry", "grade-entry-grid", "gradeHub",
     "data-grade-go", "data-domain", "data-exam", "data-sort", "infoLine", "file-details", "renderSoon", "prepareFiles",
 ]

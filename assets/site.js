@@ -18,7 +18,6 @@ const GRADE_BUTTONS = ['7', '8', '9', 'high-school'];
 const UNIT_BUTTONS = [['all', 'כל הרמות'], ['3-unit', '3 יחידות'], ['4-unit', '4 יחידות'], ['5-unit', '5 יחידות']];
 const DOMAIN_BUTTONS = [['all', 'כל הקבצים'], ['algebra', 'אלגברה'], ['geometry', 'גיאומטריה'], ['summaries', 'עבודות סיכום'], ['exams', 'מבחנים']];
 const EXAM_BUCKETS = { all: 'כל המבחנים', end: 'מבחני סוף שנה', mid: 'מבחני אמצע שנה', start: 'מבחני תחילת שנה', skill: 'מבחני מיומנות' };
-const GATEWAY_HINTS = { '7': 'אלגברה, גיאומטריה, עבודות סיכום ומבחנים לכיתה ז׳', '8': 'חומרים מסודרים לפי תחום ונושא לכיתה ח׳', '9': 'הכנה מסודרת, מבחנים וחומרי עומק לכיתה ט׳', 'high-school': 'כניסה לפי יחידות לימוד וחומרים לחטיבה עליונה' };
 // כיתובים בודדים (כותרות, תוויות, מצבים ריקים והודעות) — ערוך כאן:
 const UI = {
   allRepo: 'כל המאגר',
@@ -27,13 +26,10 @@ const UI = {
   sortTitle: 'מיון נוח:',
   unitsTitle: 'יחידות:',
   examsTitle: 'מבחנים:',
-  gatewayKicker: 'כניסה לשכבה',
-  gatewayHintFallback: 'חומרים מסודרים למורים',
-  examsByFilter: 'מבחנים לפי סינון',
   examsWord: 'מבחנים',
   repoFilesTitle: 'קבצים במאגר',
   gradeTitlePrefix: 'מתמטיקה ל',
-  searchResultsTitle: 'תוצאות חיפוש מסודרות',
+  searchResultsTitle: 'תוצאות חיפוש',
   sortPath: 'מיון: שכבה › תחום › נושא',
   noResults: 'לא נמצאו קבצים',
   loadError: 'שגיאה בטעינת metadata/index.json',
@@ -178,7 +174,7 @@ function gradeGatewayCard(grade) {
   const total = S.files.filter(f => hasGrade(f, grade)).length;
   const exams = S.files.filter(f => hasGrade(f, grade) && isExam(f)).length;
   const label = grade === 'high-school' ? 'חטיבה עליונה' : `מתמטיקה ל${G[grade] || grade}`;
-  return `<button class="grade-entry" data-grade-go="${esc(grade)}"><span class="grade-entry-kicker">${esc(UI.gatewayKicker)}</span><strong>${esc(label)}</strong><span>${esc(GATEWAY_HINTS[grade] || UI.gatewayHintFallback)}</span><em>${count(total)} · ${exams ? exams + ' ' + UI.examsWord : UI.examsByFilter}</em></button>`;
+  return `<button class="grade-entry" data-grade-go="${esc(grade)}"><strong>${esc(label)}</strong><em>${count(total)}${exams ? ' · ' + exams + ' ' + UI.examsWord : ''}</em></button>`;
 }
 function gradeGateway(grades) {
   if (S.g !== 'all' || S.q.trim()) return '';
