@@ -64,11 +64,14 @@ test('accessibility helpers, app icon and keyboard shortcuts are active', async 
     await expect(page.locator('#clear')).toHaveAttribute('aria-label', /נקה/);
     await expect(page.locator('#app')).toHaveAttribute('aria-live', 'polite');
 
-    await page.locator('body').click();
+    await page.locator('.brand').click();
     await page.keyboard.press('/');
     await expect(page.locator('#q')).toBeFocused();
     await page.keyboard.press('Escape');
 
+    // Home shows only grade cards; drill into a grade to reach a file viewer.
+    await expect(page.locator('.grade-entry').first()).toBeVisible({ timeout: 15000 });
+    await page.locator('.grade-entry').first().click();
     const viewButton = page.locator('[data-view]').first();
     await expect(viewButton).toBeVisible({ timeout: 15000 });
     await viewButton.click();
