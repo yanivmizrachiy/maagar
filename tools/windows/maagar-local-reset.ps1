@@ -141,7 +141,6 @@ function mcheck {
   node --check assets/site-url-state.js
   node --check assets/site-deeplink.js
   node --check assets/site-share.js
-  node --check assets/site-view-share.js
   node --check assets/site-modal-share.js
   node --check assets/site-help.js
   if (Get-Command py -ErrorAction SilentlyContinue) { py -3 scripts/validate-site-shell.py }

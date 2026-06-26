@@ -10,7 +10,6 @@ const ACTIVE_SITE_FILES = [
   'assets/site-url-state.js',
   'assets/site-deeplink.js',
   'assets/site-share.js',
-  'assets/site-view-share.js',
   'assets/site-modal-share.js',
   'assets/site-help.js',
 ];
@@ -53,7 +52,6 @@ test('site action buttons are real and stable', async () => {
   const siteCss = readText('assets/site.css');
   const helpJs = readText('assets/site-help.js');
   const shareJs = readText('assets/site-share.js');
-  const viewShareJs = readText('assets/site-view-share.js');
   const modalShareJs = readText('assets/site-modal-share.js');
   const metadata = readJson('metadata/index.json');
 
@@ -64,7 +62,6 @@ test('site action buttons are real and stable', async () => {
   expect(indexHtml).toContain('assets/site.js');
   expect(indexHtml).toContain('assets/site-help.js');
   expect(indexHtml).toContain('assets/site-share.js');
-  expect(indexHtml).toContain('assets/site-view-share.js');
   expect(indexHtml).toContain('assets/site-modal-share.js');
 
   expect(siteJs).toContain('data-view');
@@ -95,7 +92,7 @@ test('site action buttons are real and stable', async () => {
   expect(siteCss).toContain('.sort-title');
   expect(siteCss).toContain('.sort-chip');
 
-  const shareBundle = `${shareJs}\n${viewShareJs}\n${modalShareJs}`;
+  const shareBundle = `${shareJs}\n${modalShareJs}`;
   expect(shareBundle).toMatch(/whatsapp|wa\.me/i);
   expect(shareBundle).toContain('share-toast');
 

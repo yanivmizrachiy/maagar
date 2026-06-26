@@ -3,3 +3,5 @@ __pycache__/
 *.pyc
 *.pyo
 .DS_Store
+reports/site-action-report.json
+reports/site-action-report.md

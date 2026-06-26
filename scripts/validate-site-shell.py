@@ -18,7 +18,6 @@ JS = REPO / "assets" / "site.js"
 URL_STATE_JS = REPO / "assets" / "site-url-state.js"
 DEEPLINK_JS = REPO / "assets" / "site-deeplink.js"
 SHARE_JS = REPO / "assets" / "site-share.js"
-VIEW_SHARE_JS = REPO / "assets" / "site-view-share.js"
 MODAL_SHARE_JS = REPO / "assets" / "site-modal-share.js"
 HELP_JS = REPO / "assets" / "site-help.js"
 SITE_STRUCTURE = REPO / "metadata" / "site-structure.json"
@@ -39,7 +38,6 @@ REQUIRED_URL_STATE_SNIPPETS = [
 ]
 REQUIRED_DEEPLINK_SNIPPETS = ["searchParams.get('file')", "window.maagarFileLink", "data-view", "scrollIntoView"]
 REQUIRED_SHARE_SNIPPETS = ["navigator.clipboard", "WhatsApp", "https://wa.me/", "MutationObserver", "העתק קישור", "maagarFileLink"]
-REQUIRED_VIEW_SHARE_SNIPPETS = ["currentViewLink", "copy-view-link", "share-view-whatsapp", "העתק תצוגה", "שתף תצוגה", "searchParams.delete('file')"]
 REQUIRED_MODAL_SHARE_SNIPPETS = ["currentFileLink", "currentFileTitle", "copy-modal-file-link", "share-modal-file-whatsapp", "קישור לקובץ הועתק", "https://wa.me/"]
 REQUIRED_HELP_SNIPPETS = ["skip-to-maagar", "ensureAccessibilityBasics", "normalizeActionButtons", "assets/icon.svg"]
 REQUIRED_RESPONSIVE_CSS_SNIPPETS = ["safe-area-inset-top", "overflow-x:hidden", "@media(max-width:920px)", "@media(max-width:760px)", "@media(max-width:390px)", "@media(max-height:620px)", "minmax(min(285px,100%),1fr)", ".sortbar", ".sort-chip"]
@@ -135,7 +133,7 @@ def main() -> int:
     required_files = [
         (INDEX, "index.html"), (CSS, "assets/site.css"), (PREMIUM_CSS, "assets/site-premium-nav.css"),
         (JS, "assets/site.js"), (URL_STATE_JS, "assets/site-url-state.js"), (DEEPLINK_JS, "assets/site-deeplink.js"),
-        (SHARE_JS, "assets/site-share.js"), (VIEW_SHARE_JS, "assets/site-view-share.js"), (MODAL_SHARE_JS, "assets/site-modal-share.js"),
+        (SHARE_JS, "assets/site-share.js"), (MODAL_SHARE_JS, "assets/site-modal-share.js"),
         (HELP_JS, "assets/site-help.js"), (SITE_STRUCTURE, "metadata/site-structure.json"), (TAXONOMY, "metadata/taxonomy.json"),
     ]
     for path, label in required_files:
@@ -153,7 +151,6 @@ def main() -> int:
     url_state_js = read(URL_STATE_JS)
     deeplink_js = read(DEEPLINK_JS)
     share_js = read(SHARE_JS)
-    view_share_js = read(VIEW_SHARE_JS)
     modal_share_js = read(MODAL_SHARE_JS)
     help_js = read(HELP_JS)
     structure = load_json(SITE_STRUCTURE, "metadata/site-structure.json", errors)
@@ -163,7 +160,7 @@ def main() -> int:
     for item_id in REQUIRED_IDS:
         if f'id="{item_id}"' not in html:
             errors.append(f"index.html missing id={item_id}")
-    for script in ["site.js", "site-url-state.js", "site-deeplink.js", "site-share.js", "site-view-share.js", "site-modal-share.js", "site-help.js"]:
+    for script in ["site.js", "site-url-state.js", "site-deeplink.js", "site-share.js", "site-modal-share.js", "site-help.js"]:
         if f'src="assets/{script}"' not in html:
             errors.append(f"index.html does not load assets/{script}")
 
@@ -171,7 +168,6 @@ def main() -> int:
     require(url_state_js, REQUIRED_URL_STATE_SNIPPETS, "assets/site-url-state.js", errors)
     require(deeplink_js, REQUIRED_DEEPLINK_SNIPPETS, "assets/site-deeplink.js", errors)
     require(share_js, REQUIRED_SHARE_SNIPPETS, "assets/site-share.js", errors)
-    require(view_share_js, REQUIRED_VIEW_SHARE_SNIPPETS, "assets/site-view-share.js", errors)
     require(modal_share_js, REQUIRED_MODAL_SHARE_SNIPPETS, "assets/site-modal-share.js", errors)
     require(help_js, REQUIRED_HELP_SNIPPETS, "assets/site-help.js", errors)
     require(css, REQUIRED_RESPONSIVE_CSS_SNIPPETS, "assets/site.css", errors)

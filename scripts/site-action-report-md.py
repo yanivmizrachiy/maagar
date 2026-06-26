@@ -82,7 +82,6 @@ def main() -> int:
         "url_state_filters": "שמירת חיפוש/סינון/יחידות בכתובת",
         "file_deep_links": "קישור עומק לקובץ",
         "file_share_buttons": "שיתוף קובץ מכרטיס",
-        "current_view_share_buttons": "שיתוף תצוגה נוכחית",
         "modal_file_share_buttons": "שיתוף קובץ מתוך חלון צפייה",
         "premium_teacher_navigation_css": "CSS ניווט יוקרתי למורים",
         "high_school_unit_navigation_css": "CSS ניווט 3/4/5 יחידות",
