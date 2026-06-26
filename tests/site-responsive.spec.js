@@ -101,8 +101,6 @@ for (const vp of viewports) {
       await noHorizontalOverflow(page);
       await expectVisibleAndTouchable(page.locator('.chip').first(), vp.minButton);
       await expectVisibleAndTouchable(page.locator('.act').first(), vp.minButton);
-      await expectVisibleAndTouchable(page.locator('#copy-view-link'), vp.minButton);
-      await expectVisibleAndTouchable(page.locator('#share-view-whatsapp'), vp.minButton);
 
       const viewButton = page.locator('[data-view]').first();
       await expectVisibleAndTouchable(viewButton, vp.minButton);

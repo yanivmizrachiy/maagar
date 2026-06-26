@@ -27,7 +27,6 @@ ACTIVE_SITE_FILES = [
     REPO / "assets" / "site-url-state.js",
     REPO / "assets" / "site-deeplink.js",
     REPO / "assets" / "site-share.js",
-    REPO / "assets" / "site-view-share.js",
     REPO / "assets" / "site-modal-share.js",
     REPO / "assets" / "site-help.js",
 ]

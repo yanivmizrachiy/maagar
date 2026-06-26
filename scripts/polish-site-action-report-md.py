@@ -10,9 +10,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parent.parent
 
 REPLACEMENTS = {
-    "teacher_help_panel": "עזרה מהירה למורים",
     "modal_file_share_buttons": "שיתוף קובץ מתוך חלון צפייה",
-    "current_view_share_buttons": "שיתוף תצוגה נוכחית",
     "file_share_buttons": "שיתוף קובץ מכרטיס",
     "file_deep_links": "קישור עומק לקובץ",
     "url_state_filters": "שמירת חיפוש/סינון בכתובת",

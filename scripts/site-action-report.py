@@ -36,7 +36,6 @@ FEATURE_FILES = {
     "url_state_filters": "site-url-state.js",
     "file_deep_links": "site-deeplink.js",
     "file_share_buttons": "site-share.js",
-    "current_view_share_buttons": "site-view-share.js",
     "modal_file_share_buttons": "site-modal-share.js",
 }
 
@@ -45,7 +44,6 @@ FEATURE_SNIPPETS = {
     "url_state_filters": ["history.replaceState", "grade", "category", "type", "unit", "cleanUnit", "activeUnit", "clickUnit"],
     "file_deep_links": ["searchParams.get('file')", "window.maagarFileLink", "data-view"],
     "file_share_buttons": ["maagarFileLink", "https://wa.me/", "העתק קישור"],
-    "current_view_share_buttons": ["copy-view-link", "share-view-whatsapp", "העתק תצוגה", "שתף תצוגה"],
     "modal_file_share_buttons": ["copy-modal-file-link", "share-modal-file-whatsapp", "currentFileLink", "currentFileTitle"],
 }
 
@@ -214,7 +212,6 @@ def main() -> int:
             "embedded_view_total": len(direct_embed) + len(office_embed),
             "no_action_cards": len(no_action),
             "file_share_cards": len(open_ready),
-            "current_view_share_available": bool(browser_features.get("current_view_share_buttons", {}).get("loaded_in_index")),
             "modal_file_share_available": bool(browser_features.get("modal_file_share_buttons", {}).get("loaded_in_index")),
             "url_state_share_available": bool(browser_features.get("url_state_filters", {}).get("loaded_in_index")),
             "deep_link_share_available": bool(browser_features.get("file_deep_links", {}).get("loaded_in_index")),

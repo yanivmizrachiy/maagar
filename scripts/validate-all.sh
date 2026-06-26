@@ -104,7 +104,6 @@ KEY_FILES=(
   "assets/site-url-state.js"
   "assets/site-deeplink.js"
   "assets/site-share.js"
-  "assets/site-view-share.js"
   "assets/site-modal-share.js"
   "assets/site-help.js"
   "metadata/index.json"
