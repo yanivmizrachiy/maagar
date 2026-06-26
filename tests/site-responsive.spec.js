@@ -96,23 +96,15 @@ for (const vp of viewports) {
       await expectVisibleAndTouchable(page.locator('.grade-entry').first(), vp.minButton);
       await expect(page.locator('#palette .sw').first()).toBeVisible();
 
-      // Drill into a grade -> topic (domain) buttons + files appear.
+      // Drill into a grade once -> topic (domain) buttons + files + viewer.
       await page.locator('.grade-entry').first().click();
       await expect(page.locator('.file').first()).toBeVisible({ timeout: 15000 });
       await noHorizontalOverflow(page);
       await expectVisibleAndTouchable(page.locator('.chip').first(), vp.minButton);
       await expectVisibleAndTouchable(page.locator('.act').first(), vp.minButton);
-
-      await page.locator('#q').fill('משוואות');
-      await noHorizontalOverflow(page);
-      await page.locator('#clear').click();
-      await noHorizontalOverflow(page);
-
       await expectVisibleAndTouchable(page.locator('#copy-view-link'), vp.minButton);
       await expectVisibleAndTouchable(page.locator('#share-view-whatsapp'), vp.minButton);
 
-      // Back home after clear -> drill into a grade again to open a file viewer.
-      await page.locator('.grade-entry').first().click();
       const viewButton = page.locator('[data-view]').first();
       await expectVisibleAndTouchable(viewButton, vp.minButton);
       await viewButton.click();
@@ -125,6 +117,12 @@ for (const vp of viewports) {
       await expectVisibleAndTouchable(page.locator('#x'), vp.modalButton);
       await page.locator('#x').click();
       await expect(page.locator('#modal')).not.toBeVisible();
+
+      // Search resilience: no overflow, then clear returns home.
+      await page.locator('#q').fill('משוואות');
+      await noHorizontalOverflow(page);
+      await page.locator('#clear').click();
+      await noHorizontalOverflow(page);
 
       expect(pageErrors).toEqual([]);
     } finally {

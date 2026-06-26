@@ -64,7 +64,7 @@ test('accessibility helpers, app icon and keyboard shortcuts are active', async 
     await expect(page.locator('#clear')).toHaveAttribute('aria-label', /נקה/);
     await expect(page.locator('#app')).toHaveAttribute('aria-live', 'polite');
 
-    await page.locator('body').click();
+    await page.locator('.brand').click();
     await page.keyboard.press('/');
     await expect(page.locator('#q')).toBeFocused();
     await page.keyboard.press('Escape');

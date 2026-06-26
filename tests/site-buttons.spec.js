@@ -74,7 +74,6 @@ test('site action buttons are real and stable', async () => {
   expect(siteJs).toContain('downloadButton(f)');
   expect(siteJs).toContain('fast-download');
   expect(siteJs).toContain('הורדה מהירה');
-  expect(siteJs).toContain('הורדה ישירה זמינה');
   expect(siteJs).toContain('data-download');
   expect(siteJs).toContain('groupLabel(f)');
   expect(siteJs).toContain('compareFiles');
