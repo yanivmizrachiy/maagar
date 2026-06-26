@@ -33,7 +33,6 @@ jobs:
           node --check assets/site-url-state.js
           node --check assets/site-deeplink.js
           node --check assets/site-share.js
-          node --check assets/site-view-share.js
           node --check assets/site-modal-share.js
           node --check assets/site-help.js
           python3 scripts/validate-site-data-contract.py
@@ -61,7 +60,6 @@ jobs:
           node --check assets/site-url-state.js
           node --check assets/site-deeplink.js
           node --check assets/site-share.js
-          node --check assets/site-view-share.js
           node --check assets/site-modal-share.js
           node --check assets/site-help.js
           python3 scripts/validate-site-data-contract.py
