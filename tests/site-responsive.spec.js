@@ -119,11 +119,11 @@ for (const vp of viewports) {
       await expect(page.locator('#modal')).not.toBeVisible();
 
       // Search resilience: no overflow, then clear returns home. The header can
-      // be momentarily reflowing right after a search renders, so force the click
-      // (we are verifying that clear works, not its hit-testing under reflow).
+      // be momentarily reflowing right after a search renders; dispatch the click
+      // straight to the handler (we verify that clear works, not its hit-testing).
       await page.locator('#q').fill('משוואות');
       await noHorizontalOverflow(page);
-      await page.locator('#clear').click({ force: true });
+      await page.locator('#clear').dispatchEvent('click');
       await expect(page.locator('.grade-entry').first()).toBeVisible({ timeout: 15000 });
       await noHorizontalOverflow(page);
 
