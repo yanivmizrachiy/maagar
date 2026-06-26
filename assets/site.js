@@ -149,21 +149,8 @@ function enrichFile(file, index) {
 }
 function prepareFiles(files) { S.files = files.map(enrichFile); S.byId = new Map(S.files.map(f => [f.id, f])); }
 function renderSoon(delay = 80) { clearTimeout(renderTimer); renderTimer = setTimeout(render, delay); }
-function initPalette() {
-  const saved = (() => { try { return localStorage.getItem('maagar-palette'); } catch { return null; } })();
-  document.body.dataset.palette = saved || 'a';
-  document.querySelectorAll('#palette [data-palette]').forEach(b => {
-    b.classList.toggle('on', b.dataset.palette === document.body.dataset.palette);
-    b.onclick = () => {
-      document.body.dataset.palette = b.dataset.palette;
-      try { localStorage.setItem('maagar-palette', b.dataset.palette); } catch {}
-      document.querySelectorAll('#palette [data-palette]').forEach(x => x.classList.toggle('on', x === b));
-    };
-  });
-}
 async function init() {
   try {
-    initPalette();
     const r = await fetch('metadata/index.json', { cache: 'no-store' });
     if (!r.ok) throw new Error('metadata ' + r.status);
     const d = await r.json();
