@@ -94,7 +94,6 @@ for (const vp of viewports) {
       await expectVisibleAndTouchable(page.locator('#q'), vp.minButton);
       await expectVisibleAndTouchable(page.locator('#clear'), vp.minButton);
       await expectVisibleAndTouchable(page.locator('.grade-entry').first(), vp.minButton);
-      await expect(page.locator('#palette .sw').first()).toBeVisible();
 
       // Drill into a grade once -> topic (domain) buttons + files + viewer.
       await page.locator('.grade-entry').first().click();

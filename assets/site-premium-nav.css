@@ -92,22 +92,12 @@
   pointer-events:none;
 }
 
-/* ====== סגנון "זוהר בהיר": מילוי בהיר + הילה באותו צבע + טקסט כהה — 3 ערכות ====== */
-/* ערכה a (ברירת מחדל) — זוהר בהיר: צהוב · ציאן · ורוד · ירוק */
-body[data-palette="a"] .grade-entry:nth-child(1){background:#facc15;box-shadow:0 0 24px #facc1580}
-body[data-palette="a"] .grade-entry:nth-child(2){background:#22d3ee;box-shadow:0 0 24px #22d3ee80}
-body[data-palette="a"] .grade-entry:nth-child(3){background:#f472b6;box-shadow:0 0 24px #f472b680}
-body[data-palette="a"] .grade-entry:nth-child(4){background:#4ade80;box-shadow:0 0 24px #4ade8080}
-/* ערכה b — בהיר חם: כתום · תכלת · ורד · ליים */
-body[data-palette="b"] .grade-entry:nth-child(1){background:#fb923c;box-shadow:0 0 24px #fb923c80}
-body[data-palette="b"] .grade-entry:nth-child(2){background:#38bdf8;box-shadow:0 0 24px #38bdf880}
-body[data-palette="b"] .grade-entry:nth-child(3){background:#fb7185;box-shadow:0 0 24px #fb718580}
-body[data-palette="b"] .grade-entry:nth-child(4){background:#a3e635;box-shadow:0 0 24px #a3e63580}
-/* ערכה c — בהיר תכשיט: ענבר · טורקיז · פוקסיה · סגול */
-body[data-palette="c"] .grade-entry:nth-child(1){background:#fbbf24;box-shadow:0 0 24px #fbbf2480}
-body[data-palette="c"] .grade-entry:nth-child(2){background:#2dd4bf;box-shadow:0 0 24px #2dd4bf80}
-body[data-palette="c"] .grade-entry:nth-child(3){background:#e879f9;box-shadow:0 0 24px #e879f980}
-body[data-palette="c"] .grade-entry:nth-child(4){background:#a78bfa;box-shadow:0 0 24px #a78bfa80}
+/* ====== כפתורי השכבות — סגנון "זוהר בהיר", צבעים קבועים ====== */
+/* צהוב · ציאן · ורוד · ירוק — מילוי בהיר + הילה באותו צבע + טקסט כהה */
+.grade-entry:nth-child(1){background:#facc15;box-shadow:0 0 24px #facc1580}
+.grade-entry:nth-child(2){background:#22d3ee;box-shadow:0 0 24px #22d3ee80}
+.grade-entry:nth-child(3){background:#f472b6;box-shadow:0 0 24px #f472b680}
+.grade-entry:nth-child(4){background:#4ade80;box-shadow:0 0 24px #4ade8080}
 /* טקסט כהה וקריא על המילוי הבהיר */
 .grade-entry strong{color:#0b1220}
 .grade-entry em{color:#1b2435}
@@ -256,11 +246,3 @@ body[data-palette="c"] .grade-entry:nth-child(4){background:#a78bfa;box-shadow:0
 }
 
 /* ====== בורר ערכות הצבעים (header) ====== */
-.palette{display:flex;gap:8px;align-items:center}
-.palette .sw{width:30px;height:30px;min-height:30px;border-radius:50%;border:2px solid #ffffff44;cursor:pointer;padding:0;box-shadow:0 4px 14px #0006;transition:.15s ease}
-.palette .sw:hover{transform:translateY(-2px);border-color:#ffffff99}
-.palette .sw.on{border-color:#fff;box-shadow:0 0 0 3px #38bdf8aa,0 4px 14px #0006}
-.palette .sw-a{background:conic-gradient(#facc15 0 25%,#22d3ee 0 50%,#f472b6 0 75%,#4ade80 0)}
-.palette .sw-b{background:conic-gradient(#fb923c 0 25%,#38bdf8 0 50%,#fb7185 0 75%,#a3e635 0)}
-.palette .sw-c{background:conic-gradient(#fbbf24 0 25%,#2dd4bf 0 50%,#e879f9 0 75%,#a78bfa 0)}
-@media(max-width:760px){.palette{order:3}.palette .sw{width:34px;height:34px;min-height:34px}}
