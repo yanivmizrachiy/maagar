@@ -35,3 +35,37 @@ jobs:
         with:
           name: maagar-site-action-report
           path: reports/site-action-report.*
+
+  build-real-h8-summer-work:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install document conversion tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libreoffice poppler-utils fonts-dejavu
+          python3 -m pip install --upgrade python-docx pypdf pillow
+
+      - name: Build real H8 scientific summer work from source DOCX
+        run: |
+          python3 scripts/build_summer_work_h8_madait.py
+          python3 - <<'PY'
+          from pypdf import PdfReader
+          p='outputs/summer-work-h8-madait/avoda-kayitz-h8-madait-full.pdf'
+          print('REAL_PDF_PAGES=', len(PdfReader(p).pages))
+          PY
+
+      - name: Upload real summer work files
+        uses: actions/upload-artifact@v4
+        with:
+          name: avoda-kayitz-h8-madait-real
+          path: |
+            outputs/summer-work-h8-madait/**
+            previews/avoda-kayitz-h8-madait-real.html
