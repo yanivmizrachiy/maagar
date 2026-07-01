@@ -89,7 +89,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libreoffice poppler-utils fonts-dejavu
           python3 -m pip install --upgrade python-docx pypdf pillow
-          python3 scripts/build_final_clean_h8_pdf.py
+          python3 scripts/build_final_clean_preview_site.py
 
       - name: Commit final clean preview site
         run: |
