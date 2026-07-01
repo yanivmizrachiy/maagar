@@ -1,0 +1,1 @@
+Trigger PR workflow after strict clean PDF request. 2026-07-01.
