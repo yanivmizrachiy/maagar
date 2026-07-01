@@ -1,19 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Build a clean browser preview for the grade-8 scientific summer work.
-
-Output is a static HTML preview with page images. It removes the extra custom
-headers/footers and labels such as חלק א / חלק ב / שם / כיתה / תאריך before
-rendering, so the preview matches the user's approved clean requirements.
-"""
 from __future__ import annotations
 
-import os
-import re
-import shutil
-import subprocess
+import os, re, shutil, subprocess
 from pathlib import Path
-
 from docx import Document
 from pypdf import PdfReader, PdfWriter
 
@@ -24,40 +14,60 @@ OUT = ROOT / "previews/final-clean-h8"
 HTML = ROOT / "previews/final-clean-h8.html"
 PDF = OUT / "final-clean-h8.pdf"
 
-BAD_RE = re.compile(r"(חלק\s*[אב](?:׳|'|’)?|שם\s*(?:התלמיד(?:/ה)?|תלמיד)?\s*:|כיתה\s*:|כתה\s*:|תאריך\s*:)")
+MARKERS = [
+    "עבודת קיץ", "להקבצה מדעית", "תיכון סדיקול", "שכבת ח", "חלק א", "חלק ב",
+    "שם התלמיד", "שם תלמיד", "שם:", "כיתה:", "כתה:", "תאריך:",
+    "תרגילי חזרה לחופשת הקיץ", "על פי הספר אפשר גם אחרת",
+]
+PATTERN = re.compile(
+    r"עבודת\s+קיץ|להקבצה\s+מדעית|תיכון\s+סדיקול|שכבת\s+ח|"
+    r"חלק\s*[אב](?:׳|'|’)?|שם\s*(?:התלמיד(?:/ה)?|תלמיד)?\s*:|"
+    r"כיתה\s*:|כתה\s*:|תאריך\s*:|תרגילי\s+חזרה\s+לחופשת\s+הקיץ|"
+    r"על\s+פי\s+הספר\s+אפשר\s+גם\s+אחרת"
+)
 
 
-def blank_paragraph(paragraph):
-    for run in paragraph.runs:
-        run.text = ""
-    if not paragraph.runs:
-        paragraph.add_run("")
+def norm(s: str) -> str:
+    return " ".join((s or "").replace("\u00a0", " ").split())
 
 
-def clean_docx(src: Path, dst: Path):
+def remove_xml(el) -> None:
+    parent = el.getparent()
+    if parent is not None:
+        parent.remove(el)
+
+
+def clear_part(part) -> None:
+    for p in list(part.paragraphs):
+        remove_xml(p._element)
+    for t in list(part.tables):
+        remove_xml(t._element)
+
+
+def clean_doc(src: Path, dst: Path) -> None:
     doc = Document(src)
-    for sec in doc.sections:
-        sec.header.is_linked_to_previous = False
-        sec.footer.is_linked_to_previous = False
-        for p in sec.header.paragraphs:
-            blank_paragraph(p)
-        for p in sec.footer.paragraphs:
-            blank_paragraph(p)
-        for table in sec.header.tables + sec.footer.tables:
-            for row in table.rows:
-                for cell in row.cells:
-                    for p in cell.paragraphs:
-                        blank_paragraph(p)
-    # Remove only standalone/top-level paragraphs that are labels, not body math.
-    for p in doc.paragraphs:
-        txt = " ".join((p.text or "").split())
-        if BAD_RE.search(txt) and len(txt) <= 80:
-            blank_paragraph(p)
+    for s in doc.sections:
+        s.header.is_linked_to_previous = False
+        s.footer.is_linked_to_previous = False
+        s.different_first_page_header_footer = False
+        clear_part(s.header)
+        clear_part(s.footer)
+
+    for i, p in enumerate(list(doc.paragraphs)):
+        txt = norm(p.text)
+        if txt and PATTERN.search(txt) and (i < 24 or len(txt) <= 180):
+            remove_xml(p._element)
+
+    for p in list(doc.paragraphs[:16]):
+        if norm(p.text):
+            break
+        remove_xml(p._element)
+
     dst.parent.mkdir(parents=True, exist_ok=True)
     doc.save(dst)
 
 
-def convert_to_pdf(docx: Path) -> Path:
+def convert(docx: Path) -> Path:
     env = os.environ.copy()
     env["HOME"] = str(ROOT / ".lo-home-final-clean")
     Path(env["HOME"]).mkdir(exist_ok=True)
@@ -65,84 +75,81 @@ def convert_to_pdf(docx: Path) -> Path:
         "libreoffice", "--headless", "--nologo", "--nofirststartwizard",
         "--convert-to", "pdf", "--outdir", str(OUT), str(docx)
     ], cwd=str(ROOT), env=env, check=True)
-    pdf = OUT / (docx.stem + ".pdf")
-    if not pdf.exists() or pdf.stat().st_size == 0:
-        raise RuntimeError(f"PDF conversion failed: {docx}")
-    return pdf
+    out = OUT / f"{docx.stem}.pdf"
+    if not out.exists() or out.stat().st_size == 0:
+        raise RuntimeError("PDF conversion failed")
+    return out
 
 
-def merge_pdfs(items):
+def merge(files: list[Path]) -> None:
     writer = PdfWriter()
-    for pdf in items:
-        reader = PdfReader(str(pdf))
+    for f in files:
+        reader = PdfReader(str(f))
         for page in reader.pages:
             writer.add_page(page)
-    with PDF.open("wb") as f:
-        writer.write(f)
+    writer.add_metadata({"/Title": "H8 clean summer work", "/Creator": "LibreOffice + python-docx + pypdf"})
+    with PDF.open("wb") as fp:
+        writer.write(fp)
 
 
-def render_pages():
+def read_text(pdf_file: Path) -> str:
+    reader = PdfReader(str(pdf_file))
+    return "\n".join(page.extract_text() or "" for page in reader.pages)
+
+
+def verify() -> int:
+    reader = PdfReader(str(PDF))
+    pages = len(reader.pages)
+    if pages < 1:
+        raise RuntimeError("Empty PDF")
+    body = read_text(PDF)
+    hits = [m for m in MARKERS if m in body]
+    if hits:
+        raise RuntimeError("Cleanup failed: " + ", ".join(hits))
+    return pages
+
+
+def render() -> None:
     subprocess.run([
-        "pdftoppm", "-jpeg", "-r", "144", "-jpegopt", "quality=92", str(PDF), str(OUT / "page")
+        "pdftoppm", "-jpeg", "-r", "180", "-jpegopt", "quality=94",
+        str(PDF), str(OUT / "page")
     ], check=True)
-    rendered = sorted(OUT.glob("page-*.jpg"))
-    for i, p in enumerate(rendered, 1):
-        p.rename(OUT / f"page-{i:02d}.jpg")
+    for i, f in enumerate(sorted(OUT.glob("page-*.jpg")), 1):
+        target = OUT / f"page-{i:02d}.jpg"
+        if f != target:
+            f.rename(target)
 
 
-def write_html(page_count: int):
-    cards = []
-    for i in range(1, page_count + 1):
-        cards.append(f'<section class="page" id="p{i}"><div class="num">עמוד {i} מתוך {page_count}</div><img src="final-clean-h8/page-{i:02d}.jpg" alt="עמוד {i}"></section>')
-    html = f"""<!doctype html>
-<html lang="he" dir="rtl">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>תצוגה מקדימה — עבודת קיץ ח׳</title>
-<style>
-:root{{--bg:#eef3f8;--ink:#0f172a;--panel:#ffffff;--line:#cbd5e1;}}
-*{{box-sizing:border-box}}
-body{{margin:0;background:var(--bg);color:var(--ink);font-family:Arial,system-ui,sans-serif}}
-header{{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.96);border-bottom:1px solid var(--line);padding:14px 18px;box-shadow:0 8px 28px #0f172a18}}
-h1{{margin:0;font-size:24px;color:#0b4f8a}}
-small{{display:block;margin-top:5px;color:#475569}}
-main{{max-width:980px;margin:0 auto;padding:20px 14px 40px}}
-.page{{background:var(--panel);border:1px solid var(--line);border-radius:18px;margin:0 0 22px;padding:12px;box-shadow:0 20px 50px #0f172a22}}
-.num{{font-size:14px;color:#475569;margin:0 0 8px;text-align:center}}
-img{{display:block;width:100%;height:auto;border-radius:10px;background:white}}
-</style>
-</head>
-<body>
-<header><h1>תצוגה מקדימה — עבודת קיץ ח׳</h1><small>PDF נקי: ללא כותרות, ללא שם/כיתה/תאריך, ללא חלק א/חלק ב. צפייה בלבד לפני אישור.</small></header>
-<main>
-{''.join(cards)}
-</main>
-</body>
-</html>"""
+def write_html(pages: int) -> None:
+    cards = "".join(
+        f'<section class="page"><img src="final-clean-h8/page-{i:02d}.jpg" alt="page {i}"></section>'
+        for i in range(1, pages + 1)
+    )
     HTML.parent.mkdir(parents=True, exist_ok=True)
-    HTML.write_text(html, encoding="utf-8")
+    HTML.write_text(
+        f'<!doctype html><html><head><meta charset="utf-8"><style>'
+        f'body{{margin:0;background:#eef3f8}}main{{max-width:980px;margin:auto;padding:20px}}'
+        f'.page{{background:white;margin:0 0 22px;padding:12px;border-radius:14px;box-shadow:0 15px 40px #0002}}'
+        f'img{{width:100%;display:block}}</style></head><body><main>{cards}</main></body></html>',
+        encoding="utf-8",
+    )
 
 
-def main():
+def main() -> None:
     if OUT.exists():
         shutil.rmtree(OUT)
     OUT.mkdir(parents=True, exist_ok=True)
-    a_docx = OUT / "part-a-clean.docx"
-    b_docx = OUT / "part-b-clean.docx"
-    clean_docx(SRC_A, a_docx)
-    clean_docx(SRC_B, b_docx)
-    a_pdf = convert_to_pdf(a_docx)
-    b_pdf = convert_to_pdf(b_docx)
-    merge_pdfs([a_pdf, b_pdf])
-    page_count = len(PdfReader(str(PDF)).pages)
-    if page_count != 26:
-        raise RuntimeError(f"Expected 26 pages after cleanup, got {page_count}")
-    render_pages()
-    write_html(page_count)
-    print("FINAL_CLEAN_PREVIEW_HTML=", HTML)
+    a = OUT / "part-a-clean.docx"
+    b = OUT / "part-b-clean.docx"
+    clean_doc(SRC_A, a)
+    clean_doc(SRC_B, b)
+    merge([convert(a), convert(b)])
+    pages = verify()
+    render()
+    write_html(pages)
     print("FINAL_CLEAN_PDF=", PDF)
-    print("PAGES=", page_count)
+    print("PAGES=", pages)
+    print("CHECK=OK")
 
 
 if __name__ == "__main__":
