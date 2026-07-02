@@ -33,13 +33,20 @@ const UI = {
   sortPath: 'מיון: שכבה › תחום › נושא',
   noResults: 'לא נמצאו קבצים',
   backHome: '← חזרה לשכבות',
+  backToGrades: '← חזרה לשכבות',
+  backToDomains: '← חזרה לתחומים',
+  backToTopics: '← חזרה לנושאים',
+  back: '← חזרה',
+  topicsTitle: 'נושאים:',
   homeHint: 'בחרו שכבה למעלה כדי לראות את הקבצים',
+  chooseDomain: 'בחרו תחום למעלה',
+  chooseTopic: 'בחרו נושא למעלה כדי לראות את הקבצים',
   loadError: 'שגיאה בטעינת metadata/index.json',
   authorPrefix: 'מחבר: ',
   yearPrefix: 'שנה: ',
 };
 
-let S = { files: [], byId: new Map(), q: '', g: 'all', u: 'all', c: 'all', t: 'all', exam: 'all', sort: 'smart' };
+let S = { files: [], byId: new Map(), q: '', g: 'all', u: 'all', c: 'all', t: 'all', exam: 'all', topic: '', sort: 'smart' };
 let renderTimer = 0;
 
 const $ = id => document.getElementById(id);
@@ -163,7 +170,7 @@ async function init() {
 }
 function bind() {
   $('q').oninput = e => { S.q = e.target.value; renderSoon(120); };
-  $('clear').onclick = () => { S.q = ''; S.g = 'all'; S.u = 'all'; S.c = 'all'; S.t = 'all'; S.exam = 'all'; S.sort = 'smart'; $('q').value = ''; render(); };
+  $('clear').onclick = () => { S.q = ''; S.g = 'all'; S.u = 'all'; S.c = 'all'; S.t = 'all'; S.exam = 'all'; S.topic = ''; S.sort = 'smart'; $('q').value = ''; render(); };
   $('x').onclick = close;
   $('modal').onclick = e => { if (e.target.id === 'modal') close(); };
   document.onkeydown = e => { if (e.key === 'Escape') close(); };
@@ -191,29 +198,58 @@ function highSchoolHub() {
   const units = UNIT_BUTTONS.filter(([value]) => value === 'all' || S.files.some(f => hasGrade(f, 'high-school') && unitKey(f) === value));
   return `<section class="unit-hub"><div class="chips unitbar"><span class="sort-title">${UI.unitsTitle}</span>${units.map(([v, label]) => unitButton(v, label)).join('')}</div></section>`;
 }
+function topicButton(t) { return `<button class="chip topic-chip ${S.topic === t ? 'on' : ''}" data-topic="${esc(t)}">${esc(t)}</button>`; }
+function domainMatchesCurrent(f) {
+  if (S.c === 'all') return true;
+  if (S.c === 'exams') return isExam(f);
+  return categoryKey(f) === S.c;
+}
+function topicsForCurrent() {
+  const set = new Set();
+  for (const f of S.files) {
+    if (!hasGrade(f, S.g)) continue;
+    if (S.g === 'high-school' && S.u !== 'all' && unitKey(f) !== S.u) continue;
+    if (!domainMatchesCurrent(f)) continue;
+    for (const t of topics(f)) set.add(t);
+  }
+  return [...set].sort((a, b) => he(a, b));
+}
+function backButton(label) { return `<div class="chips gradebar"><button class="chip back-home" type="button" data-back="1">${label}</button></div>`; }
+function sortBar() { return `<div class="chips sortbar"><span class="sort-title">${UI.sortTitle}</span>${Object.entries(SORTS).map(([v, l]) => sortChip(v, l)).join('')}</div>`; }
+function topicHub(list) { return `<section class="grade-hub"><div class="chips domainbar"><span class="sort-title">${UI.topicsTitle}</span>${list.map(topicButton).join('')}</div></section>`; }
 function gradeHub() {
   if (S.g === 'all') return '';
-  const domain = '<div class="chips domainbar"><span class="sort-title">' + esc(G[S.g] || 'שכבה') + ':</span>' + DOMAIN_BUTTONS.map(([v, label]) => domainButton(v, label)).join('') + '</div>';
-  const exams = (S.c === 'exams' || S.t === 'exam') ? '<div class="chips exambar"><span class="sort-title">' + UI.examsTitle + '</span>' + Object.entries(EXAM_BUCKETS).map(([v, label]) => examButton(v, label)).join('') + '</div>' : '';
-  return `<section class="grade-hub">${domain}${exams}</section>`;
+  const domains = DOMAIN_BUTTONS.filter(([v]) => v !== 'all' && S.files.some(f => hasGrade(f, S.g) && (v === 'exams' ? isExam(f) : categoryKey(f) === v)));
+  return `<section class="grade-hub"><div class="chips domainbar"><span class="sort-title">${esc(G[S.g] || 'שכבה')}:</span>${domains.map(([v, label]) => domainButton(v, label)).join('')}</div></section>`;
 }
 function filters() {
   const g = GRADE_BUTTONS.filter(grade => S.files.some(f => hasGrade(f, grade)));
-  const onHome = S.g === 'all' && !S.q.trim();
-  if (onHome) {
-    // עמוד הבית: רק 4 כפתורי השכבות הראשיים. בלי כפל, בלי קטגוריות.
-    $('filters').innerHTML = gradeGateway(g);
+  const searching = !!S.q.trim();
+  let html;
+  if (S.g === 'all' && !searching) {
+    html = gradeGateway(g);                                              // בית: בחירת שכבה
+  } else if (searching) {
+    html = backButton(UI.back) + sortBar();                             // חיפוש
+  } else if (S.c === 'all') {
+    html = backButton(UI.backToGrades) + gradeHub() + highSchoolHub();  // שכבה: בחירת תחום
+  } else if (!S.topic && topicsForCurrent().length > 0) {
+    html = backButton(UI.backToDomains) + topicHub(topicsForCurrent()); // תחום: בחירת נושא
   } else {
-    // בתוך שכבה / חיפוש: חזרה + כפתורי נושאים (תחומים) + מיון. בלי כפל כפתורי שכבה.
-    const back = '<div class="chips gradebar"><button class="chip back-home" data-grade-go="all">' + UI.backHome + '</button></div>';
-    const sort = '<div class="chips sortbar"><span class="sort-title">' + UI.sortTitle + '</span>' + Object.entries(SORTS).map(([value, label]) => sortChip(value, label)).join('') + '</div>';
-    $('filters').innerHTML = back + gradeHub() + highSchoolHub() + sort;
+    html = backButton(S.topic ? UI.backToTopics : UI.backToDomains) + sortBar(); // נושא: קבצים
   }
-  document.querySelectorAll('[data-grade-go]').forEach(b => b.onclick = () => { S.g = b.dataset.gradeGo || 'all'; S.u = 'all'; S.c = 'all'; S.t = 'all'; S.exam = 'all'; S.q = ''; $('q').value = ''; render(); });
-  document.querySelectorAll('[data-unit]').forEach(b => b.onclick = () => { S.u = b.dataset.unit || 'all'; render(); });
-  document.querySelectorAll('[data-domain]').forEach(b => b.onclick = () => { S.c = b.dataset.domain || 'all'; S.t = S.c === 'exams' ? 'exam' : 'all'; S.exam = 'all'; render(); });
-  document.querySelectorAll('[data-exam]').forEach(b => b.onclick = () => { S.exam = b.dataset.exam || 'all'; render(); });
+  $('filters').innerHTML = html;
+  document.querySelectorAll('[data-grade-go]').forEach(b => b.onclick = () => { S.g = b.dataset.gradeGo || 'all'; S.u = 'all'; S.c = 'all'; S.t = 'all'; S.exam = 'all'; S.topic = ''; S.q = ''; $('q').value = ''; render(); });
+  document.querySelectorAll('[data-domain]').forEach(b => b.onclick = () => { S.c = b.dataset.domain || 'all'; S.t = 'all'; S.exam = 'all'; S.topic = ''; render(); });
+  document.querySelectorAll('[data-topic]').forEach(b => b.onclick = () => { S.topic = b.dataset.topic || ''; render(); });
+  document.querySelectorAll('[data-unit]').forEach(b => b.onclick = () => { S.u = b.dataset.unit || 'all'; S.topic = ''; render(); });
   document.querySelectorAll('[data-sort]').forEach(b => b.onclick = () => { S.sort = b.dataset.sort || 'smart'; render(); });
+  document.querySelectorAll('[data-back]').forEach(b => b.onclick = () => {
+    if (S.q.trim()) { S.q = ''; $('q').value = ''; }
+    else if (S.topic) S.topic = '';
+    else if (S.c !== 'all') { S.c = 'all'; S.t = 'all'; S.exam = 'all'; }
+    else if (S.g !== 'all') S.g = 'all';
+    render();
+  });
 }
 function filtered() {
   const q = S.q.trim().toLowerCase();
@@ -221,23 +257,20 @@ function filtered() {
     if (!hasGrade(f, S.g)) return false;
     if (S.g === 'high-school' && S.u !== 'all' && unitKey(f) !== S.u) return false;
     if (S.c !== 'all') { if (S.c === 'exams') { if (!isExam(f)) return false; } else if (categoryKey(f) !== S.c) return false; }
-    if (S.t !== 'all' && typeKey(f) !== S.t && !(S.t === 'exam' && isExam(f))) return false;
-    if (S.exam !== 'all' && examBucket(f) !== S.exam) return false;
+    if (S.topic && !topics(f).includes(S.topic)) return false;
     return !q || f._search.includes(q);
   });
 }
+function setEmpty(ttl, hint) { $('ttl').textContent = ttl; $('meta').textContent = ''; $('app').className = ''; $('app').innerHTML = `<div class="empty">${hint}</div>`; }
 function files() {
-  if (S.g === 'all' && !S.q.trim()) {
-    // עמוד הבית: בלי רשימת קבצים — רק בחירת שכבה.
-    $('ttl').textContent = '';
-    $('meta').textContent = '';
-    $('app').className = '';
-    $('app').innerHTML = `<div class="empty">${UI.homeHint}</div>`;
-    return;
-  }
+  const searching = !!S.q.trim();
+  const gradeName = G[S.g] || S.g;
+  if (S.g === 'all' && !searching) { setEmpty('', UI.homeHint); return; }                                     // בית: בחירת שכבה
+  if (!searching && S.c === 'all') { setEmpty(`${UI.gradeTitlePrefix}${gradeName}`, UI.chooseDomain); return; } // שכבה: בחירת תחום
+  if (!searching && !S.topic && topicsForCurrent().length > 0) { setEmpty(`${C[S.c] || S.c} · ${gradeName}`, UI.chooseTopic); return; } // תחום: בחירת נושא
   const arr = filtered().sort(compareFiles);
-  const gradeTitle = S.g === 'all' ? UI.searchResultsTitle : `${UI.gradeTitlePrefix}${G[S.g] || S.g}`;
-  $('ttl').textContent = S.q ? UI.searchResultsTitle : gradeTitle;
+  const title = searching ? UI.searchResultsTitle : (S.topic || `${C[S.c] || S.c} · ${gradeName}`);
+  $('ttl').textContent = title;
   $('meta').textContent = `${count(arr.length)} · ${UI.sortPath} · ${SORTS[S.sort] || SORTS.smart}`;
   if (!arr.length) { $('app').className = ''; $('app').innerHTML = `<div class="empty">${UI.noResults}</div>`; return; }
   const groups = new Map();

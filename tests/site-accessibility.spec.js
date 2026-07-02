@@ -69,9 +69,11 @@ test('accessibility helpers, app icon and keyboard shortcuts are active', async 
     await expect(page.locator('#q')).toBeFocused();
     await page.keyboard.press('Escape');
 
-    // Home shows only grade cards; drill into a grade to reach a file viewer.
+    // Home shows only grade cards; drill grade -> domain -> topic to reach a viewer.
     await expect(page.locator('.grade-entry').first()).toBeVisible({ timeout: 15000 });
     await page.locator('.grade-entry').first().click();
+    await page.locator('.domain-chip').first().click();
+    await page.locator('.topic-chip').first().click();
     const viewButton = page.locator('[data-view]').first();
     await expect(viewButton).toBeVisible({ timeout: 15000 });
     await viewButton.click();
