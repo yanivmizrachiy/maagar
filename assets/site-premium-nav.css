@@ -1,14 +1,15 @@
 /* Premium teacher navigation layer for Maagar.
-   Hebrew RTL, calm, useful and non-generic navigation controls. */
+   Hebrew RTL, calm, useful and non-generic navigation controls.
+   Light theme: white surfaces, dark text, colored accents. */
 
 .grade-gateway{
   position:relative;
   margin:18px 0 18px;
   padding:22px;
-  border:1px solid #ffffff2d;
+  border:1px solid var(--line);
   border-radius:34px;
-  background:radial-gradient(circle at 92% 0,#38bdf82d,transparent 28%),radial-gradient(circle at 8% 16%,#a78bfa23,transparent 26%),linear-gradient(135deg,#ffffff13,#ffffff08);
-  box-shadow:0 22px 65px #0006,inset 0 1px 0 #ffffff16;
+  background:radial-gradient(circle at 92% 0,#38bdf814,transparent 28%),radial-gradient(circle at 8% 16%,#a78bfa12,transparent 26%),#ffffff;
+  box-shadow:0 20px 50px #29406b1c;
   overflow:hidden;
 }
 
@@ -17,7 +18,7 @@
   position:absolute;
   inset:0;
   pointer-events:none;
-  background:linear-gradient(90deg,#ffffff05 1px,transparent 1px),linear-gradient(#ffffff04 1px,transparent 1px);
+  background:linear-gradient(90deg,#0f1b2e07 1px,transparent 1px),linear-gradient(#0f1b2e05 1px,transparent 1px);
   background-size:36px 36px;
   mask-image:linear-gradient(to bottom,#000,transparent 95%);
 }
@@ -37,12 +38,13 @@
   font-size:clamp(26px,4vw,44px);
   line-height:1.08;
   letter-spacing:-.04em;
+  color:var(--text);
 }
 
 .grade-gateway-head p{
   margin:0;
   max-width:58ch;
-  color:#cbd5e1;
+  color:var(--muted);
   line-height:1.75;
 }
 
@@ -56,13 +58,13 @@
   position:relative;
   min-height:190px;
   padding:18px;
-  border:1px solid #ffffff28;
+  border:1px solid #0f1b2e1a;
   border-radius:28px;
-  color:white;
+  color:#0b1220;
   text-align:right;
   cursor:pointer;
-  background:linear-gradient(145deg,#0f172acc,#111827cc);
-  box-shadow:0 18px 44px #0007,inset 0 1px 0 #ffffff18;
+  background:#ffffff;
+  box-shadow:0 14px 34px #29406b1f;
   overflow:hidden;
   transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease,background .18s ease;
 }
@@ -77,8 +79,8 @@
   border-radius:18px;
   display:grid;
   place-items:center;
-  background:#ffffff17;
-  color:#bfdbfe;
+  background:#0000001f;
+  color:#0b1220;
   font-size:22px;
   font-weight:900;
 }
@@ -88,7 +90,7 @@
   position:absolute;
   inset:auto -20% -35% -20%;
   height:90px;
-  background:radial-gradient(circle,#38bdf838,transparent 64%);
+  background:radial-gradient(circle,#ffffff55,transparent 64%);
   pointer-events:none;
 }
 
@@ -104,12 +106,12 @@
 
 .grade-entry:hover{
   transform:translateY(-4px);
-  border-color:#ffffff55;
-  box-shadow:0 28px 68px #000a,0 0 52px #38bdf822;
+  border-color:#0f1b2e33;
+  box-shadow:0 24px 56px #29406b33;
 }
 
 .grade-entry:focus-visible{
-  outline:3px solid #93c5fd;
+  outline:3px solid #1e293b;
   outline-offset:3px;
 }
 
@@ -117,10 +119,10 @@
   display:inline-flex;
   margin-bottom:12px;
   padding:6px 10px;
-  border:1px solid #ffffff24;
+  border:1px solid #0000001f;
   border-radius:999px;
-  color:#dbeafe;
-  background:#ffffff10;
+  color:#0b1220;
+  background:#0000000f;
   font-size:12px;
   font-weight:900;
 }
@@ -135,7 +137,7 @@
 
 .grade-entry span:not(.grade-entry-kicker){
   display:block;
-  color:#d7e3f5;
+  color:#1b2435;
   line-height:1.55;
   max-width:25ch;
 }
@@ -145,17 +147,17 @@
   right:18px;
   bottom:16px;
   font-style:normal;
-  color:#bae6fd;
+  color:#1b2435;
   font-weight:900;
   font-size:13px;
 }
 
 .gradebar{
   padding:14px;
-  border:1px solid #ffffff28;
+  border:1px solid var(--line);
   border-radius:28px;
-  background:linear-gradient(135deg,#ffffff14,#0ea5e916 45%,#4f46e512);
-  box-shadow:inset 0 1px 0 #ffffff14,0 18px 48px #0005;
+  background:var(--panel2);
+  box-shadow:inset 0 1px 0 #ffffff,0 12px 30px #29406b14;
 }
 
 .grade-go{
@@ -163,8 +165,9 @@
   padding-inline:22px;
   font-size:15px;
   letter-spacing:-.01em;
-  border-color:#93c5fd55;
-  background:linear-gradient(180deg,#ffffff1f,#ffffff0d);
+  border-color:#93c5fd88;
+  background:#eff6ff;
+  color:#1e3a5f;
 }
 
 .grade-go:before{
@@ -174,8 +177,8 @@
   width:24px;
   height:24px;
   border-radius:10px;
-  background:#ffffff1a;
-  color:#bfdbfe;
+  background:#4f46e51a;
+  color:#4338ca;
   margin-inline-end:2px;
 }
 
@@ -183,10 +186,10 @@
   position:relative;
   margin:16px 0;
   padding:20px;
-  border:1px solid #ffffff2d;
+  border:1px solid var(--line);
   border-radius:30px;
-  background:radial-gradient(circle at 96% 0,#38bdf82e,transparent 31%),radial-gradient(circle at 12% 20%,#a78bfa20,transparent 30%),linear-gradient(135deg,#ffffff13,#ffffff08);
-  box-shadow:0 20px 58px #0006,inset 0 1px 0 #ffffff14;
+  background:radial-gradient(circle at 96% 0,#38bdf814,transparent 31%),radial-gradient(circle at 12% 20%,#a78bfa10,transparent 30%),#ffffff;
+  box-shadow:0 18px 46px #29406b1c;
   overflow:hidden;
 }
 
@@ -195,43 +198,45 @@
   position:absolute;
   inset:0;
   pointer-events:none;
-  background:linear-gradient(90deg,#ffffff06 1px,transparent 1px);
+  background:linear-gradient(90deg,#0f1b2e05 1px,transparent 1px);
   background-size:34px 34px;
-  opacity:.35;
+  opacity:.5;
 }
 
 .grade-hub>*{position:relative}
-.grade-hub h2{margin:0 0 6px;font-size:clamp(24px,4vw,38px);letter-spacing:-.035em;line-height:1.1}
-.grade-hub p{margin:0 0 14px;color:#cbd5e1;line-height:1.75;max-width:70ch}
+.grade-hub h2{margin:0 0 6px;font-size:clamp(24px,4vw,38px);letter-spacing:-.035em;line-height:1.1;color:var(--text)}
+.grade-hub p{margin:0 0 14px;color:var(--muted);line-height:1.75;max-width:70ch}
 
 .domainbar,.exambar,.sortbar{
   margin-top:12px;
   padding:12px;
   border:1px solid var(--line2);
   border-radius:24px;
-  background:linear-gradient(90deg,#ffffff12,#ffffff08);
-  box-shadow:inset 0 1px 0 #ffffff10;
+  background:var(--panel2);
+  box-shadow:inset 0 1px 0 #ffffff;
 }
-.sort-title{color:#e0f2fe;font-weight:900}
-.domain-chip{border-color:#a78bfa66;background:linear-gradient(180deg,#8b5cf633,#4f46e520)}
-.domain-chip.on{background:linear-gradient(135deg,#7c3aed,#2563eb);box-shadow:0 16px 38px #7c3aed44}
-.exam-chip{border-color:#f59e0b66;background:linear-gradient(180deg,#f59e0b30,#0ea5e91c)}
-.exam-chip.on{background:linear-gradient(135deg,#f59e0b,#ef4444);box-shadow:0 16px 38px #f59e0b3d}
+.sort-title{color:var(--muted);font-weight:900}
+.domain-chip{border-color:#a78bfa88;background:#efeafe;color:#4338ca}
+.domain-chip.on{background:linear-gradient(135deg,#7c3aed,#2563eb);border-color:transparent;color:#fff;box-shadow:0 12px 30px #7c3aed3a}
+.topic-chip{border-color:#5eead488;background:#e6faf5;color:#0f766e}
+.topic-chip.on{background:linear-gradient(135deg,#0d9488,#0891b2);border-color:transparent;color:#fff;box-shadow:0 12px 30px #0d94883a}
+.exam-chip{border-color:#f59e0b88;background:#fef3e2;color:#92400e}
+.exam-chip.on{background:linear-gradient(135deg,#f59e0b,#ef4444);border-color:transparent;color:#fff;box-shadow:0 12px 30px #f59e0b33}
 
 .file-details{
   display:grid;
   gap:6px;
   margin-top:12px;
   padding:10px;
-  border:1px solid #ffffff1c;
+  border:1px solid var(--line);
   border-radius:16px;
-  background:#02061742;
-  color:#dbeafe;
+  background:var(--panel2);
+  color:var(--muted);
   font-size:12px;
   line-height:1.45;
 }
 .file-details span{display:flex;align-items:center;gap:6px;overflow-wrap:anywhere}
-.file-details span:before{content:"•";color:#67e8f9;font-weight:900}
+.file-details span:before{content:"•";color:#0891b2;font-weight:900}
 
 @media(max-width:1100px){.grade-entry-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.grade-gateway-head{display:block}.grade-gateway-head p{margin-top:8px}}
 @media(max-width:760px){
@@ -239,10 +244,8 @@
   .grade-entry-grid{grid-template-columns:1fr;gap:10px}
   .grade-entry{min-height:150px;border-radius:22px}
   .gradebar,.domainbar,.exambar,.sortbar{border-radius:20px;padding:10px}
-  .grade-go,.domain-chip,.exam-chip,.sort-chip{flex:1 1 100%;justify-content:center}
+  .grade-go,.domain-chip,.exam-chip,.sort-chip,.topic-chip{flex:1 1 100%;justify-content:center}
   .grade-hub{border-radius:24px;padding:16px}
   .grade-hub p{text-align:right}
   .file-details{font-size:12px}
 }
-
-/* ====== בורר ערכות הצבעים (header) ====== */
