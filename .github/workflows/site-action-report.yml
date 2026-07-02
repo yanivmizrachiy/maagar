@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   site-action-report:
@@ -35,3 +35,33 @@ jobs:
         with:
           name: maagar-site-action-report
           path: reports/site-action-report.*
+
+  publish-final-clean-h8-preview:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout editable branch
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          ref: ${{ github.head_ref || github.ref_name }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Build final clean preview site
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libreoffice poppler-utils fonts-dejavu
+          python3 -m pip install --upgrade python-docx pypdf pillow
+          python3 scripts/build_final_clean_preview_site.py
+
+      - name: Commit final clean preview site
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add previews/final-clean-h8 previews/final-clean-h8.html
+          git diff --cached --quiet && echo "No preview changes" && exit 0
+          git commit -m "publish final clean H8 preview [skip ci]"
+          git push origin HEAD:${{ github.head_ref || github.ref_name }}
