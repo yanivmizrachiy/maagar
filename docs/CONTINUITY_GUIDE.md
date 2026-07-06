@@ -65,7 +65,7 @@ bash scripts/validate-all.sh
 python3 scripts/test-logic.py
 
 # לבדיקת UI (כשרלוונטי):
-node scripts/qa-browser.js
+npx playwright test tests/ --project=chromium
 ```
 
 ---
@@ -95,7 +95,7 @@ sha:           [SHA עדכני — ראה STATE/full-repo-truth-report.md]
 last_pr:       [מספר וכותרת PR אחרון]
 site:          https://yanivmizrachiy.github.io/maagar/
 files_changed: [רשימה]
-tests_passed:  validate-all.sh ✅ | test-logic.py ✅ | qa-browser.js ✅
+tests_passed:  validate-all.sh ✅ | test-logic.py ✅ | playwright specs ✅
 status:        [מה בוצע]
 next_action:   [הפעולה הבאה המומלצת]
 warning:       Work ONLY on maagar — never Gmail/Calendar/other
@@ -150,9 +150,9 @@ files/
 scripts/
   add-file.py           ← הוספת קובץ בודד
   batch-add.py          ← הוספת קבצים מרובים
-  validate-all.sh       ← 32 בדיקות
+  validate-all.sh       ← חבילת הבדיקות המלאה
   test-logic.py         ← בדיקת ניווט
-  qa-browser.js         ← QA Playwright
+  tests/*.spec.js       ← QA Playwright (buttons/responsive/accessibility)
 docs/
   ADDING_REAL_FILES.md        ← מדריך הוספת קבצים
   EDITING_GUIDE.md            ← מדריך עריכה
@@ -165,19 +165,18 @@ docs/
 
 ---
 
-## 10. הפרויקט עדיין בשלב ראשוני
+## 10. מצב הפרויקט
 
 מה קיים:
-- ✅ 4 קבצי PDF אמיתיים
-- ✅ אתר חי ב-GitHub Pages
-- ✅ כלי ייבוא מוכנים
+- ✅ מאות קבצים אמיתיים חיים באתר (המספר המדויק: `metadata/index.json`; ראה RULES.md §3)
+- ✅ אתר חי ב-GitHub Pages — ערכה בהירה, ניווט drill-down: בית → שכבה → תחום → נושא → קבצים
+- ✅ כלי ייבוא, ולידציה ו-CI מלאים
 - ✅ תיעוד מלא
 
 מה חסר:
-- ⏳ עשרות/מאות קבצים אמיתיים (ממתין ליניב)
-- ⏳ קבצים לחטיבה עליונה (ממתין ליניב)
-- ⏳ שנה/מחבר לקבצים קיימים (ממתין ליניב)
+- ⏳ קבצים נוספים לחטיבה עליונה (יש רק בודדים)
+- ⏳ שנה/מחבר לקבצים קיימים (הכול unknown)
 
-**הפרויקט יהיה 100% כשיניב יוסיף קבצים אמיתיים לכל שכבה ורמה.**
+**מצב האמת המחייב נמצא ב-RULES.md §3 — אין להסתמך על מספרים קשיחים במסמך זה.**
 
 ראה: `docs/ADDING_REAL_FILES.md` ו-`docs/GPT_TO_CLAUDE_FILE_HANDOFF.md`

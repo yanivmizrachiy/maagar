@@ -1,7 +1,7 @@
 # MAAGAR RULES — דף הכללים היחיד
 
 Repository: `yanivmizrachiy/maagar`
-Last updated: 2026-06-24
+Last updated: 2026-07-06
 
 ## 1. כלל עליון
 
@@ -326,7 +326,7 @@ bash scripts/validate-all.sh && python3 scripts/test-logic.py
 אם שינוי משפיע על UI:
 
 ```bash
-node scripts/qa-browser.js
+npx playwright test tests/ --project=chromium
 ```
 
 מותר ל־AI לבצע בלי לשאול:
@@ -512,3 +512,31 @@ node scripts/qa-browser.js
 - עודכנו הבדיקות (`site-responsive`/`site-accessibility`) לזרימת ה־drill-down, והוסר snippet
   "הורדה ישירה זמינה" מ־`validate-real-buttons.py` (ההורדה מאומתת עדיין דרך "הורדה מהירה"/fast-download).
 - כלל קבוע: עמוד הבית = בחירת שכבה בלבד; הנושאים בתוך השכבה; הכרטיס מציג רק מה שמזהה אותו וכפתורים.
+
+### 2026-07-06 — ביקורת ריפו: היגיינה, CI ותיעוד (PR-A)
+
+בעקבות ביקורת עומק (5 בודקים מקבילים + אימות ידני של כל ממצא):
+- **תוקנו שני workflows שבועיים שבורים**: `auto-metadata-cleanup.yml` ו-`topic-organizer.yml`
+  הריצו `git add reports/*.json reports/*.md` על קבצים ש-.gitignore חוסם (נשבר כשהקבצים
+  נוספו ל-gitignore ב-2026-06-25) → כעת מוסיפים רק `metadata/index.json RULES.md`.
+- **ה-job ‏publish-final-clean-h8-preview הועבר** מ-`site-action-report.yml` (רץ על כל push/PR
+  ודחף commits אוטומטיים "[skip ci]") ל-workflow ידני נפרד `publish-h8-preview.yml`
+  ‏(workflow_dispatch בלבד) — התוצר גמור; בנייה מחדש רק לפי דרישה.
+- **נמחק workflow מת**: `site-topic-groups.yml` + `scripts/patch-site-topic-groups.py` —
+  הסקריפט מחפש סמנים ("TOPIC GROUPS") שאינם קיימים עוד ב-site.css/site.js (0 התאמות), ולכן
+  לא יכול להצליח.
+- **הוצא משימוש `scripts/qa-browser.js`** — נכתב מול ה-DOM הישן (hero/stats) ונסחף; ה-QA
+  האמיתי הוא בדיקות Playwright ב-`tests/` שרצות ב-CI. כל ההפניות עודכנו (validate-all,
+  AGENTS, docs).
+- **נמחקו artifacts עבשים**: `qa-screenshots/` (צילומי UI מלפני העיצוב הנוכחי, ללא הפניות),
+  `STATE/graphics-repo-polish-*.md`, `reports/local-check-*.txt`. ‏`STATE/full-repo-truth-report.md`
+  הוחלף במצביע רזה ל-RULES §3/§17 (מניעת מקור-אמת-שני מתיישן).
+- **health-check היומי בודק עכשיו גם את האתר החי** (curl לדף הבית, ל-site.js ול-index.json).
+- **.gitignore הורחב**: node_modules/, package.json, package-lock.json, test-results/,
+  playwright-report/, qa-screenshots/.
+- **תיעוד עודכן לאמת הנוכחית**: README (ניווט drill-down), CONTINUITY_GUIDE (§10 מצב אמיתי,
+  בלי מספרי בדיקות קשיחים), ADDING_REAL_FILES (המאגר חי; לא "ממתין לקבצים ראשונים"),
+  ANALYTICS_OPTIONS (אין שום משאב חיצוני — גם לא Google Fonts), EDITING_GUIDE (צבעי הערכה
+  הבהירה, הוסרה שורת GATEWAY_HINTS), AUTO_BUILD_SUMMER_WORK_H8 (כותרת ארכיון + מצביע פלט אמיתי).
+- כלל קבוע: מסמכי משימה חד-פעמית מסומנים "ארכיון"; אין מספרי-בדיקות קשיחים בתיעוד; דוחות
+  מצב חיים נוצרים כ-artifacts ב-CI ולא נשמרים ידנית בריפו.

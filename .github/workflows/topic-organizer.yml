@@ -88,7 +88,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add metadata/index.json reports/*.json reports/*.md RULES.md
+          git add metadata/index.json RULES.md
           if git diff --cached --quiet; then
             echo "No cleanup changes to commit"
           else

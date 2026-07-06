@@ -5,3 +5,9 @@ __pycache__/
 .DS_Store
 reports/site-action-report.json
 reports/site-action-report.md
+node_modules/
+package.json
+package-lock.json
+test-results/
+playwright-report/
+qa-screenshots/
