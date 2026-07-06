@@ -22,7 +22,7 @@ python3 scripts/validate-real-buttons.py
 אם יש שינוי UI:
 
 ```bash
-node scripts/qa-browser.js
+npx playwright test tests/ --project=chromium
 python3 scripts/validate-real-buttons.py
 ```
 

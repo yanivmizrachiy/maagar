@@ -30,7 +30,6 @@ BLOCK = """
 - `scripts/validate-topic-map.py` — בדיקת מפת הנושאים.
 - `scripts/metadata-audit.py` — דוח איכות metadata.
 - `scripts/title-cleaner.py` — יצירת `display_title_clean` לתצוגה בלבד.
-- `scripts/patch-site-topic-groups.py` — הכנת האתר לתצוגת קבוצות לפי נושא.
 - `scripts/patch-site-display-title.py` — הכנת האתר להצגת `display_title_clean`.
 
 שדה תצוגה:

@@ -1,5 +1,8 @@
 # בנייה אוטומטית של עבודת קיץ ח׳ מדעית
 
+> **ארכיון — משימה חד-פעמית שהושלמה (2026-07-01). מסמך זה אינו מקור כללים** (הכללים ב-`RULES.md` בלבד).
+> התוצרים החיים נמצאים ב-`previews/final-clean-h8/` ומתפרסמים ידנית דרך workflow ‏"Publish H8 Preview (manual)".
+
 המטרה: לבנות קובץ אמת מתוך שני קבצי המקור בריפו, בלי דמו.
 
 קבצי מקור:
@@ -27,10 +30,11 @@ python3 -m pip install --upgrade python-docx pypdf pillow
 python3 scripts/build_summer_work_h8_madait.py
 ```
 
-פלט צפוי:
+פלט בפועל (בריפו):
 
-- `outputs/summer-work-h8-madait/part-a-real-edited.docx`
-- `outputs/summer-work-h8-madait/part-b-real-edited.docx`
-- `outputs/summer-work-h8-madait/part-a-real-edited.pdf`
-- `outputs/summer-work-h8-madait/part-b-real-edited.pdf`
-- `outputs/summer-work-h8-madait/avoda-kayitz-h8-madait-full.pdf`
+- `previews/final-clean-h8/part-a-title-fixed.docx` + `.pdf`
+- `previews/final-clean-h8/part-b-clean.docx` + `.pdf`
+- `previews/final-clean-h8/final-clean-h8.pdf`
+- עמוד תצוגה: `previews/final-clean-h8.html`
+
+(תיקיית `outputs/` המקורית הייתה זמנית ואינה בריפו.)

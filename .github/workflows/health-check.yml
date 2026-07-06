@@ -43,6 +43,12 @@ jobs:
           python3 scripts/validate-topic-map.py
           python3 scripts/test-logic.py
 
+      - name: Verify live site responds
+        run: |
+          curl -fsS -o /dev/null "https://yanivmizrachiy.github.io/maagar/"
+          curl -fsS -o /dev/null "https://yanivmizrachiy.github.io/maagar/assets/site.js"
+          curl -fsS "https://yanivmizrachiy.github.io/maagar/metadata/index.json" | python3 -c "import json,sys; d=json.load(sys.stdin); assert d.get('files'), 'live index.json has no files'; print('live index OK:', len(d['files']), 'files')"
+
       - name: Generate health reports
         run: |
           mkdir -p reports

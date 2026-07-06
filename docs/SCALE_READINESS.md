@@ -54,5 +54,5 @@ Updated: 2026-06-23
 ```bash
 bash scripts/validate-all.sh
 python3 scripts/test-logic.py
-node scripts/qa-browser.js
+npx playwright test tests/ --project=chromium
 ```

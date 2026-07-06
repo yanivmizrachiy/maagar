@@ -120,7 +120,6 @@ KEY_FILES=(
   "scripts/validate-highschool-units.py"
   "scripts/audit-highschool-units.py"
   "scripts/_ingest.py"
-  "scripts/qa-browser.js"
   "docs/ADDING_REAL_FILES.md"
   "docs/GPT_TO_CLAUDE_FILE_HANDOFF.md"
   "docs/SCALE_READINESS.md"
