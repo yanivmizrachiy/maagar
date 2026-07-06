@@ -78,6 +78,7 @@ valid_bool = {True, False, "unknown", None}
 
 seen_hashes = {}
 seen_ids = {}
+seen_paths = {}
 missing_exam_kind = 0
 
 for i, rec in enumerate(records):
@@ -94,6 +95,14 @@ for i, rec in enumerate(records):
         errors += 1
     else:
         seen_ids[rid] = i
+
+    rpath = rec.get("path")
+    if rec.get("source_type") == "repo-file" and rpath:
+        if rpath in seen_paths:
+            print(f"ERROR [{label}]: duplicate path '{rpath}' (also used by {seen_paths[rpath]})")
+            errors += 1
+        else:
+            seen_paths[rpath] = label
 
     chash = rec.get("content_hash")
     if chash and chash != "unknown" and chash is not None:

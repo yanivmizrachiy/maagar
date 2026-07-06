@@ -2561,38 +2561,6 @@
       "notes": "Added via ingestion script on 2026-06-23."
     },
     {
-      "id": "7__geometry__שטח-של-משולש__worksheet__unknown__002",
-      "title": "שטח של משולש",
-      "path": "files/middle-school/grade-7/geometry/שטח-של-משולש.pdf",
-      "file_name": "שטח-של-משולש.pdf",
-      "extension": "pdf",
-      "content_hash": "f27f26cd5938ab6d0dd438dd7e48dcb9dd761008",
-      "school_stage": "middle-school",
-      "grade": "7",
-      "grades": [
-        "7"
-      ],
-      "unit_level": "unknown",
-      "track": "unknown",
-      "primary_category": "geometry",
-      "topics": [
-        "משולש"
-      ],
-      "document_type": "worksheet",
-      "exam_kind": "unknown",
-      "bagrut_questionnaire": "unknown",
-      "year": "unknown",
-      "author": "unknown",
-      "source_type": "repo-file",
-      "source_url": null,
-      "embed_url": null,
-      "can_embed": "unknown",
-      "print_ready": true,
-      "download_ready": true,
-      "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
-    },
-    {
       "id": "7__geometry__שטח-של-משולש__worksheet__unknown__003",
       "title": "שטח של משולש",
       "path": "files/middle-school/grade-7/geometry/שטח-של-משולש.pdf",
@@ -10185,38 +10153,6 @@
       "embed_url": null,
       "can_embed": "unknown",
       "print_ready": false,
-      "download_ready": true,
-      "tags": [],
-      "notes": "auto-classified best-effort (PR 13)"
-    },
-    {
-      "id": "7__algebra__משוואות__worksheet__unknown__001",
-      "title": "משוואות ",
-      "path": "files/middle-school/grade-7/algebra/משוואות.pdf",
-      "file_name": "משוואות.pdf",
-      "extension": "pdf",
-      "content_hash": "00bc5e2e2ec6acfbd8be3a48855f176e5e212f82",
-      "school_stage": "middle-school",
-      "grade": "7",
-      "grades": [
-        "7"
-      ],
-      "unit_level": "unknown",
-      "track": "unknown",
-      "primary_category": "algebra",
-      "topics": [
-        "משוואות"
-      ],
-      "document_type": "worksheet",
-      "exam_kind": "unknown",
-      "bagrut_questionnaire": "unknown",
-      "year": "unknown",
-      "author": "unknown",
-      "source_type": "repo-file",
-      "source_url": null,
-      "embed_url": null,
-      "can_embed": "unknown",
-      "print_ready": true,
       "download_ready": true,
       "tags": [],
       "notes": "auto-classified best-effort (PR 13)"

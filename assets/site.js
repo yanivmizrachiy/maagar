@@ -16,7 +16,7 @@ const EO = { pdf: 10, doc: 20, docx: 21, ppt: 30, pptx: 31, xls: 40, xlsx: 41, p
 const SORTS = { smart: 'מיון חכם', recent: 'חדש → ישן', title: 'לפי שם', type: 'לפי סוג' };
 const GRADE_BUTTONS = ['7', '8', '9', 'high-school'];
 const UNIT_BUTTONS = [['all', 'כל הרמות'], ['3-unit', '3 יחידות'], ['4-unit', '4 יחידות'], ['5-unit', '5 יחידות']];
-const DOMAIN_BUTTONS = [['all', 'כל הקבצים'], ['algebra', 'אלגברה'], ['geometry', 'גיאומטריה'], ['summaries', 'עבודות סיכום'], ['exams', 'מבחנים']];
+const DOMAIN_BUTTONS = [['algebra', 'אלגברה'], ['geometry', 'גיאומטריה'], ['summaries', 'עבודות סיכום'], ['exams', 'מבחנים'], ['uncategorized', 'שונות']];
 const EXAM_BUCKETS = { all: 'כל המבחנים', end: 'מבחני סוף שנה', mid: 'מבחני אמצע שנה', start: 'מבחני תחילת שנה', skill: 'מבחני מיומנות' };
 // כיתובים בודדים (כותרות, תוויות, מצבים ריקים והודעות) — ערוך כאן:
 const UI = {
@@ -176,9 +176,6 @@ function bind() {
   document.onkeydown = e => { if (e.key === 'Escape') close(); };
 }
 function render() { filters(); files(); }
-function vals(field) { return [...new Set(S.files.map(f => f[field]).filter(Boolean))]; }
-function chip(key, val, label, on) { return `<button class="chip ${on ? 'on' : ''}" data-k="${key}" data-v="${esc(val)}">${esc(label)}</button>`; }
-function gradeButton(grade) { return `<button class="chip grade-go ${S.g === grade ? 'on' : ''}" data-grade-go="${grade}">מתמטיקה ל${esc(G[grade] || grade)}</button>`; }
 function gradeGatewayCard(grade) {
   const total = S.files.filter(f => hasGrade(f, grade)).length;
   const exams = S.files.filter(f => hasGrade(f, grade) && isExam(f)).length;
@@ -191,7 +188,6 @@ function gradeGateway(grades) {
 }
 function domainButton(value, label) { return `<button class="chip domain-chip ${S.c === value || (value === 'all' && S.c === 'all') ? 'on' : ''}" data-domain="${esc(value)}">${esc(label)}</button>`; }
 function unitButton(value, label) { return `<button class="chip unit-chip ${S.u === value ? 'on' : ''}" data-unit="${esc(value)}">${esc(label)}</button>`; }
-function examButton(value, label) { return `<button class="chip exam-chip ${S.exam === value ? 'on' : ''}" data-exam="${esc(value)}">${esc(label)}</button>`; }
 function sortChip(value, label) { return `<button class="chip sort-chip ${S.sort === value ? 'on' : ''}" data-sort="${esc(value)}">${esc(label)}</button>`; }
 function highSchoolHub() {
   if (S.g !== 'high-school') return '';
@@ -278,19 +274,6 @@ function files() {
   $('app').className = 'groups';
   $('app').innerHTML = [...groups.values()].sort(compareGroups).map(g => `<section class="group"><div class="ghead"><span>${esc(g.label)}</span><span>${count(g.items.length)}</span></div><div class="grid">${g.items.map(card).join('')}</div></section>`).join('');
   document.querySelectorAll('[data-view]').forEach(b => b.onclick = () => open(b.dataset.view));
-}
-function infoLine(f) {
-  const bits = [];
-  if (f.author && f.author !== 'unknown') bits.push(`${UI.authorPrefix}${esc(f.author)}`);
-  if (f.year && f.year !== 'unknown') bits.push(`${UI.yearPrefix}${esc(f.year)}`);
-  const gs = safeList(f.grades).length ? safeList(f.grades).map(x => G[x] || x).join(', ') : gradeLabel(f);
-  if (gs && gs !== 'לא ידוע') bits.push(`שכבות: ${esc(gs)}`);
-  if (unitKey(f) !== 'unknown') bits.push(`רמה: ${esc(unitLabel(f))}`);
-  if (categoryLabel(f) && categoryLabel(f) !== 'לא מסווג') bits.push(`תחום: ${esc(categoryLabel(f))}`);
-  if (typeLabel(f) && typeLabel(f) !== 'לא ידוע') bits.push(`סוג: ${esc(typeLabel(f))}`);
-  if (isExam(f) && examBucket(f) !== 'all') bits.push(`קטגוריית מבחן: ${esc(EXAM_BUCKETS[examBucket(f)])}`);
-  if (f.source_type) bits.push(`מקור: ${esc(repo(f) ? 'קובץ במאגר' : 'קישור חיצוני')}`);
-  return bits.length ? `<div class="file-details">${bits.map(x => `<span>${x}</span>`).join('')}</div>` : '';
 }
 function card(f) {
   const u = url(f);
