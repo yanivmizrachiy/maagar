@@ -41,7 +41,7 @@ FEATURE_FILES = {
 
 FEATURE_SNIPPETS = {
     "core_browser": ["const GRADE_BUTTONS", "const UNIT_BUTTONS", "highSchoolHub", "data-unit", "unit_level"],
-    "url_state_filters": ["history.replaceState", "grade", "category", "type", "unit", "cleanUnit", "activeUnit", "clickUnit"],
+    "url_state_filters": ["history.replaceState", "grade", "category", "topic", "cleanUnit", "clickDomain", "clickTopic", "clickUnit"],
     "file_deep_links": ["searchParams.get('file')", "window.maagarFileLink", "data-view"],
     "file_share_buttons": ["maagarFileLink", "https://wa.me/", "העתק קישור"],
     "modal_file_share_buttons": ["copy-modal-file-link", "share-modal-file-whatsapp", "currentFileLink", "currentFileTitle"],
@@ -53,7 +53,7 @@ STYLE_FILES = {
 }
 
 STYLE_SNIPPETS = {
-    "premium_teacher_navigation_css": [".grade-gateway", ".grade-entry", ".grade-hub", ".exam-chip", ".file-details"],
+    "premium_teacher_navigation_css": [".grade-gateway", ".grade-entry", ".grade-hub", ".domain-chip", ".topic-chip"],
     "high_school_unit_navigation_css": [".unit-hub", ".unitbar", ".unit-chip", "High school unit navigation"],
 }
 

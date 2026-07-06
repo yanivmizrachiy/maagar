@@ -192,6 +192,13 @@ def process_batch(specs: list[dict], dry_run: bool) -> tuple[dict, dict]:
             continue
 
         dest_path.parent.mkdir(parents=True, exist_ok=True)
+        if dest_path.exists():
+            # Filename collision: copying would silently overwrite another file's
+            # content while both index records keep pointing at the same path
+            # (this happened once and lost a worksheet). Skip with an error.
+            print(f'  [ERROR] destination already exists, skipping: {rel_path}')
+            results['errors'].append({'file': str(spec['file']), 'error': f'destination exists: {rel_path}'})
+            continue
         shutil.copy2(spec['file'], dest_path)
 
         record = build_record(

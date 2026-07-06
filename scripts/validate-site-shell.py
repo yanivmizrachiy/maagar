@@ -29,12 +29,13 @@ REQUIRED_JS_SNIPPETS = [
     "metadata/index.json", "function card(", "function open(", "download", "view.officeapps.live.com",
     "const SORTS", "const GRADE_BUTTONS", "const DOMAIN_BUTTONS", "const EXAM_BUCKETS",
     "gradeGateway", "gradeGatewayCard", "grade-entry", "grade-entry-grid", "gradeHub",
-    "data-grade-go", "data-domain", "data-exam", "data-sort", "infoLine", "file-details", "renderSoon", "prepareFiles",
+    "topicsForCurrent", "topicHub", "data-grade-go", "data-domain", "data-topic", "data-back",
+    "data-sort", "renderSoon", "prepareFiles",
 ]
 REQUIRED_URL_STATE_SNIPPETS = [
-    "searchParams", "grade", "category", "type", "exam", "sort", "cleanSort", "cleanExam", "activeGrade",
-    "activeExam", "activeSort", "clickGrade", "clickExam", "clickSort", "history.replaceState", "data-k",
-    "data-grade-go", "data-domain", "data-exam", "data-sort",
+    "searchParams", "grade", "category", "topic", "sort", "cleanSort", "cleanUnit", "activeDomain",
+    "activeTopic", "activeSort", "clickGrade", "clickDomain", "clickTopic", "clickSort",
+    "history.replaceState", "data-grade-go", "data-domain", "data-topic", "data-sort",
 ]
 REQUIRED_DEEPLINK_SNIPPETS = ["searchParams.get('file')", "window.maagarFileLink", "data-view", "scrollIntoView"]
 REQUIRED_SHARE_SNIPPETS = ["navigator.clipboard", "WhatsApp", "https://wa.me/", "MutationObserver", "העתק קישור", "maagarFileLink"]
@@ -42,16 +43,16 @@ REQUIRED_MODAL_SHARE_SNIPPETS = ["currentFileLink", "currentFileTitle", "copy-mo
 REQUIRED_HELP_SNIPPETS = ["skip-to-maagar", "ensureAccessibilityBasics", "normalizeActionButtons", "assets/icon.svg"]
 REQUIRED_RESPONSIVE_CSS_SNIPPETS = ["safe-area-inset-top", "overflow-x:hidden", "@media(max-width:920px)", "@media(max-width:760px)", "@media(max-width:390px)", "@media(max-height:620px)", "minmax(min(285px,100%),1fr)", ".sortbar", ".sort-chip"]
 REQUIRED_PREMIUM_CSS_SNIPPETS = [
-    ".grade-gateway", ".grade-gateway-head", ".grade-entry-grid", ".grade-entry", ".grade-entry-kicker",
-    ".gradebar", ".grade-go", ".grade-hub", ".domainbar", ".exambar", ".domain-chip", ".exam-chip", ".file-details", "Premium teacher navigation",
+    ".grade-gateway", ".grade-entry-grid", ".grade-entry",
+    ".gradebar", ".grade-hub", ".domainbar", ".domain-chip", ".topic-chip", "Premium teacher navigation",
 ]
 EXPECTED_HOME_LABELS = ["מתמטיקה לכיתה ז׳", "מתמטיקה לכיתה ח׳", "מתמטיקה לכיתה ט׳", "חטיבה עליונה"]
 EXPECTED_GRADE_HUBS = ["middle-school-grade-7", "middle-school-grade-8", "middle-school-grade-9"]
-EXPECTED_GRADE_BUTTONS = ["all", "algebra", "geometry", "summaries", "exams", "uncategorized_when_needed"]
+EXPECTED_GRADE_BUTTONS = ["algebra", "geometry", "summaries", "exams", "uncategorized_when_needed"]
 EXPECTED_EXAM_NAV = ["all", "end", "mid", "start", "skill"]
 EXPECTED_EXAM_KINDS = ["start", "mid", "end", "skill", "unknown"]
 EXPECTED_FILE_FIELDS = ["author", "year", "grades", "primary_category", "topics", "tags", "document_type", "exam_kind", "source_type"]
-EXPECTED_GATEWAY_CLASSES = ["grade-gateway", "grade-gateway-head", "grade-entry-grid", "grade-entry", "grade-entry-kicker"]
+EXPECTED_GATEWAY_CLASSES = ["grade-gateway", "grade-entry-grid", "grade-entry"]
 EXPECTED_GATEWAY_CARD_GRADES = ["7", "8", "9", "high-school"]
 
 

@@ -25,28 +25,11 @@
 
 .grade-gateway>*{position:relative}
 
-.grade-gateway-head{
-  display:flex;
-  align-items:flex-end;
-  justify-content:space-between;
-  gap:18px;
-  margin-bottom:16px;
-}
 
-.grade-gateway-head h2{
-  margin:0;
-  font-size:clamp(26px,4vw,44px);
-  line-height:1.08;
-  letter-spacing:-.04em;
-  color:var(--text);
-}
 
-.grade-gateway-head p{
-  margin:0;
-  max-width:58ch;
-  color:var(--muted);
-  line-height:1.75;
-}
+
+
+
 
 .grade-entry-grid{
   display:grid;
@@ -115,17 +98,7 @@
   outline-offset:3px;
 }
 
-.grade-entry-kicker{
-  display:inline-flex;
-  margin-bottom:12px;
-  padding:6px 10px;
-  border:1px solid #0000001f;
-  border-radius:999px;
-  color:#0b1220;
-  background:#0000000f;
-  font-size:12px;
-  font-weight:900;
-}
+
 
 .grade-entry strong{
   display:block;
@@ -133,13 +106,6 @@
   font-size:clamp(22px,2.8vw,31px);
   line-height:1.12;
   letter-spacing:-.035em;
-}
-
-.grade-entry span:not(.grade-entry-kicker){
-  display:block;
-  color:#1b2435;
-  line-height:1.55;
-  max-width:25ch;
 }
 
 .grade-entry em{
@@ -160,27 +126,9 @@
   box-shadow:inset 0 1px 0 #ffffff,0 12px 30px #29406b14;
 }
 
-.grade-go{
-  min-height:52px;
-  padding-inline:22px;
-  font-size:15px;
-  letter-spacing:-.01em;
-  border-color:#93c5fd88;
-  background:#eff6ff;
-  color:#1e3a5f;
-}
 
-.grade-go:before{
-  content:"∑";
-  display:inline-grid;
-  place-items:center;
-  width:24px;
-  height:24px;
-  border-radius:10px;
-  background:#4f46e51a;
-  color:#4338ca;
-  margin-inline-end:2px;
-}
+
+
 
 .grade-hub{
   position:relative;
@@ -207,7 +155,7 @@
 .grade-hub h2{margin:0 0 6px;font-size:clamp(24px,4vw,38px);letter-spacing:-.035em;line-height:1.1;color:var(--text)}
 .grade-hub p{margin:0 0 14px;color:var(--muted);line-height:1.75;max-width:70ch}
 
-.domainbar,.exambar,.sortbar{
+.domainbar,.sortbar{
   margin-top:12px;
   padding:12px;
   border:1px solid var(--line2);
@@ -220,32 +168,21 @@
 .domain-chip.on{background:linear-gradient(135deg,#7c3aed,#2563eb);border-color:transparent;color:#fff;box-shadow:0 12px 30px #7c3aed3a}
 .topic-chip{border-color:#5eead488;background:#e6faf5;color:#0f766e}
 .topic-chip.on{background:linear-gradient(135deg,#0d9488,#0891b2);border-color:transparent;color:#fff;box-shadow:0 12px 30px #0d94883a}
-.exam-chip{border-color:#f59e0b88;background:#fef3e2;color:#92400e}
-.exam-chip.on{background:linear-gradient(135deg,#f59e0b,#ef4444);border-color:transparent;color:#fff;box-shadow:0 12px 30px #f59e0b33}
 
-.file-details{
-  display:grid;
-  gap:6px;
-  margin-top:12px;
-  padding:10px;
-  border:1px solid var(--line);
-  border-radius:16px;
-  background:var(--panel2);
-  color:var(--muted);
-  font-size:12px;
-  line-height:1.45;
-}
-.file-details span{display:flex;align-items:center;gap:6px;overflow-wrap:anywhere}
-.file-details span:before{content:"•";color:#0891b2;font-weight:900}
 
-@media(max-width:1100px){.grade-entry-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.grade-gateway-head{display:block}.grade-gateway-head p{margin-top:8px}}
+
+
+
+
+
+@media(max-width:1100px){.grade-entry-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:760px){
   .grade-gateway{border-radius:24px;padding:15px;margin-top:12px}
   .grade-entry-grid{grid-template-columns:1fr;gap:10px}
   .grade-entry{min-height:150px;border-radius:22px}
-  .gradebar,.domainbar,.exambar,.sortbar{border-radius:20px;padding:10px}
-  .grade-go,.domain-chip,.exam-chip,.sort-chip,.topic-chip{flex:1 1 100%;justify-content:center}
+  .gradebar,.domainbar,.sortbar{border-radius:20px;padding:10px}
+  .domain-chip,.topic-chip,.sort-chip{flex:1 1 100%;justify-content:center}
   .grade-hub{border-radius:24px;padding:16px}
   .grade-hub p{text-align:right}
-  .file-details{font-size:12px}
+  
 }

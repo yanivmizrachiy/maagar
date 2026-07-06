@@ -171,6 +171,11 @@ def main():
 
     # ── Copy ───────────────────────────────────────────────────────────────────
     dest_path.parent.mkdir(parents=True, exist_ok=True)
+    if dest_path.exists():
+        print(f'\n  ✗ Destination already exists: {rel_path}')
+        print('    Refusing to overwrite an existing file (would orphan its index record).')
+        print('    Rename the source file and retry.')
+        sys.exit(1)
     shutil.copy2(src, dest_path)
     print(f'\n  ✓ File copied to {rel_path}')
 
