@@ -95,23 +95,22 @@ for (const vp of viewports) {
       await expectVisibleAndTouchable(page.locator('#clear'), vp.minButton);
       await expectVisibleAndTouchable(page.locator('.grade-entry').first(), vp.minButton);
 
-      // Drill: grade -> domain -> topic -> files + viewer.
+      // Direct flow: grade -> domain -> files + split viewer. There is no required topic drill-down stage.
       await page.locator('.grade-entry').first().click();
       await expect(page.locator('.domain-chip').first()).toBeVisible({ timeout: 15000 });
       await noHorizontalOverflow(page);
-      await expectVisibleAndTouchable(page.locator('.chip').first(), vp.minButton);
+      await expectVisibleAndTouchable(page.locator('.domain-chip').first(), vp.minButton);
       await page.locator('.domain-chip').first().click();
-      await expect(page.locator('.topic-chip').first()).toBeVisible({ timeout: 15000 });
-      await expectVisibleAndTouchable(page.locator('.topic-chip').first(), vp.minButton);
-      await page.locator('.topic-chip').first().click();
       await expect(page.locator('.file').first()).toBeVisible({ timeout: 15000 });
+      await expect(page.locator('.topic-chip')).toHaveCount(0);
       await noHorizontalOverflow(page);
-      await expectVisibleAndTouchable(page.locator('.act').first(), vp.minButton);
 
       const viewButton = page.locator('[data-view]').first();
       await expectVisibleAndTouchable(viewButton, vp.minButton);
       await viewButton.click();
       await expect(page.locator('#modal')).toBeVisible();
+      await expect(page.locator('.split-view')).toBeVisible();
+      await expect(page.locator('#details')).toBeVisible();
       await noHorizontalOverflow(page);
       await expectVisibleAndTouchable(page.locator('#mo'), vp.modalButton);
       await expectVisibleAndTouchable(page.locator('#md'), vp.modalButton);
