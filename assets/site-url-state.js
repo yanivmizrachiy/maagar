@@ -47,7 +47,12 @@
     }
   }
 
+  function hasInitialState(params) {
+    return params.grade !== 'all' || params.category !== 'all' || params.unit !== 'all' || params.sort !== 'smart' || !!params.q;
+  }
+
   function applyInitialParams(params, attempt = 0) {
+    if (!hasInitialState(params)) return;
     try {
       if (typeof S === 'undefined' || typeof render !== 'function' || !S.files || !S.files.length) {
         if (attempt < 50) setTimeout(() => applyInitialParams(params, attempt + 1), 100);
