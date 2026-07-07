@@ -69,11 +69,13 @@ test('accessibility helpers, app icon and keyboard shortcuts are active', async 
     await expect(page.locator('#q')).toBeFocused();
     await page.keyboard.press('Escape');
 
-    // Home shows only grade cards; drill grade -> domain -> topic to reach a viewer.
+    // Direct flow: home shows grade cards; drill grade -> domain -> files to reach a split viewer.
     await expect(page.locator('.grade-entry').first()).toBeVisible({ timeout: 15000 });
     await page.locator('.grade-entry').first().click();
+    await expect(page.locator('.domain-chip').first()).toBeVisible({ timeout: 15000 });
     await page.locator('.domain-chip').first().click();
-    await page.locator('.topic-chip').first().click();
+    await expect(page.locator('.file').first()).toBeVisible({ timeout: 15000 });
+    await expect(page.locator('.topic-chip')).toHaveCount(0);
     const viewButton = page.locator('[data-view]').first();
     await expect(viewButton).toBeVisible({ timeout: 15000 });
     await viewButton.click();
@@ -81,6 +83,8 @@ test('accessibility helpers, app icon and keyboard shortcuts are active', async 
     await expect(page.locator('#modal')).toHaveAttribute('aria-describedby', 'ms');
     await expect(page.locator('#x')).toHaveAttribute('aria-label', /סגור/);
     await expect(page.locator('#modal')).toBeVisible();
+    await expect(page.locator('.split-view')).toBeVisible();
+    await expect(page.locator('#details')).toBeVisible();
     await page.keyboard.press('Escape');
     await expect(page.locator('#modal')).not.toBeVisible();
 
