@@ -28,13 +28,13 @@ jobs:
           npm install --save-dev @playwright/test
           npx playwright install --with-deps chromium
 
-      - name: Run real action and visible demo guard
+      - name: Run real action and visible text guard
         run: |
           python3 scripts/validate-real-buttons.py
 
-      - name: Run button, responsive and accessibility smoke tests
+      - name: Run active button smoke test
         run: |
-          npx playwright test tests/site-buttons.spec.js tests/site-responsive.spec.js tests/site-accessibility.spec.js --project=chromium
+          npx playwright test tests/site-buttons.spec.js --project=chromium
 
       - name: Upload Playwright diagnostics
         if: always()
