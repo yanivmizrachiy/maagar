@@ -1,4 +1,21 @@
 (() => {
+  function ensureSplitShell() {
+    let details = document.getElementById('details');
+    if (details) return details;
+    const panel = document.querySelector('#modal .panel');
+    const viewerWrap = document.querySelector('#modal .vw');
+    if (!panel || !viewerWrap) return null;
+    const split = document.createElement('div');
+    split.className = 'split-view';
+    panel.insertBefore(split, viewerWrap);
+    split.appendChild(viewerWrap);
+    details = document.createElement('aside');
+    details.id = 'details';
+    details.className = 'details';
+    details.setAttribute('aria-label', 'פרטי המשימה');
+    split.appendChild(details);
+    return details;
+  }
   function row(k, v) { return v ? `<div class="detail-row"><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>` : ''; }
   function yn(v) { return v === true ? 'כן' : v === false ? 'לא' : 'לא ידוע'; }
   function detailsHtml(f) {
@@ -45,9 +62,10 @@
     $('mt').textContent = title(f); $('ms').textContent = `תצוגה מוטמעת · ${groupLabel(f)}`;
     if (u) { $('mo').href = u; $('mo').target = '_blank'; $('mo').rel = 'noopener noreferrer'; $('mo').classList.remove('disabled'); $('mo').removeAttribute('aria-disabled'); } else { $('mo').removeAttribute('href'); $('mo').classList.add('disabled'); $('mo').setAttribute('aria-disabled', 'true'); }
     if (canDownload) { $('md').href = downloadUrl(f); $('md').download = downloadName(f); $('md').textContent = '⬇ הורדה מהירה'; $('md').classList.remove('disabled'); $('md').removeAttribute('aria-disabled'); } else { $('md').removeAttribute('href'); $('md').removeAttribute('download'); $('md').textContent = 'אין הורדה ישירה'; $('md').classList.add('disabled'); $('md').setAttribute('aria-disabled', 'true'); }
-    const d = $('details'); if (d) d.innerHTML = detailsHtml(f);
-    $('viewer').src = 'about:blank'; $('viewer').title = 'תצוגה מוטמעת: ' + title(f); $('modal').style.display = 'block';
+    const d = ensureSplitShell(); if (d) d.innerHTML = detailsHtml(f);
+    $('viewer').src = 'about:blank'; $('viewer').title = 'תצוגה מוטמעת: ' + title(f); $('modal').style.display = 'block'; document.body.style.overflow = 'clip';
     setTimeout(() => { $('viewer').src = viewUrl(f); }, 50);
   };
-  close = function() { $('modal').style.display = 'none'; $('viewer').src = 'about:blank'; const d = $('details'); if (d) d.innerHTML = ''; };
+  close = function() { $('modal').style.display = 'none'; $('viewer').src = 'about:blank'; const d = document.getElementById('details'); if (d) d.innerHTML = ''; document.body.style.overflow = ''; };
+  try { if (S.files && S.files.length) render(); } catch {}
 })();
