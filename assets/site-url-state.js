@@ -1,37 +1,80 @@
 (() => {
-  function cleanSort(value) { return ['smart', 'recent', 'title', 'type'].includes(value) ? value : 'smart'; }
-  function cleanUnit(value) { return ['all', '3-unit', '4-unit', '5-unit'].includes(value) ? value : 'all'; }
-  function activeDomain() { return document.querySelector('[data-domain].on')?.dataset?.domain || 'all'; }
-  function activeTopic() { return document.querySelector('[data-topic].on')?.dataset?.topic || ''; }
-  function activeSort() { return cleanSort(document.querySelector('[data-sort].on')?.dataset?.sort || 'smart'); }
-  function clickGrade(value) { document.querySelector(`[data-grade-go="${value}"]`)?.click(); }
-  function clickDomain(value) { document.querySelector(`[data-domain="${value}"]`)?.click(); }
-  function clickTopic(value) { document.querySelector(`[data-topic="${value}"]`)?.click(); }
-  function clickSort(value) { document.querySelector(`[data-sort="${cleanSort(value)}"]`)?.click(); }
+  const GRADES = ['all', '7', '8', '9', 'high-school'];
+  const CATEGORIES = ['all', 'algebra', 'geometry', 'summaries', 'exams', 'uncategorized'];
+  const UNITS = ['all', '3-unit', '4-unit', '5-unit'];
+  const SORTS = ['smart', 'recent', 'title', 'type'];
+
+  function clean(value, allowed, fallback) { return allowed.includes(value) ? value : fallback; }
+  function cleanGrade(value) { return clean(value || 'all', GRADES, 'all'); }
+  function cleanCategory(value) { return clean(value || 'all', CATEGORIES, 'all'); }
+  function cleanSort(value) { return clean(value || 'smart', SORTS, 'smart'); }
+  function cleanUnit(value) { return clean(value || 'all', UNITS, 'all'); }
+
+  function activeGrade() { try { return typeof S !== 'undefined' ? S.g || 'all' : 'all'; } catch { return 'all'; } }
+  function activeDomain() { try { return typeof S !== 'undefined' ? S.c || 'all' : 'all'; } catch { return 'all'; } }
+  function activeSort() { try { return typeof S !== 'undefined' ? cleanSort(S.sort || 'smart') : 'smart'; } catch { return 'smart'; } }
+  function activeUnit() { try { return typeof S !== 'undefined' ? cleanUnit(S.u || 'all') : 'all'; } catch { return 'all'; } }
+
   function writeParams() {
     try {
       const url = new URL(location.href);
       const q = document.getElementById('q')?.value || '';
-      q ? url.searchParams.set('q', q) : url.searchParams.delete('q');
-      const c = activeDomain();
-      c !== 'all' ? url.searchParams.set('category', c) : url.searchParams.delete('category');
-      const topic = activeTopic();
-      topic ? url.searchParams.set('topic', topic) : url.searchParams.delete('topic');
+      const grade = activeGrade();
+      const category = activeDomain();
+      const unit = activeUnit();
       const sort = activeSort();
+      q ? url.searchParams.set('q', q) : url.searchParams.delete('q');
+      grade !== 'all' ? url.searchParams.set('grade', grade) : url.searchParams.delete('grade');
+      category !== 'all' ? url.searchParams.set('category', category) : url.searchParams.delete('category');
+      unit !== 'all' ? url.searchParams.set('unit', unit) : url.searchParams.delete('unit');
       sort !== 'smart' ? url.searchParams.set('sort', sort) : url.searchParams.delete('sort');
       history.replaceState(null, '', url.toString());
     } catch {}
   }
-  function loadAsset(tag, attrs) {
-    const el = document.createElement(tag);
-    Object.assign(el, attrs);
-    document.head.appendChild(el);
+
+  function readInitialParams() {
+    try {
+      const searchParams = new URL(location.href).searchParams;
+      return {
+        grade: cleanGrade(searchParams.get('grade')),
+        category: cleanCategory(searchParams.get('category')),
+        unit: cleanUnit(searchParams.get('unit')),
+        sort: cleanSort(searchParams.get('sort')),
+        q: searchParams.get('q') || '',
+      };
+    } catch {
+      return { grade: 'all', category: 'all', unit: 'all', sort: 'smart', q: '' };
+    }
   }
-  if (!document.querySelector('link[href="assets/site-direct-tasks.css"]')) loadAsset('link', { rel: 'stylesheet', href: 'assets/site-direct-tasks.css' });
-  if (!document.querySelector('script[src="assets/site-direct-tasks.js"]')) loadAsset('script', { src: 'assets/site-direct-tasks.js' });
+
+  function applyInitialParams(params, attempt = 0) {
+    try {
+      if (typeof S === 'undefined' || typeof render !== 'function' || !S.files || !S.files.length) {
+        if (attempt < 50) setTimeout(() => applyInitialParams(params, attempt + 1), 100);
+        return;
+      }
+      const q = document.getElementById('q');
+      S.g = params.grade;
+      S.u = params.unit;
+      S.c = params.category;
+      S.t = 'all';
+      S.exam = 'all';
+      S.topic = '';
+      S.sort = params.sort;
+      S.q = params.q;
+      if (q) q.value = params.q;
+      render();
+      writeParams();
+    } catch {
+      if (attempt < 50) setTimeout(() => applyInitialParams(params, attempt + 1), 100);
+    }
+  }
+
+  const initialParams = readInitialParams();
   document.addEventListener('click', event => {
-    if (event.target.closest('[data-grade-go],[data-domain],[data-topic],[data-unit],[data-sort],[data-back]')) setTimeout(writeParams, 0);
+    if (event.target.closest('[data-grade-go],[data-domain],[data-unit],[data-sort],[data-back]')) setTimeout(writeParams, 0);
   }, true);
   document.addEventListener('input', event => { if (event.target?.id === 'q') setTimeout(writeParams, 0); }, true);
-  // Required contract words: grade category topic sort searchParams cleanUnit clickGrade clickDomain clickTopic clickSort data-grade-go data-domain data-topic data-sort.
+  document.addEventListener('DOMContentLoaded', () => applyInitialParams(initialParams));
+  setTimeout(() => applyInitialParams(initialParams), 250);
 })();
