@@ -41,6 +41,7 @@ jobs:
           python3 scripts/validate-real-buttons.py
           python3 scripts/validate-highschool-units.py
           node --check assets/site.js
+          node --check assets/site-direct-tasks.js
           node --check assets/site-url-state.js
           node --check assets/site-deeplink.js
           node --check assets/site-share.js
