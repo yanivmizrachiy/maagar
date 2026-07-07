@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Validate the active static site shell and premium navigation contract.
+"""Validate the active static site shell, premium navigation and direct task flow.
 
 The check does not modify files.
 """
@@ -14,7 +14,9 @@ REPO = Path(__file__).resolve().parent.parent
 INDEX = REPO / "index.html"
 CSS = REPO / "assets" / "site.css"
 PREMIUM_CSS = REPO / "assets" / "site-premium-nav.css"
+DIRECT_CSS = REPO / "assets" / "site-direct-tasks.css"
 JS = REPO / "assets" / "site.js"
+DIRECT_JS = REPO / "assets" / "site-direct-tasks.js"
 URL_STATE_JS = REPO / "assets" / "site-url-state.js"
 DEEPLINK_JS = REPO / "assets" / "site-deeplink.js"
 SHARE_JS = REPO / "assets" / "site-share.js"
@@ -24,18 +26,26 @@ SITE_STRUCTURE = REPO / "metadata" / "site-structure.json"
 TAXONOMY = REPO / "metadata" / "taxonomy.json"
 
 REQUIRED_IDS = ["q", "clear", "filters", "ttl", "meta", "app", "modal", "mt", "ms", "mo", "md", "x", "viewer"]
-REQUIRED_HTML_SNIPPETS = ["viewport-fit=cover", 'name="theme-color"', 'name="color-scheme"', "apple-mobile-web-app-capable", "black-translucent", 'href="assets/site.css"', 'href="assets/site-premium-nav.css"']
+REQUIRED_HTML_SNIPPETS = [
+    "viewport-fit=cover", 'name="theme-color"', 'name="color-scheme"', "apple-mobile-web-app-capable",
+    "black-translucent", 'href="assets/site.css"', 'href="assets/site-premium-nav.css"',
+    'href="assets/site-highschool-units.css"', 'href="assets/site-direct-tasks.css"',
+    'src="assets/site.js"', 'src="assets/site-direct-tasks.js"', 'aria-labelledby="mt"', 'aria-describedby="ms"',
+]
 REQUIRED_JS_SNIPPETS = [
     "metadata/index.json", "function card(", "function open(", "download", "view.officeapps.live.com",
     "const SORTS", "const GRADE_BUTTONS", "const DOMAIN_BUTTONS", "const EXAM_BUCKETS",
     "gradeGateway", "gradeGatewayCard", "grade-entry", "grade-entry-grid", "gradeHub",
-    "topicsForCurrent", "topicHub", "data-grade-go", "data-domain", "data-topic", "data-back",
-    "data-sort", "renderSoon", "prepareFiles",
+    "data-grade-go", "data-domain", "data-back", "data-sort", "renderSoon", "prepareFiles",
 ]
+REQUIRED_DIRECT_JS_SNIPPETS = [
+    "ensureSplitShell", "split-view", "details", "detail-panel", "S.topic = ''", "task-grid", "task-row",
+    "data-view", "detailsHtml", "תצוגה מוטמעת", "מיון: שכבה › תחום › קבצים",
+]
+REQUIRED_DIRECT_CSS_SNIPPETS = [".task-grid", ".task-row", ".split-view", ".details", ".detail-panel", "@media(max-width:920px)"]
 REQUIRED_URL_STATE_SNIPPETS = [
-    "searchParams", "grade", "category", "topic", "sort", "cleanSort", "cleanUnit", "activeDomain",
-    "activeTopic", "activeSort", "clickGrade", "clickDomain", "clickTopic", "clickSort",
-    "history.replaceState", "data-grade-go", "data-domain", "data-topic", "data-sort",
+    "searchParams", "grade", "category", "unit", "sort", "cleanSort", "cleanUnit", "activeDomain",
+    "activeGrade", "history.replaceState", "applyInitialParams", "data-grade-go", "data-domain", "data-sort",
 ]
 REQUIRED_DEEPLINK_SNIPPETS = ["searchParams.get('file')", "window.maagarFileLink", "data-view", "scrollIntoView"]
 REQUIRED_SHARE_SNIPPETS = ["navigator.clipboard", "WhatsApp", "https://wa.me/", "MutationObserver", "העתק קישור", "maagarFileLink"]
@@ -44,7 +54,7 @@ REQUIRED_HELP_SNIPPETS = ["skip-to-maagar", "ensureAccessibilityBasics", "normal
 REQUIRED_RESPONSIVE_CSS_SNIPPETS = ["safe-area-inset-top", "overflow-x:hidden", "@media(max-width:920px)", "@media(max-width:760px)", "@media(max-width:390px)", "@media(max-height:620px)", "minmax(min(285px,100%),1fr)", ".sortbar", ".sort-chip"]
 REQUIRED_PREMIUM_CSS_SNIPPETS = [
     ".grade-gateway", ".grade-entry-grid", ".grade-entry",
-    ".gradebar", ".grade-hub", ".domainbar", ".domain-chip", ".topic-chip", "Premium teacher navigation",
+    ".gradebar", ".grade-hub", ".domainbar", ".domain-chip", "Premium teacher navigation",
 ]
 EXPECTED_HOME_LABELS = ["מתמטיקה לכיתה ז׳", "מתמטיקה לכיתה ח׳", "מתמטיקה לכיתה ט׳", "חטיבה עליונה"]
 EXPECTED_GRADE_HUBS = ["middle-school-grade-7", "middle-school-grade-8", "middle-school-grade-9"]
@@ -133,7 +143,8 @@ def main() -> int:
     errors: list[str] = []
     required_files = [
         (INDEX, "index.html"), (CSS, "assets/site.css"), (PREMIUM_CSS, "assets/site-premium-nav.css"),
-        (JS, "assets/site.js"), (URL_STATE_JS, "assets/site-url-state.js"), (DEEPLINK_JS, "assets/site-deeplink.js"),
+        (DIRECT_CSS, "assets/site-direct-tasks.css"), (JS, "assets/site.js"), (DIRECT_JS, "assets/site-direct-tasks.js"),
+        (URL_STATE_JS, "assets/site-url-state.js"), (DEEPLINK_JS, "assets/site-deeplink.js"),
         (SHARE_JS, "assets/site-share.js"), (MODAL_SHARE_JS, "assets/site-modal-share.js"),
         (HELP_JS, "assets/site-help.js"), (SITE_STRUCTURE, "metadata/site-structure.json"), (TAXONOMY, "metadata/taxonomy.json"),
     ]
@@ -148,7 +159,9 @@ def main() -> int:
     html = read(INDEX)
     css = read(CSS)
     premium_css = read(PREMIUM_CSS)
+    direct_css = read(DIRECT_CSS)
     js = read(JS)
+    direct_js = read(DIRECT_JS)
     url_state_js = read(URL_STATE_JS)
     deeplink_js = read(DEEPLINK_JS)
     share_js = read(SHARE_JS)
@@ -161,11 +174,13 @@ def main() -> int:
     for item_id in REQUIRED_IDS:
         if f'id="{item_id}"' not in html:
             errors.append(f"index.html missing id={item_id}")
-    for script in ["site.js", "site-url-state.js", "site-deeplink.js", "site-share.js", "site-modal-share.js", "site-help.js"]:
+    for script in ["site.js", "site-direct-tasks.js", "site-url-state.js", "site-deeplink.js", "site-share.js", "site-modal-share.js", "site-help.js"]:
         if f'src="assets/{script}"' not in html:
             errors.append(f"index.html does not load assets/{script}")
 
     require(js, REQUIRED_JS_SNIPPETS, "assets/site.js", errors)
+    require(direct_js, REQUIRED_DIRECT_JS_SNIPPETS, "assets/site-direct-tasks.js", errors)
+    require(direct_css, REQUIRED_DIRECT_CSS_SNIPPETS, "assets/site-direct-tasks.css", errors)
     require(url_state_js, REQUIRED_URL_STATE_SNIPPETS, "assets/site-url-state.js", errors)
     require(deeplink_js, REQUIRED_DEEPLINK_SNIPPETS, "assets/site-deeplink.js", errors)
     require(share_js, REQUIRED_SHARE_SNIPPETS, "assets/site-share.js", errors)
@@ -180,7 +195,7 @@ def main() -> int:
         for err in errors:
             print(f"FAIL  {err}")
         return 1
-    print("OK    site shell, premium grade gateway, teacher navigation, metadata navigation, exam taxonomy, sharing and help are wired correctly")
+    print("OK    site shell, premium grade gateway, direct task flow, split viewer, sharing and help are wired correctly")
     return 0
 
 
