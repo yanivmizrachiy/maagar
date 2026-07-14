@@ -471,7 +471,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "Daya Zaguri"
     },
     {
       "id": "7__exams__הכנה-למבחן-זוויות__exam__unknown__001",
@@ -503,7 +504,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "ניצה שיאון"
     },
     {
       "id": "7__uncategorized__הצבה-לכתה-ז___worksheet__unknown__001",
@@ -727,7 +729,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "ניצה שיאון"
     },
     {
       "id": "7__geometry__חוברת-גיאומטריה__worksheet__unknown__001",
@@ -1015,7 +1018,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "בתיה מירזאייב"
     },
     {
       "id": "7__algebra__מאגר-המשוואות-1___worksheet__unknown__001",
@@ -1175,7 +1179,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "ניצה שיאון"
     },
     {
       "id": "7__exams__מבחן-ז-2__exam__unknown__001",
@@ -1335,7 +1340,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "Shani Guetta"
     },
     {
       "id": "7__exams__מבחן-מיון-ז___exam__unknown__002",
@@ -1367,7 +1373,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "Shani Guetta"
     },
     {
       "id": "7__exams__מבחן-סוף-שנה-ז-מדעית__exam__unknown__001",
@@ -1592,7 +1599,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "סמיון"
     },
     {
       "id": "7__geometry__מערכת-צירים__worksheet__unknown__001",
@@ -1656,7 +1664,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "Carmit Salamon"
     },
     {
       "id": "7__algebra__משוואות-לחטיבה-2__worksheet__unknown__001",
@@ -1784,7 +1793,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "Avihay Zaguri"
     },
     {
       "id": "7__algebra__משוואות-עם-מכנה-מספרי-1__worksheet__unknown__001",
@@ -2174,7 +2184,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "סמיון"
     },
     {
       "id": "7__summaries__סיכום-באלגברה-ז___summary-work__unknown__001",
@@ -2334,7 +2345,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "סמיון"
     },
     {
       "id": "7__geometry__שטח-הפנים-של-תיבה__worksheet__unknown__001",
@@ -2753,7 +2765,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "ניצה שיאון"
     },
     {
       "id": "7__uncategorized__תובנה-מספרית__worksheet__unknown__001",
@@ -2785,7 +2798,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "Daya Zaguri"
     },
     {
       "id": "8__algebra__04-ד-אלגברה-ח__worksheet__unknown__001",
@@ -3073,7 +3087,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "Michal Dinner"
     },
     {
       "id": "8__algebra__אחוזים-לחטיבת-הביניים__worksheet__unknown__001",
@@ -3169,7 +3184,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "Michal Dinner"
     },
     {
       "id": "8__algebra__אחוזים-ממיצבים__worksheet__unknown__001",
@@ -3201,7 +3217,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "Michal Dinner"
     },
     {
       "id": "8__algebra__אחוזים-שאלות-מיצב__worksheet__unknown__001",
@@ -3233,7 +3250,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "Michal Dinner"
     },
     {
       "id": "8__uncategorized__אי-שוויונות-קוויים-2__worksheet__unknown__001",
@@ -3329,7 +3347,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "Michal Dinner"
     },
     {
       "id": "8__geometry__גאומטריה-במערכת-צירים-כיתה-ח___worksheet__unknown__001",
@@ -3425,7 +3444,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "Avihay Zaguri"
     },
     {
       "id": "8__geometry__דגלים-שטחים-היקפים-ופיתגורס__worksheet__unknown__001",
@@ -3459,7 +3479,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "בתיה מירזאייב"
     },
     {
       "id": "8__algebra__חוברת-אחוזים__worksheet__unknown__001",
@@ -3747,7 +3768,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "Eti Soncino"
     },
     {
       "id": "8__algebra__יחס-לכיתה-ח__worksheet__unknown__001",
@@ -3779,7 +3801,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "Eti Soncino"
     },
     {
       "id": "8__algebra__יחס-לכיתה-ח__worksheet__unknown__002",
@@ -3811,7 +3834,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "Eti Soncino"
     },
     {
       "id": "8__algebra__יחס-לכיתה-ח___worksheet__unknown__001",
@@ -3843,7 +3867,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "Eti Soncino"
     },
     {
       "id": "8__algebra__יחס-שאלות-מיצב__worksheet__unknown__001",
@@ -4099,7 +4124,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "בתיה מירזאייב"
     },
     {
       "id": "8__exams__מבחן-ח-קורס-קיץ1__exam__unknown__001",
@@ -5065,7 +5091,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "דיה זגורי"
     },
     {
       "id": "8__uncategorized__עבודה-ח1__worksheet__unknown__001",
@@ -5675,7 +5702,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "ניצה שיאון"
     },
     {
       "id": "8__uncategorized__שאלות-אינטגרטיביות-2___worksheet__unknown__001",
@@ -5707,7 +5735,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "מיכל מלר"
     },
     {
       "id": "8__uncategorized__שאלות-מיצב-ברמות-קושי-1-או-2-תשעג__worksheet__unknown__001",
@@ -6187,7 +6216,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "Gila Ron"
     },
     {
       "id": "8__algebra__שיפוע-עפ-2-נקודות__worksheet__unknown__001",
@@ -6283,7 +6313,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "Gila Ron"
     },
     {
       "id": "8__geometry__שיפוע-של-ישר-2___worksheet__unknown__001",
@@ -6315,7 +6346,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "ניצה שיאון"
     },
     {
       "id": "8__uncategorized__תחומי-חיוביות-ושליליות__worksheet__unknown__001",
@@ -7054,7 +7086,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "דיה זגורי"
     },
     {
       "id": "9__geometry__גאומטריה-במערכת-צירים-כיתה-ט___worksheet__unknown__001",
@@ -7118,7 +7151,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "Gila Ron"
     },
     {
       "id": "9__uncategorized__דוגמאות-למצומצמת__worksheet__unknown__001",
@@ -7440,7 +7474,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "דיה זגורי"
     },
     {
       "id": "9__algebra__הזזות-פרבולה__worksheet__unknown__001",
@@ -7536,7 +7571,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "מרב פוגל"
     },
     {
       "id": "9__uncategorized__חוברת-אנליטית__worksheet__unknown__001",
@@ -7730,7 +7766,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "editor": "ביטון שרית"
     },
     {
       "id": "9__geometry__טרפז-לכיתה-ט-חלק-א___worksheet__unknown__001",
@@ -7762,7 +7799,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "ניצה שיאון"
     },
     {
       "id": "9__geometry__טרפז-לכתה-ט__worksheet__unknown__001",
@@ -7955,7 +7993,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "סמיון ויינר"
     },
     {
       "id": "9__uncategorized__כפל-מקוצר__worksheet__unknown__001",
@@ -8051,7 +8090,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "ניצה שיאון"
     },
     {
       "id": "9__algebra__מאגר-ט-רגילה__worksheet__unknown__001",
@@ -8083,7 +8123,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "ניצה שיאון"
     },
     {
       "id": "9__algebra__מאגר-מפמר-ט___worksheet__unknown__001",
@@ -8115,7 +8156,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "מטיק מרכזי למידה"
     },
     {
       "id": "9__algebra__מאגר-עתודה-ט__worksheet__unknown__001",
@@ -8147,7 +8189,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "ניצה שיאון"
     },
     {
       "id": "9__algebra__מאגר-עתודה-ט__worksheet__unknown__002",
@@ -8179,7 +8222,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "ניצה שיאון"
     },
     {
       "id": "9__algebra__מאגר-שאלות-פרבולות__worksheet__unknown__001",
@@ -8499,7 +8543,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "ניצה שיאון"
     },
     {
       "id": "9__algebra__מיומנויות-אלגבריות-ט___worksheet__unknown__001",
@@ -8563,7 +8608,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "Gila Ron"
     },
     {
       "id": "9__algebra__מעבר-בין-ייצוגים-של-פונקציה-ריבועית-צופן__worksheet__unknown__001",
@@ -8595,7 +8641,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "סמיון"
     },
     {
       "id": "9__geometry__מקבילית-במערכת-הצירים-1__worksheet__unknown__001",
@@ -8659,7 +8706,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "Gila Ron"
     },
     {
       "id": "9__geometry__מקבילית-במערכת-הצירים__worksheet__unknown__001",
@@ -8725,7 +8773,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "editor": "ביטון שרית"
     },
     {
       "id": "9__geometry__מרובעים-ושטחים__worksheet__unknown__001",
@@ -8758,7 +8807,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "Gila Ron"
     },
     {
       "id": "9__algebra__משוואות-ריבועיות__worksheet__unknown__001",
@@ -9014,7 +9064,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "מיכל מלר"
     },
     {
       "id": "9__algebra__פרבולה-בסיסית__worksheet__unknown__001",
@@ -9238,7 +9289,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "מרב פוגל"
     },
     {
       "id": "9__uncategorized__תחומי-חיוביות-ושליליות__worksheet__unknown__001",
@@ -9335,7 +9387,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "ניצה שיאון"
     },
     {
       "id": "7__uncategorized__חידודים-חידות-בחשבון__mixed__unknown__001",
@@ -9403,7 +9456,8 @@
       "print_ready": false,
       "download_ready": true,
       "tags": [],
-      "notes": "auto-classified best-effort (PR 13)"
+      "notes": "auto-classified best-effort (PR 13)",
+      "credit": "יעל שמחה אליאסי"
     },
     {
       "id": "7__uncategorized__חידות-לתחילת-שיעור__mixed__unknown__001",
@@ -9471,7 +9525,8 @@
       "print_ready": false,
       "download_ready": true,
       "tags": [],
-      "notes": "auto-classified best-effort (PR 13)"
+      "notes": "auto-classified best-effort (PR 13)",
+      "credit": "Ofir Krispin"
     },
     {
       "id": "7__uncategorized__חידות-גפרורים-2__mixed__unknown__001",
