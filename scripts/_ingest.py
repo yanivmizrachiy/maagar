@@ -96,7 +96,7 @@ def build_id(grade: str, unit_level: str, category: str, title: str,
 def build_record(*, record_id, title, rel_path, dest_filename, ext,
                  content_hash, grade, grades, unit_level, category,
                  topics, doctype, year, author, tags, notes,
-                 can_embed_val) -> dict:
+                 can_embed_val, editor='unknown', credit='unknown') -> dict:
     can_embed_typed = (True  if can_embed_val == 'true'  else
                        False if can_embed_val == 'false' else
                        'unknown')
@@ -119,6 +119,8 @@ def build_record(*, record_id, title, rel_path, dest_filename, ext,
         'bagrut_questionnaire': 'unknown',
         'year':                 year,
         'author':               author,
+        'editor':               editor,
+        'credit':               credit,
         'source_type':          'repo-file',
         'source_url':           None,
         'embed_url':            None,

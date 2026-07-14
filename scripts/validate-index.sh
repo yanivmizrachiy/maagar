@@ -154,6 +154,11 @@ for i, rec in enumerate(records):
         print(f"ERROR [{label}]: topics must be an array")
         errors += 1
 
+    for sfield in ["author", "editor", "credit"]:
+        if sfield in rec and not isinstance(rec.get(sfield), str):
+            print(f"ERROR [{label}]: {sfield} must be a string")
+            errors += 1
+
     for bfield in ["can_embed", "print_ready", "download_ready"]:
         if rec.get(bfield) not in valid_bool:
             print(f"ERROR [{label}]: {bfield} has invalid value '{rec.get(bfield)}'")

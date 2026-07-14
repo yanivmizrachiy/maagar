@@ -18,12 +18,14 @@
   }
   function row(k, v) { return v ? `<div class="detail-row"><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>` : ''; }
   function yn(v) { return v === true ? 'כן' : v === false ? 'לא' : 'לא ידוע'; }
+  function realCredit(v) { return v && v !== 'unknown' ? String(v).trim() : ''; }
+  function creditText(f) { const parts = []; const editor = realCredit(f.editor); const credit = realCredit(f.credit); if (editor) parts.push(`בעריכת ${editor}`); if (credit) parts.push(credit); return parts.join(' · '); }
   function detailsHtml(f) {
     const u = url(f);
     const tags = topics(f).map(t => `<span class="tag topic">${esc(t)}</span>`).join('');
     const openLink = u ? `<a class="act view" href="${esc(u)}" target="_blank" rel="noopener noreferrer">↗ פתח בכרטיסייה</a>` : '<button class="act view disabled" type="button" aria-disabled="true">אין קישור פעיל</button>';
     const dl = downloadButton(f) || '<button class="act down disabled" type="button" aria-disabled="true">אין הורדה ישירה</button>';
-    return `<aside class="detail-panel" aria-label="פרטים ופעולות"><h3>פרטי המשימה</h3><p class="detail-title">${esc(title(f))}</p>${tags ? `<div class="tags detail-tags">${tags}</div>` : ''}<dl class="detail-table">${row('שכבה', activeGradeLabel(f))}${row('תחום', categoryLabel(f))}${row('נושא', mainTopic(f))}${row('סוג', typeLabel(f))}${row('יחידות', activeGradeKey(f) === 'high-school' ? unitLabel(f) : '')}${row('שנה', f.year && f.year !== 'unknown' ? f.year : '')}${row('מחבר', f.author && f.author !== 'unknown' ? f.author : '')}${row('שם קובץ', f.file_name || '')}${row('הטמעה', yn(f.can_embed))}${row('הדפסה', yn(f.print_ready))}</dl><div class="detail-actions">${openLink}${dl}</div></aside>`;
+    return `<aside class="detail-panel" aria-label="פרטים ופעולות"><h3>פרטי המשימה</h3><p class="detail-title">${esc(title(f))}</p>${tags ? `<div class="tags detail-tags">${tags}</div>` : ''}<dl class="detail-table">${row('שכבה', activeGradeLabel(f))}${row('תחום', categoryLabel(f))}${row('נושא', mainTopic(f))}${row('סוג', typeLabel(f))}${row('יחידות', activeGradeKey(f) === 'high-school' ? unitLabel(f) : '')}${row('שנה', f.year && f.year !== 'unknown' ? f.year : '')}${row('מחבר', f.author && f.author !== 'unknown' ? f.author : '')}${row('קרדיט', creditText(f))}${row('שם קובץ', f.file_name || '')}${row('הטמעה', yn(f.can_embed))}${row('הדפסה', yn(f.print_ready))}</dl><div class="detail-actions">${openLink}${dl}</div></aside>`;
   }
   filters = function() {
     const g = GRADE_BUTTONS.filter(grade => S.files.some(f => hasGrade(f, grade)));

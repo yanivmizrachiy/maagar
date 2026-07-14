@@ -67,7 +67,9 @@ def parse_args():
     p.add_argument('--doctype',     required=True,
                    help=f'Document type: {", ".join(sorted(VALID_DOCTYPES))}')
     p.add_argument('--year',        default='unknown', help='Year, e.g. 2024  (default: unknown)')
-    p.add_argument('--author',      default='unknown', help='Author name  (default: unknown)')
+    p.add_argument('--author',      default='unknown', help='Author/publisher name (default: unknown)')
+    p.add_argument('--editor',      default='unknown', help='Explicit editor/adaptor name (default: unknown)')
+    p.add_argument('--credit',      default='unknown', help='Verified neutral credit (default: unknown)')
     p.add_argument('--topics',      default='',  help='Comma-separated topics (Hebrew ok)')
     p.add_argument('--tags',        default='',  help='Comma-separated tags')
     p.add_argument('--notes',       default='',  help='Free-text notes')
@@ -153,6 +155,8 @@ def main():
     print(f'  Doc type    : {doctype}')
     print(f'  Year        : {args.year}')
     print(f'  Author      : {args.author}')
+    print(f'  Editor      : {args.editor}')
+    print(f'  Credit      : {args.credit}')
     print(f'  Topics      : {topics}')
     print(f'  can_embed   : {can_embed_val}')
     print(f'  SHA-1       : {content_hash}')
@@ -187,6 +191,7 @@ def main():
         category=category, topics=topics, doctype=doctype,
         year=args.year.strip(), author=args.author.strip(),
         tags=tags, notes=args.notes, can_embed_val=can_embed_val,
+        editor=args.editor.strip(), credit=args.credit.strip(),
     )
     index['files'].append(record)
     save_index(index)
