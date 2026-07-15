@@ -1,0 +1,50 @@
+name: Apply Play visible credit
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+
+      - name: Apply one verified visible-page credit
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          path = Path('metadata/index.json')
+          payload = json.loads(path.read_text(encoding='utf-8'))
+          material_id = '7__uncategorized__מבוך-חוק-הפילוג__worksheet__unknown__001'
+          matches = [item for item in payload['files'] if item.get('id') == material_id]
+          if len(matches) != 1:
+              raise SystemExit(f'Expected exactly one record for {material_id}, found {len(matches)}')
+          item = matches[0]
+          current = item.get('credit')
+          value = 'Play – למידה היא שם המשחק'
+          if current not in (None, '', 'unknown', value):
+              raise SystemExit(f'Refusing to overwrite existing credit: {current!r}')
+          item['credit'] = value
+          path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+          PY
+
+      - name: Commit metadata-only change
+        env:
+          TARGET_BRANCH: ${{ github.head_ref }}
+        run: |
+          rm .github/workflows/apply-play-visible-credit.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Add verified Play visible-page credit"
+          git push origin "HEAD:${TARGET_BRANCH}"
