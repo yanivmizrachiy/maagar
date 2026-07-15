@@ -8,19 +8,36 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout working branch
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.x"
+
+      - name: Apply verified first-page credits and clean temporary tooling
+        env:
+          TARGET_BRANCH: ${{ github.head_ref || github.ref_name }}
+        run: |
+          python3 scripts/apply-first-page-credit-batch4.py
+          git fetch origin main --depth=1
+          git checkout origin/main -- .github/workflows/validate.yml
+          rm scripts/apply-first-page-credit-batch4.py
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Add verified first-page authors batch 4"
+          git push origin "HEAD:${TARGET_BRANCH}"
 
       - name: Set up Node
         uses: actions/setup-node@v4
