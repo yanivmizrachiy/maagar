@@ -1,0 +1,58 @@
+name: Render unreadable first pages
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install PDF renderer
+        run: sudo apt-get update && sudo apt-get install -y poppler-utils
+
+      - name: Render first pages
+        shell: bash
+        run: |
+          set -u
+          mkdir -p renders
+          cat > renders/manifest.tsv <<'EOF'
+          01	grade-9__geometry__deltoid__worksheet__unknown__001	files/middle-school/grade-9/geometry/grade-9__geometry__deltoid__worksheet__unknown__001.pdf
+          02	7__uncategorized__הצבה-לכתה-ז___worksheet__unknown__001	files/middle-school/grade-7/uncategorized/הצבה-לכתה-ז_.pdf
+          03	7__algebra__מכינה-לכיתה-ז___worksheet__unknown__001	files/middle-school/grade-7/algebra/מכינה-לכיתה-ז_.pdf
+          04	7__algebra__סדר-פעולות-חשבון-ללא-מספרים-מכוונים__worksheet__unknown__001	files/middle-school/grade-7/algebra/סדר-פעולות-חשבון-ללא-מספרים-מכוונים.pdf
+          05	7__summaries__סיכום-באלגברה-ז___summary-work__unknown__001	files/middle-school/grade-7/summaries/סיכום-באלגברה-ז_.pdf
+          06	8__uncategorized__אי-שוויונות-קוויים-2__worksheet__unknown__001	files/middle-school/grade-8/uncategorized/אי-שוויונות-קוויים-2.pdf
+          07	8__summaries__משימה-מסכמת-שיפוע__summary-work__unknown__001	files/middle-school/grade-8/summaries/משימה-מסכמת-שיפוע.pdf
+          08	8__algebra__פונקציה-קווית__worksheet__unknown__001	files/middle-school/grade-8/algebra/פונקציה-קווית.pdf
+          09	9__algebra__הזזות-פרבולה__worksheet__unknown__001	files/middle-school/grade-9/algebra/הזזות-פרבולה.pdf
+          10	9__algebra__טכניקה-אלגברית__worksheet__unknown__001	files/middle-school/grade-9/algebra/טכניקה-אלגברית.pdf
+          11	9__uncategorized__פילוג-מורחב-לכיתה-ט__worksheet__unknown__001	files/middle-school/grade-9/uncategorized/פילוג-מורחב-לכיתה-ט.pdf
+          12	9__uncategorized__פילוג-מורחב__worksheet__unknown__002	files/middle-school/grade-9/uncategorized/פילוג-מורחב.pdf
+          13	9__algebra__פרבולה-בסיסית__worksheet__unknown__001	files/middle-school/grade-9/algebra/פרבולה-בסיסית.pdf
+          14	9__algebra__פרבולות-ט__worksheet__unknown__001	files/middle-school/grade-9/algebra/פרבולות-ט.pdf
+          15	9__algebra__צמצום-שברים-אלגבריים__worksheet__unknown__002	files/middle-school/grade-9/algebra/צמצום-שברים-אלגבריים.pdf
+          EOF
+
+          while IFS=$'\t' read -r number material_id pdf_path; do
+            output="renders/${number}.png"
+            if ! pdftoppm -f 1 -singlefile -png -r 150 "$pdf_path" "renders/${number}"; then
+              printf '%s\t%s\t%s\n' "$number" "$material_id" "$pdf_path" >> renders/failures.tsv
+              rm -f "$output"
+            fi
+          done < renders/manifest.tsv
+
+      - name: Upload rendered pages
+        uses: actions/upload-artifact@v4
+        with:
+          name: unreadable-first-pages
+          path: renders/
+          if-no-files-found: error
+          retention-days: 7
