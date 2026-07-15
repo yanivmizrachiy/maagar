@@ -39,6 +39,18 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
+      - name: Prepare verified first-page credit batch
+        run: |
+          python3 scripts/apply-first-page-credit-batch3.py
+
+      - name: Upload updated metadata index
+        uses: actions/upload-artifact@v4
+        with:
+          name: first-page-credit-index
+          path: reports/index-with-first-page-credits.json
+          if-no-files-found: error
+          retention-days: 7
+
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
