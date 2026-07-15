@@ -33,7 +33,8 @@
         "כיתה ז",
         "מאגר"
       ],
-      "notes": "Preserved as the active grade-7 maagar file after cleanup of the broad import. can_embed verified true via Playwright headless browser test (same-origin GitHub Pages)."
+      "notes": "Preserved as the active grade-7 maagar file after cleanup of the broad import. can_embed verified true via Playwright headless browser test (same-origin GitHub Pages).",
+      "credit": "יניב מזרחי"
     },
     {
       "id": "8__algebra__ratio-proportion-scale-לתלמידים-1-רמה-ב-8-3-0107-2013-2014__unknown__001",
@@ -279,7 +280,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "יניב מזרחי"
     },
     {
       "id": "7__algebra___חוברת-תרגול-כיתה-ז-מחצית-ב__worksheet__unknown__001",
@@ -407,7 +409,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "יניב מזרחי"
     },
     {
       "id": "7__geometry__גיאומטריה-כיתה-ז-בהמחשות__worksheet__unknown__001",
@@ -537,7 +540,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "יניב מזרחי"
     },
     {
       "id": "7__geometry__זוויות-בין-ישרים-מקבילים__worksheet__unknown__001",
@@ -569,7 +573,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "יניב מזרחי"
     },
     {
       "id": "7__geometry__זוויות-בין-מקבילים__worksheet__unknown__001",
@@ -665,7 +670,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "יניב מזרחי"
     },
     {
       "id": "7__uncategorized__זוויות-קודקודיות__worksheet__unknown__001",
@@ -697,7 +703,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "יניב מזרחי"
     },
     {
       "id": "7__uncategorized__זוויות-לכיתה-ח__worksheet__unknown__001",
@@ -954,7 +961,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "יניב מזרחי"
     },
     {
       "id": "7__algebra__חוקיות__worksheet__unknown__001",
@@ -986,7 +994,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "יניב מזרחי"
     },
     {
       "id": "7__algebra__חיבור-וחיסור-מכוונים__worksheet__unknown__001",
@@ -1051,7 +1060,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "יניב מזרחי"
     },
     {
       "id": "7__algebra__מאגר-המשוואות-2___worksheet__unknown__001",
@@ -1083,7 +1093,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "יניב מזרחי"
     },
     {
       "id": "7__uncategorized__מבוך-חוק-הפילוג__worksheet__unknown__001",
@@ -1244,7 +1255,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "יניב מזרחי"
     },
     {
       "id": "7__exams__מבחן-ז__exam__unknown__001",
@@ -1470,7 +1482,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "יניב מזרחי"
     },
     {
       "id": "7__uncategorized__מלבן-לכיתה-ז___worksheet__unknown__001",
@@ -1502,7 +1515,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "יניב מזרחי"
     },
     {
       "id": "7__algebra__מספרים-מכוונים-ז___worksheet__unknown__001",
@@ -1534,7 +1548,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "יניב מזרחי"
     },
     {
       "id": "7__geometry__מעגל-ועיגול__worksheet__unknown__001",
@@ -1566,7 +1581,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "יניב מזרחי"
     },
     {
       "id": "7__geometry__מערכת-צירים-מרחק-בין-נקודות-ושטחים__worksheet__unknown__001",
@@ -1826,7 +1842,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "יניב מזרחי"
     },
     {
       "id": "7__algebra__משוואות-עם-מכנה-מספרי-2___worksheet__unknown__001",
@@ -1858,7 +1875,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "יניב מזרחי"
     },
     {
       "id": "7__uncategorized__נפח-של-תיבה-וקוביה__worksheet__unknown__001",
@@ -1922,7 +1940,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "יניב מזרחי"
     },
     {
       "id": "7__geometry__נקודות-במערכת-הצירים__worksheet__unknown__001",
@@ -2052,7 +2071,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "יניב מזרחי"
     },
     {
       "id": "7__algebra__סדר-פעולות-החשבון-1__worksheet__unknown__001",
@@ -2117,7 +2137,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "יניב מזרחי"
     },
     {
       "id": "7__algebra__סדר-פעולות-חשבון-ללא-מספרים-מכוונים__worksheet__unknown__001",
@@ -2150,7 +2171,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "יניב מזרחי"
     },
     {
       "id": "7__algebra__סדר-פעולות-חשבון-במספרים-מכוונים-כולל-חזקות__worksheet__unknown__001",
@@ -2249,7 +2271,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "יניב מזרחי"
     },
     {
       "id": "7__geometry__עמט-ז-גאומטרי__worksheet__unknown__001",
@@ -2410,7 +2433,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "יניב מזרחי"
     },
     {
       "id": "7__geometry__שטח-והיקף-מעגל___worksheet__unknown__001",
@@ -2538,7 +2562,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "יניב מזרחי"
     },
     {
       "id": "7__geometry__שטח-של-משולש__worksheet__unknown__001",
@@ -2602,7 +2627,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "יניב מזרחי"
     },
     {
       "id": "7__geometry__שטחים-במערכת-הצירים__worksheet__unknown__001",
@@ -2634,7 +2660,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "רותם מזרחי"
     },
     {
       "id": "7__geometry__שטחים-בצירים__worksheet__unknown__001",
@@ -2732,7 +2759,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "יניב מזרחי"
     },
     {
       "id": "7__geometry__שטחים-והיקפים__worksheet__unknown__001",
@@ -3152,7 +3180,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "רותם מזרחי"
     },
     {
       "id": "8__algebra__אחוזים-ממיצבים-2__worksheet__unknown__001",
@@ -3672,7 +3701,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "Added via ingestion script on 2026-06-23."
+      "notes": "Added via ingestion script on 2026-06-23.",
+      "credit": "יניב מזרחי"
     },
     {
       "id": "8__geometry__חיתוך-הישר-עם-הצירים__worksheet__unknown__001",
@@ -9626,7 +9656,8 @@
       "print_ready": false,
       "download_ready": true,
       "tags": [],
-      "notes": "auto-classified best-effort (PR 13)"
+      "notes": "auto-classified best-effort (PR 13)",
+      "credit": "גנאדי ארנוביץ"
     },
     {
       "id": "7__geometry__03_grade-7_pre_deductive_geometry_curriculum__mixed__unknown__001",
@@ -10247,7 +10278,8 @@
       "print_ready": true,
       "download_ready": true,
       "tags": [],
-      "notes": "auto-classified best-effort (PR 13)"
+      "notes": "auto-classified best-effort (PR 13)",
+      "credit": "יניב מזרחי"
     },
     {
       "id": "3-unit__summaries__סיכום-806__summary-work__unknown__001",
