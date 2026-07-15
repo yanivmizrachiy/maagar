@@ -1,0 +1,128 @@
+name: First Page Visual Review
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install renderer
+        run: python3 -m pip install pymupdf pillow
+
+      - name: Render unresolved first pages
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          import fitz
+          from PIL import Image, ImageDraw, ImageFont
+
+          root = Path('.')
+          out = root / 'reports' / 'first-page-review'
+          pages_dir = out / 'pages'
+          pages_dir.mkdir(parents=True, exist_ok=True)
+
+          payload = json.loads((root / 'metadata' / 'index.json').read_text(encoding='utf-8'))
+          unknown = {'', 'unknown', 'לא ידוע', 'none', 'null'}
+          generic_authors = {
+              '', 'unknown', 'admin', 'nullobject', 'un-named', 'dell', 'user',
+              'someuser', 'michi', 'yana', 'rik fam', 'רותי', 'מזרחי', '\x00'
+          }
+
+          def real(value):
+              return isinstance(value, str) and value.strip().lower() not in unknown
+
+          candidates = []
+          for item in payload['files']:
+              if str(item.get('grade')) not in {'7', '8', '9'}:
+                  continue
+              if not str(item.get('path', '')).lower().endswith('.pdf'):
+                  continue
+              if any(real(item.get(field)) for field in ('author', 'editor', 'credit')):
+                  continue
+              path = root / item['path']
+              if not path.exists():
+                  continue
+              try:
+                  doc = fitz.open(path)
+                  pdf_author = (doc.metadata.get('author') or '').strip()
+                  doc.close()
+              except Exception:
+                  continue
+              if pdf_author.lower() in generic_authors:
+                  continue
+              candidates.append((str(item.get('grade')), item['path'], item, pdf_author))
+
+          candidates.sort(key=lambda row: (row[0], row[1]))
+          candidates = candidates[:36]
+
+          font_path = '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'
+          font = ImageFont.truetype(font_path, 24)
+          small = ImageFont.truetype(font_path, 18)
+          tile_w, tile_h = 600, 860
+          page_w, page_h = 560, 740
+          manifest = []
+          tiles = []
+
+          for index, (_, _, item, pdf_author) in enumerate(candidates, 1):
+              pdf_path = root / item['path']
+              doc = fitz.open(pdf_path)
+              page = doc[0]
+              pix = page.get_pixmap(matrix=fitz.Matrix(1.35, 1.35), alpha=False)
+              image = Image.frombytes('RGB', [pix.width, pix.height], pix.samples)
+              doc.close()
+              image.thumbnail((page_w, page_h), Image.Resampling.LANCZOS)
+
+              tile = Image.new('RGB', (tile_w, tile_h), 'white')
+              x = (tile_w - image.width) // 2
+              tile.paste(image, (x, 10))
+              draw = ImageDraw.Draw(tile)
+              label_y = 760
+              draw.text((18, label_y), f"{index}. {item['id']}", fill='black', font=small)
+              draw.text((18, label_y + 30), f"PDF author: {pdf_author}", fill='black', font=font)
+              page_file = pages_dir / f"{index:02d}.jpg"
+              tile.save(page_file, quality=88)
+              tiles.append(tile)
+              manifest.append({
+                  'index': index,
+                  'id': item['id'],
+                  'title': item.get('title'),
+                  'path': item['path'],
+                  'pdf_author': pdf_author,
+              })
+
+          for start in range(0, len(tiles), 9):
+              sheet = Image.new('RGB', (tile_w * 3, tile_h * 3), '#dddddd')
+              for offset, tile in enumerate(tiles[start:start + 9]):
+                  col = offset % 3
+                  row = offset // 3
+                  sheet.paste(tile, (col * tile_w, row * tile_h))
+              sheet.save(out / f"contact-sheet-{start // 9 + 1}.jpg", quality=88)
+
+          (out / 'manifest.json').write_text(
+              json.dumps(manifest, ensure_ascii=False, indent=2) + '\n',
+              encoding='utf-8'
+          )
+          print(f"Rendered {len(manifest)} unresolved first pages")
+          PY
+
+      - name: Upload first-page review
+        uses: actions/upload-artifact@v4
+        with:
+          name: first-page-visual-review
+          path: reports/first-page-review
+          if-no-files-found: error
+          retention-days: 7
