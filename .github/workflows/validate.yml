@@ -26,6 +26,19 @@ jobs:
         run: |
           python3 -m pip install "pypdf>=5,<7"
 
+      - name: First-page credit audit
+        run: |
+          mkdir -p reports
+          python3 scripts/first-page-credit-audit.py --report reports/first-page-credit-audit.json
+
+      - name: Upload first-page credit audit
+        uses: actions/upload-artifact@v4
+        with:
+          name: first-page-credit-audit
+          path: reports/first-page-credit-audit.json
+          if-no-files-found: error
+          retention-days: 7
+
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
@@ -98,15 +111,3 @@ jobs:
         run: |
           python3 scripts/site-action-report.py --report reports/site-action-report.json
           python3 scripts/site-action-report-md.py --json reports/site-action-report.json --md reports/site-action-report.md
-
-      - name: First-page credit audit
-        run: |
-          python3 scripts/first-page-credit-audit.py --report reports/first-page-credit-audit.json
-
-      - name: Upload audit reports
-        uses: actions/upload-artifact@v4
-        with:
-          name: maagar-audit-reports
-          path: reports/*
-          if-no-files-found: error
-          retention-days: 7
