@@ -8,63 +8,89 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout working branch
+      - name: Checkout
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.head_ref || github.ref_name }}
-          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.x"
 
-      - name: Install first-page PDF reader
-        run: |
-          python3 -m pip install "pypdf>=5,<7"
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
 
-      - name: First-page credit audit
+      - name: Validate single rules page
+        run: |
+          python3 scripts/validate-single-rules-page.py
+
+      - name: Validate workflow site checks
+        run: |
+          python3 scripts/validate-workflow-site-checks.py
+
+      - name: Validate site shell
+        run: |
+          python3 scripts/validate-site-shell.py
+          python3 scripts/validate-direct-task-flow.py
+          python3 scripts/validate-real-buttons.py
+          python3 scripts/validate-highschool-units.py
+          node --check assets/site.js
+          node --check assets/site-direct-tasks.js
+          node --check assets/site-url-state.js
+          node --check assets/site-deeplink.js
+          node --check assets/site-share.js
+          node --check assets/site-modal-share.js
+          node --check assets/site-help.js
+
+      - name: Audit high school units non blocking
+        run: |
+          python3 scripts/audit-highschool-units.py || true
+
+      - name: Validate browser metadata contract
+        run: |
+          python3 scripts/validate-site-data-contract.py
+
+      - name: Validate file links
+        run: |
+          python3 scripts/validate-file-links.py
+
+      - name: Validate metadata
+        run: |
+          bash scripts/validate-all.sh
+
+      - name: Validate topic map
+        run: |
+          python3 scripts/validate-topic-map.py
+
+      - name: Validate navigation
+        run: |
+          python3 scripts/test-logic.py
+
+      - name: Topic organizer dry run
         run: |
           mkdir -p reports
-          python3 scripts/first-page-credit-audit.py --report reports/first-page-credit-audit.json
+          python3 scripts/topic-organizer.py --report reports/topic-audit.json
 
-      - name: Upload first-page credit audit
-        uses: actions/upload-artifact@v4
-        with:
-          name: first-page-credit-audit
-          path: reports/first-page-credit-audit.json
-          if-no-files-found: error
-          retention-days: 7
-
-      - name: Prepare verified first-page credit batch
+      - name: Metadata audit
         run: |
-          python3 scripts/apply-first-page-credit-batch3.py
+          python3 scripts/metadata-audit.py --report reports/metadata-audit.json
 
-      - name: Upload updated metadata index
-        uses: actions/upload-artifact@v4
-        with:
-          name: first-page-credit-index
-          path: reports/index-with-first-page-credits.json
-          if-no-files-found: error
-          retention-days: 7
-
-      - name: Apply metadata and remove temporary tooling
-        env:
-          TARGET_BRANCH: ${{ github.head_ref || github.ref_name }}
+      - name: Smart topic review
         run: |
-          cp reports/index-with-first-page-credits.json metadata/index.json
-          git fetch origin main --depth=1
-          git checkout origin/main -- .github/workflows/validate.yml
-          rm scripts/first-page-credit-audit.py
-          rm scripts/apply-first-page-credit-batch3.py
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A
-          git commit -m "Add verified credits from first pages"
-          git push origin "HEAD:${TARGET_BRANCH}"
+          python3 scripts/smart-topic-review.py --report reports/smart-topic-review.json
+
+      - name: Smart cleanup plan
+        run: |
+          python3 scripts/smart-cleanup-plan.py --json reports/smart-cleanup-plan.json --md reports/smart-cleanup-plan.md
+
+      - name: Site action report
+        run: |
+          python3 scripts/site-action-report.py --report reports/site-action-report.json
+          python3 scripts/site-action-report-md.py --json reports/site-action-report.json --md reports/site-action-report.md
