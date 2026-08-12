@@ -1,0 +1,114 @@
+name: Render all unresolved first pages
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install rendering tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y poppler-utils
+          python3 -m pip install pillow
+
+      - name: Build unresolved manifest
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          payload = json.loads(Path('metadata/index.json').read_text(encoding='utf-8'))
+          unknown = {'', 'unknown', 'לא ידוע', 'none', 'null'}
+
+          def real(value):
+              return isinstance(value, str) and value.strip().lower() not in unknown
+
+          rows = []
+          for item in payload['files']:
+              if str(item.get('grade')) not in {'7', '8', '9'}:
+                  continue
+              if str(item.get('extension', '')).lower() != 'pdf':
+                  continue
+              if any(real(item.get(field)) for field in ('author', 'editor', 'credit')):
+                  continue
+              rows.append((item['id'], item.get('title', ''), item['path']))
+
+          Path('renders').mkdir(exist_ok=True)
+          with Path('renders/manifest.tsv').open('w', encoding='utf-8') as out:
+              for number, (material_id, title, path) in enumerate(rows, 1):
+                  safe_title = str(title).replace('\t', ' ').replace('\n', ' ')
+                  out.write(f'{number:03d}\t{material_id}\t{safe_title}\t{path}\n')
+          print(f'Unresolved PDF pages selected: {len(rows)}')
+          PY
+
+      - name: Render page one
+        shell: bash
+        run: |
+          set -u
+          while IFS=$'\t' read -r number material_id title pdf_path; do
+            if ! pdftoppm -f 1 -singlefile -png -r 110 "$pdf_path" "renders/${number}"; then
+              printf '%s\t%s\t%s\t%s\n' "$number" "$material_id" "$title" "$pdf_path" >> renders/failures.tsv
+              rm -f "renders/${number}.png"
+            fi
+          done < renders/manifest.tsv
+
+      - name: Create numbered contact sheets
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image, ImageDraw
+
+          render_dir = Path('renders')
+          sheet_dir = Path('sheets')
+          sheet_dir.mkdir(exist_ok=True)
+
+          rows = []
+          for line in (render_dir / 'manifest.tsv').read_text(encoding='utf-8').splitlines():
+              number, material_id, title, path = line.split('\t', 3)
+              image_path = render_dir / f'{number}.png'
+              if image_path.exists():
+                  rows.append((number, material_id, title, image_path))
+
+          tile_w, tile_h = 300, 420
+          cols, rows_per_sheet = 4, 5
+          per_sheet = cols * rows_per_sheet
+
+          for offset in range(0, len(rows), per_sheet):
+              batch = rows[offset:offset + per_sheet]
+              sheet = Image.new('RGB', (tile_w * cols, tile_h * rows_per_sheet), 'white')
+              for index, (number, material_id, title, image_path) in enumerate(batch):
+                  image = Image.open(image_path).convert('RGB')
+                  image.thumbnail((280, 350))
+                  tile = Image.new('RGB', (tile_w, tile_h), 'white')
+                  draw = ImageDraw.Draw(tile)
+                  draw.text((8, 6), f'{number}  {title[:32]}', fill='black')
+                  tile.paste(image, ((tile_w - image.width) // 2, 42))
+                  sheet.paste(tile, ((index % cols) * tile_w, (index // cols) * tile_h))
+              sheet_number = offset // per_sheet + 1
+              sheet.save(sheet_dir / f'sheet-{sheet_number:02d}.jpg', quality=88)
+
+          print(f'Created {(len(rows) + per_sheet - 1) // per_sheet} contact sheets for {len(rows)} pages')
+          PY
+
+      - name: Upload visual review package
+        uses: actions/upload-artifact@v4
+        with:
+          name: unresolved-first-page-review
+          path: |
+            renders/manifest.tsv
+            renders/failures.tsv
+            renders/*.png
+            sheets/*.jpg
+          if-no-files-found: error
+          retention-days: 7
